@@ -26,8 +26,8 @@ namespace SUD {
 
 
 	private:
-		
-		SDL_Event eventHandler;
+
+		Input* input;
 
 		SDL_Window* window;
 

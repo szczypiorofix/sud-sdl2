@@ -7,6 +7,7 @@ namespace SUD {
 	GameSystem::GameSystem() {
 		this->window = NULL;
 		this->renderer = NULL;
+		this->input = new Input();
 	}
 
 	GameSystem::~GameSystem() {
@@ -88,14 +89,14 @@ namespace SUD {
 
 		while ( !quit ) {
 
-			while ( SDL_PollEvent( &eventHandler ) != 0 ) {
+			while ( SDL_PollEvent( input->eventHandler ) != 0 ) {
 
-				if ( eventHandler.type == SDL_QUIT ) {
+				if ( (*input->eventHandler).type == SDL_QUIT ) {
 					quit = true;
 				} else {
-					if ( eventHandler.type == SDL_KEYDOWN ) {
+					if ( (*input->eventHandler).type == SDL_KEYDOWN ) {
 
-						switch ( eventHandler.key.keysym.sym ) {
+						switch ( (*input->eventHandler).key.keysym.sym ) {
 
 							case SDLK_ESCAPE:
 								quit = true;

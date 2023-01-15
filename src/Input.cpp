@@ -2,7 +2,7 @@
 
 
 Input::Input() {
-
+	this->eventHandler = new SDL_Event();
 }
 
 

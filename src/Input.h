@@ -9,9 +9,7 @@ public:
 	Input();
 	~Input();
 
-private:
-
-	SDL_Event eventHandler;
+	SDL_Event* eventHandler;
 
 };
 
