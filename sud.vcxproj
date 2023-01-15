@@ -162,6 +162,12 @@
     <Image Include="res\loaded.png" />
     <Image Include="res\mouse_cursor.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore" />
+    <None Include="LICENSE" />
+    <None Include="README.md" />
+    <None Include="sud.aps" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

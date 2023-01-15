@@ -110,7 +110,8 @@ namespace SUD {
 				}
 			}
 
-			//Clear screen
+
+
 			SDL_RenderClear( this->renderer );
 
 			//Render texture to screen
