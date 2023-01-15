@@ -3,17 +3,19 @@
 
 namespace SUD {
 
-
 	GameSystem::GameSystem() {
 		this->window = NULL;
 		this->renderer = NULL;
-		this->input = new Input();
+		this->inputs = new Inputs();
+		
+		this->backgoundTexture = NULL;
+
+		this->quitGame = false;
 	}
 
 	GameSystem::~GameSystem() {
 		printf( "Destring GameSystem..." );
 	}
-
 
 	void GameSystem::close() {
 
@@ -21,6 +23,8 @@ namespace SUD {
 		SDL_DestroyWindow( this->window );
 		this->window = NULL;
 		this->renderer = NULL;
+
+		this->quitGame = false;
 
 		IMG_Quit();
 		SDL_Quit();
@@ -34,35 +38,40 @@ namespace SUD {
 		this->initRenderer();
 		this->initGraphics();
 
+		this->loadAssets();
+
 		this->gameLoop();
 	}
 
-
-
-
 	void GameSystem::initMainSDLModule() {
+		printf( "SYSTEM: initializing SDL - " );
 		if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
 			printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
 			exit( 1 );
 		}
+		this->printOK();
 	}
 
 	void GameSystem::initSDLSettings() {
-		//Set texture filtering to linear
+		printf( "SYSTEM: Initializing linear texture filtering - " );
 		if ( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) ) {
 			printf( "Warning: Linear texture filtering not enabled!" );
 		}
+		this->printOK();
 	}
 
 	void GameSystem::initWindow() {
-		this->window = SDL_CreateWindow( "Single User Dungeon", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+		printf( "SYSTEM: Initializing window - " );
+		this->window = SDL_CreateWindow( APP_NAME.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 		if ( this->window == NULL ) {
 			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
 			exit( 1 );
 		}
+		this->printOK();
 	}
 
 	void GameSystem::initRenderer() {
+		printf( "SYSTEM: Initializing renderer - " );
 		this->renderer = SDL_CreateRenderer( this->window, -1, SDL_RENDERER_ACCELERATED );
 		if ( this->renderer == NULL ) {
 			printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -70,55 +79,65 @@ namespace SUD {
 		}
 
 		SDL_SetRenderDrawColor( this->renderer, 0x00, 0x00, 0x00, 0xFF );
-
+		this->printOK();
 	}
 
 	void GameSystem::initGraphics() {
+		printf( "SYSTEM: Initializing images subsystems - " );
 		int imgFlags = IMG_INIT_PNG;
 		if ( !( IMG_Init( imgFlags ) & imgFlags ) ) {
 			printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
 			exit( 1 );
 		}
-
+		this->printOK();
 	}
-	
 
-	void GameSystem::gameLoop() {
+	void GameSystem::loadAssets() {
+		printf( "SYSTEM: loading assets - " );
+		
+		this->backgoundTexture = new Texture("res/spritesheet.png", this->renderer);
+		
+		this->printOK();
+	}
 
-		bool quit = false;
-
-		while ( !quit ) {
-
-			while ( SDL_PollEvent( input->eventHandler ) != 0 ) {
-
-				if ( (*input->eventHandler).type == SDL_QUIT ) {
-					quit = true;
-				} else {
-					if ( (*input->eventHandler).type == SDL_KEYDOWN ) {
-
-						switch ( (*input->eventHandler).key.keysym.sym ) {
-
-							case SDLK_ESCAPE:
-								quit = true;
-								break;
-
-							default:
-								break;
-
-						}
-
+	void GameSystem::input() {
+		while ( SDL_PollEvent( this->inputs->eventHandler ) != 0 ) {
+			if ( ( *this->inputs->eventHandler ).type == SDL_QUIT ) {
+				this->quitGame = true;
+			} else {
+				if ( ( *this->inputs->eventHandler ).type == SDL_KEYDOWN ) {
+					switch ( ( *this->inputs->eventHandler ).key.keysym.sym ) {
+						case SDLK_ESCAPE:
+							this->quitGame = true;
+							break;
+						default:
+							break;
 					}
 				}
 			}
+		}
+	}
 
+	void GameSystem::update() {
 
+	}
+
+	void GameSystem::render() {
+		this->backgoundTexture->draw();
+	}
+
+	void GameSystem::gameLoop() {
+
+		while ( !this->quitGame ) {
+
+			this->input();
+
+			this->update();
 
 			SDL_RenderClear( this->renderer );
 
-			//Render texture to screen
-			//SDL_RenderCopy( this->renderer, gTexture, NULL, NULL );
+			this->render();
 
-			//Update screen
 			SDL_RenderPresent( this->renderer );
 		}
 
@@ -126,6 +145,8 @@ namespace SUD {
 
 	}
 
+	void GameSystem::printOK() {
+		printf( "OK\n" );
+	}
+
 }
-
-

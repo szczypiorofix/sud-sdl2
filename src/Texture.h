@@ -8,13 +8,17 @@ class Texture {
 
 public:
 
-	Texture( std::string fileName );
+	Texture( std::string fileName, SDL_Renderer* renderer );
 
 	~Texture();
 
+	SDL_Texture* texture;
 
+	void draw();
 
 private:
+
+	SDL_Renderer* renderer;
 
 	std::string fileName;
 

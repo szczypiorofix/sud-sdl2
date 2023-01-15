@@ -3,11 +3,11 @@
 #include <SDL2/SDL.h>
 
 
-class Input {
+class Inputs {
 
 public:
-	Input();
-	~Input();
+	Inputs();
+	~Inputs();
 
 	SDL_Event* eventHandler;
 
