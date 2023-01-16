@@ -12,9 +12,9 @@ public:
 
 	~Texture();
 
-	SDL_Texture* texture;
-
 	void draw();
+
+	SDL_Texture* texture;
 
 private:
 

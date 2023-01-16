@@ -7,9 +7,9 @@ namespace SUD {
 		this->window = NULL;
 		this->renderer = NULL;
 		this->inputs = new Inputs();
-		
-		this->backgoundTexture = NULL;
 
+		this->scene = NULL;
+		
 		this->quitGame = false;
 	}
 
@@ -18,17 +18,15 @@ namespace SUD {
 	}
 
 	void GameSystem::close() {
+		this->scene->unload();
 
 		SDL_DestroyRenderer( this->renderer );
 		SDL_DestroyWindow( this->window );
 		this->window = NULL;
 		this->renderer = NULL;
 
-		this->quitGame = false;
-
 		IMG_Quit();
 		SDL_Quit();
-
 	}
 
 	void GameSystem::launch() {
@@ -94,9 +92,12 @@ namespace SUD {
 
 	void GameSystem::loadAssets() {
 		printf( "SYSTEM: loading assets - " );
-		
-		this->backgoundTexture = new Texture("res/spritesheet.png", this->renderer);
-		
+
+		this->scene = new Scene( "first_scene", this->renderer );
+		this->scene->addSpriteSheet("res/spritesheet.png");
+
+		this->scene->load();
+
 		this->printOK();
 	}
 
@@ -123,21 +124,22 @@ namespace SUD {
 	}
 
 	void GameSystem::render() {
-		this->backgoundTexture->draw();
+		this->scene->draw();
 	}
 
 	void GameSystem::gameLoop() {
 
 		while ( !this->quitGame ) {
-
 			this->input();
-
 			this->update();
 
+			// Clear renderer
 			SDL_RenderClear( this->renderer );
 
+			// draw everything
 			this->render();
 
+			// Update screen
 			SDL_RenderPresent( this->renderer );
 		}
 

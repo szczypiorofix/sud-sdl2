@@ -9,6 +9,7 @@
 
 #include "Inputs.h"
 #include "Texture.h"
+#include "Scene.h"
 
 
 namespace SUD {
@@ -36,7 +37,7 @@ namespace SUD {
 
 		SDL_Renderer* renderer;
 
-		Texture* backgoundTexture;
+		Scene* scene;
 
 		bool quitGame;
 

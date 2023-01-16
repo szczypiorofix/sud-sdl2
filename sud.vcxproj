@@ -141,12 +141,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Spritesheet.cpp" />
+    <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Inputs.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\GameSystem.cpp" />
     <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Spritesheet.h" />
+    <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\Inputs.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\main.h" />
