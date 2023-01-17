@@ -11,9 +11,9 @@ Texture::Texture( std::string fileName, SDL_Renderer* renderer ) {
 }
 
 
-Texture::~Texture() {}
+Texture::~Texture( void ) {}
 
-void Texture::draw() {
+void Texture::draw( void ) {
 	
 	SDL_Rect src;
 	src.x = 64;
@@ -30,7 +30,7 @@ void Texture::draw() {
 	SDL_RenderCopy( this->renderer, this->texture, &src, &dest );
 }
 
-void Texture::load() {
+void Texture::load( void ) {
 	SDL_Texture* newTexture = NULL;
 	SDL_Surface* loadedSurface = IMG_Load( this->fileName.c_str() );
 	if ( loadedSurface == NULL ) {

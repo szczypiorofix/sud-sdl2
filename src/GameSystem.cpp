@@ -3,7 +3,7 @@
 
 namespace SUD {
 
-	GameSystem::GameSystem() {
+	GameSystem::GameSystem( void ) {
 		this->window = NULL;
 		this->renderer = NULL;
 		this->inputs = new Inputs();
@@ -13,11 +13,11 @@ namespace SUD {
 		this->quitGame = false;
 	}
 
-	GameSystem::~GameSystem() {
+	GameSystem::~GameSystem( void ) {
 		printf( "Destring GameSystem..." );
 	}
 
-	void GameSystem::close() {
+	void GameSystem::close( void ) {
 		this->scene->unload();
 
 		SDL_DestroyRenderer( this->renderer );
@@ -29,7 +29,7 @@ namespace SUD {
 		SDL_Quit();
 	}
 
-	void GameSystem::launch() {
+	void GameSystem::launch( void ) {
 		this->initMainSDLModule();
 		this->initSDLSettings();
 		this->initWindow();
@@ -41,16 +41,16 @@ namespace SUD {
 		this->gameLoop();
 	}
 
-	void GameSystem::initMainSDLModule() {
+	void GameSystem::initMainSDLModule( void ) {
 		printf( "SYSTEM: initializing SDL - " );
-		if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
+		if ( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) < 0 ) {
 			printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
 			exit( 1 );
 		}
 		this->printOK();
 	}
 
-	void GameSystem::initSDLSettings() {
+	void GameSystem::initSDLSettings( void ) {
 		printf( "SYSTEM: Initializing linear texture filtering - " );
 		if ( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) ) {
 			printf( "Warning: Linear texture filtering not enabled!" );
@@ -58,7 +58,7 @@ namespace SUD {
 		this->printOK();
 	}
 
-	void GameSystem::initWindow() {
+	void GameSystem::initWindow( void ) {
 		printf( "SYSTEM: Initializing window - " );
 		this->window = SDL_CreateWindow( APP_NAME.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 		if ( this->window == NULL ) {
@@ -68,7 +68,7 @@ namespace SUD {
 		this->printOK();
 	}
 
-	void GameSystem::initRenderer() {
+	void GameSystem::initRenderer( void ) {
 		printf( "SYSTEM: Initializing renderer - " );
 		this->renderer = SDL_CreateRenderer( this->window, -1, SDL_RENDERER_ACCELERATED );
 		if ( this->renderer == NULL ) {
@@ -80,7 +80,7 @@ namespace SUD {
 		this->printOK();
 	}
 
-	void GameSystem::initGraphics() {
+	void GameSystem::initGraphics( void ) {
 		printf( "SYSTEM: Initializing images subsystems - " );
 		int imgFlags = IMG_INIT_PNG;
 		if ( !( IMG_Init( imgFlags ) & imgFlags ) ) {
@@ -90,18 +90,17 @@ namespace SUD {
 		this->printOK();
 	}
 
-	void GameSystem::loadAssets() {
-		printf( "SYSTEM: loading assets - " );
+	void GameSystem::loadAssets( void ) {
+		printf( "SYSTEM: loading assets ...\n" );
 
 		this->scene = new Scene( "first_scene", this->renderer );
-		this->scene->addSpriteSheet("res/spritesheet.png");
+		this->scene->addSpriteSheet("res/images/spritesheet.png", 32, 32);
 
 		this->scene->load();
 
-		this->printOK();
 	}
 
-	void GameSystem::input() {
+	void GameSystem::input( void ) {
 		while ( SDL_PollEvent( this->inputs->eventHandler ) != 0 ) {
 			if ( ( *this->inputs->eventHandler ).type == SDL_QUIT ) {
 				this->quitGame = true;
@@ -119,15 +118,15 @@ namespace SUD {
 		}
 	}
 
-	void GameSystem::update() {
+	void GameSystem::update( void ) {
 
 	}
 
-	void GameSystem::render() {
+	void GameSystem::render( void ) {
 		this->scene->draw();
 	}
 
-	void GameSystem::gameLoop() {
+	void GameSystem::gameLoop( void ) {
 
 		while ( !this->quitGame ) {
 			this->input();
@@ -147,7 +146,7 @@ namespace SUD {
 
 	}
 
-	void GameSystem::printOK() {
+	void GameSystem::printOK( void ) {
 		printf( "OK\n" );
 	}
 

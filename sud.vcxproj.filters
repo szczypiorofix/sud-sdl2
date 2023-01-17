@@ -19,6 +19,24 @@
     <Filter Include="Header Files\System">
       <UniqueIdentifier>{381551df-c52f-48ec-a4bb-01cc85328c87}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Libs">
+      <UniqueIdentifier>{7dc9d11d-bd31-472d-ac3d-4220ee39b085}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Libs">
+      <UniqueIdentifier>{1f9d4199-5307-4bf4-a76d-0629c8a61b95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\System\Core">
+      <UniqueIdentifier>{c7139fe2-8659-437d-8d6d-132e7e228e73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\System\Core">
+      <UniqueIdentifier>{4ae01136-b545-4422-b284-a4f0859a984a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\System\Subsystems">
+      <UniqueIdentifier>{5e6d578f-7dee-4eae-8253-db5096176aaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\System\Subsystems">
+      <UniqueIdentifier>{b26ba22e-ede7-40d1-9258-f006b48cea4e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameSystem.cpp">
@@ -39,12 +57,21 @@
     <ClCompile Include="src\Spritesheet.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
+    <ClCompile Include="src\Sprite.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMLHelper.cpp">
+      <Filter>Source Files\System\Subsystems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LuaHandler.cpp">
+      <Filter>Source Files\System\Subsystems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GameSystem.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
+    <ClInclude Include="res\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\main.h">
@@ -62,14 +89,23 @@
     <ClInclude Include="src\Spritesheet.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
+    <ClInclude Include="src\Sprite.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMLHelper.h">
+      <Filter>Header Files\System\Subsystems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LuaHandler.h">
+      <Filter>Header Files\System\Subsystems</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="sud.rc">
+    <ResourceCompile Include="res\sud.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="icon.ico">
+    <Image Include="res\icon.ico">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\loaded.png">
@@ -78,7 +114,10 @@
     <Image Include="res\mouse_cursor.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="icon.png">
+    <Image Include="res\icon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\spritesheet.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -86,6 +125,6 @@
     <None Include=".gitignore" />
     <None Include="LICENSE" />
     <None Include="README.md" />
-    <None Include="sud.aps" />
+    <None Include="res\sud.aps" />
   </ItemGroup>
 </Project>

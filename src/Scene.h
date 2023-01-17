@@ -11,15 +11,16 @@ public:
 
 	Scene( std::string name, SDL_Renderer* renderer );
 
-	~Scene();
+	~Scene( void );
 
 
 	void load();
-	void addSpriteSheet(std::string spriteSheet);
 
-	void draw();
+	void addSpriteSheet(std::string spriteSheetName, int tileWidth, int tileHeight);
 
-	void unload();
+
+	void draw( void );
+	void unload( void );
 
 private:
 

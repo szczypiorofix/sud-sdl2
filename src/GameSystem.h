@@ -23,10 +23,10 @@ namespace SUD {
 
 	public:
 
-		GameSystem();
-		~GameSystem();
-		void launch();
-		void close();
+		GameSystem( void );
+		~GameSystem( void );
+		void launch( void );
+		void close( void );
 
 
 	private:
@@ -41,21 +41,21 @@ namespace SUD {
 
 		bool quitGame;
 
-		void initMainSDLModule();
-		void initSDLSettings();
-		void initWindow();
-		void initRenderer();
-		void initGraphics();
+		void initMainSDLModule( void );
+		void initSDLSettings( void );
+		void initWindow( void );
+		void initRenderer( void );
+		void initGraphics( void );
 
-		void loadAssets();
+		void loadAssets( void );
 
-		void gameLoop();
+		void gameLoop( void );
 
-		void update();
-		void input();
-		void render();
+		void update( void );
+		void input( void );
+		void render( void );
 
-		void printOK();
+		void printOK( void );
 	};
 
 }

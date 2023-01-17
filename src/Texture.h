@@ -10,9 +10,9 @@ public:
 
 	Texture( std::string fileName, SDL_Renderer* renderer );
 
-	~Texture();
+	~Texture( void );
 
-	void draw();
+	void draw( void );
 
 	SDL_Texture* texture;
 
@@ -22,7 +22,7 @@ private:
 
 	std::string fileName;
 
-	void load();
+	void load( void );
 
 };
 
