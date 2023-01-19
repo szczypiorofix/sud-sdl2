@@ -8,14 +8,16 @@ namespace SUD {
 		this->renderer = NULL;
 		this->inputs = new Inputs();
 
+		this->fontTexture = NULL;
+		this->font = NULL;
+
 		this->scene = NULL;
 		
 		this->quitGame = false;
 	}
 
-	GameSystem::~GameSystem( void ) {
-		printf( "Destring GameSystem..." );
-	}
+	GameSystem::~GameSystem( void ) {}
+
 
 	void GameSystem::close( void ) {
 		this->scene->unload();
@@ -91,10 +93,18 @@ namespace SUD {
 	}
 
 	void GameSystem::loadAssets( void ) {
+
 		printf( "SYSTEM: loading assets ...\n" );
 
+		printf("SYSTEM: Loading font ... ");
+		this->fontTexture = new Texture( DIR_RES_FONTS + "vingue.png", this->renderer );
+		this->font = new Font( "vingue", this->fontTexture );
+		this->printOK();
+
+		printf("SYSTEM: Loading 'first_scene' ... ");
 		this->scene = new Scene( "first_scene", this->renderer );
-		this->scene->addSpriteSheet("res/images/spritesheet.png", 32, 32);
+		this->scene->addSpriteSheet( DIR_RES_IMAGES + "spritesheet.png", 32, 32);
+		this->printOK();
 
 		this->scene->load();
 
@@ -123,7 +133,8 @@ namespace SUD {
 	}
 
 	void GameSystem::render( void ) {
-		this->scene->draw();
+		//this->scene->draw();
+		this->font->draw( "single user DUNGEON", 50, 50, 0.35f );
 	}
 
 	void GameSystem::gameLoop( void ) {

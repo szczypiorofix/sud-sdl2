@@ -66,6 +66,12 @@
     <ClCompile Include="src\LuaHandler.cpp">
       <Filter>Source Files\System\Subsystems</Filter>
     </ClCompile>
+    <ClCompile Include="src\Font.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Defines.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GameSystem.h">
@@ -97,6 +103,12 @@
     </ClInclude>
     <ClInclude Include="src\LuaHandler.h">
       <Filter>Header Files\System\Subsystems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Font.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Defines.h">
+      <Filter>Header Files\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

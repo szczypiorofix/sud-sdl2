@@ -7,9 +7,12 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+#include "Defines.h"
 #include "Inputs.h"
 #include "Texture.h"
 #include "Scene.h"
+#include "Font.h"
+
 
 
 namespace SUD {
@@ -38,6 +41,10 @@ namespace SUD {
 		SDL_Renderer* renderer;
 
 		Scene* scene;
+
+		Texture* fontTexture;
+
+		Font* font;
 
 		bool quitGame;
 

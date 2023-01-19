@@ -12,7 +12,7 @@ public:
 
 	~Texture( void );
 
-	void draw( void );
+	void draw( SDL_Rect src, SDL_Rect dest );
 
 	SDL_Texture* texture;
 

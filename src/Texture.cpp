@@ -1,8 +1,6 @@
 #include "Texture.h"
 
 
-
-
 Texture::Texture( std::string fileName, SDL_Renderer* renderer ) {
 	this->texture = NULL;
 	this->fileName = fileName;
@@ -13,20 +11,7 @@ Texture::Texture( std::string fileName, SDL_Renderer* renderer ) {
 
 Texture::~Texture( void ) {}
 
-void Texture::draw( void ) {
-	
-	SDL_Rect src;
-	src.x = 64;
-	src.y = 64;
-	src.w = 32;
-	src.h = 32;
-
-	SDL_Rect dest;
-	dest.x = 20;
-	dest.y = 20;
-	dest.w = 50;
-	dest.h = 50;
-
+void Texture::draw( SDL_Rect src, SDL_Rect dest ) {
 	SDL_RenderCopy( this->renderer, this->texture, &src, &dest );
 }
 

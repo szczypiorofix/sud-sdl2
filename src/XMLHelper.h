@@ -8,8 +8,10 @@
 class XMLHelper {
 
 public:
-	XMLHelper();
-	~XMLHelper( void );
-
+	static int readPropInt( xmlNodePtr node, const xmlChar* prop );
+	static short readPropShort( xmlNodePtr node, const xmlChar* prop );
+private:
+	static int xmlCharToInt( const xmlChar* a );
+	static short xmlCharToShort( const xmlChar* a );
 };
 

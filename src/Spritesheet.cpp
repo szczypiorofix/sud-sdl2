@@ -1,7 +1,6 @@
 #include "Spritesheet.h"
 
 
-
 Spritesheet::Spritesheet(std::string fileName, SDL_Renderer* renderer, int tileWidth, int tileHeight) {
 	this->fileName = fileName;
 	this->renderer = renderer;

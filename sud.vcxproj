@@ -92,7 +92,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2Main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2Main.lib;SDL2_image.lib;lua53.lib;libxml2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -141,6 +141,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Defines.cpp" />
+    <ClCompile Include="src\Font.cpp" />
     <ClCompile Include="src\LuaHandler.cpp" />
     <ClCompile Include="src\Sprite.cpp" />
     <ClCompile Include="src\Spritesheet.cpp" />
@@ -152,6 +154,8 @@
     <ClCompile Include="src\XMLHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Defines.h" />
+    <ClInclude Include="src\Font.h" />
     <ClInclude Include="src\LuaHandler.h" />
     <ClInclude Include="src\Sprite.h" />
     <ClInclude Include="src\Spritesheet.h" />
