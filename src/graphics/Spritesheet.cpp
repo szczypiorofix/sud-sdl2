@@ -18,7 +18,7 @@ Spritesheet::~Spritesheet( void ) { }
 
 
 
-void Spritesheet::load( void ) {
+void Spritesheet::Load( void ) {
 	SDL_Texture* newTexture = NULL;
 	SDL_Surface* loadedSurface = IMG_Load( this->fileName.c_str() );
 	if ( loadedSurface == NULL ) {
@@ -44,7 +44,7 @@ void Spritesheet::load( void ) {
 }
 
 
-void Spritesheet::draw( void ) {
+void Spritesheet::Draw( void ) {
 	if ( this->texture == NULL ) {
 		printf("Spritesheet texture is NULL !!!");
 		exit( 1 );
@@ -53,7 +53,7 @@ void Spritesheet::draw( void ) {
 }
 
 
-void Spritesheet::unload( void ) {
+void Spritesheet::Unload( void ) {
 	if ( this->texture != NULL ) {
 		SDL_DestroyTexture( this->texture );
 	}

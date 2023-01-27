@@ -37,44 +37,71 @@
     <Filter Include="Source Files\System\Subsystems">
       <UniqueIdentifier>{b26ba22e-ede7-40d1-9258-f006b48cea4e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Entity">
+      <UniqueIdentifier>{abe39cfd-fb60-4dec-9711-c2f5a54ace9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entity">
+      <UniqueIdentifier>{278a5736-cec4-41e3-8cfb-810ce896e68a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\System\Graphics">
+      <UniqueIdentifier>{47edc616-a82a-42c8-a9d7-47becc5893d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\System\Graphics">
+      <UniqueIdentifier>{6b87cc61-12bb-49f1-aacf-c549b4ec892c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\System\Physics">
+      <UniqueIdentifier>{96273b8a-9865-46fd-afd3-1a3a691ff11f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\System\Physics">
+      <UniqueIdentifier>{98a8550d-8216-4259-af61-2d072a3bb2de}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\GameSystem.cpp">
+    <ClCompile Include="src\core\GameSystem.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="src\Texture.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Inputs.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Scene.cpp">
+    <ClCompile Include="src\core\Scene.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Spritesheet.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Sprite.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
-    <ClCompile Include="src\XMLHelper.cpp">
+    <ClCompile Include="src\core\subsystems\XMLHelper.cpp">
       <Filter>Source Files\System\Subsystems</Filter>
     </ClCompile>
-    <ClCompile Include="src\LuaHandler.cpp">
+    <ClCompile Include="src\core\subsystems\LuaHandler.cpp">
       <Filter>Source Files\System\Subsystems</Filter>
     </ClCompile>
-    <ClCompile Include="src\Font.cpp">
+    <ClCompile Include="src\core\Defines.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="src\Defines.cpp">
-      <Filter>Source Files\System</Filter>
+    <ClCompile Include="src\graphics\Texture.cpp">
+      <Filter>Source Files\System\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\Sprite.cpp">
+      <Filter>Source Files\System\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\Spritesheet.cpp">
+      <Filter>Source Files\System\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\Font.cpp">
+      <Filter>Source Files\System\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities\UI.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\TextureManager.cpp">
+      <Filter>Source Files\System\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\characters\Character.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\characters\Warrior.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\GameSystem.h">
+    <ClInclude Include="src\core\GameSystem.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
     <ClInclude Include="res\resource.h">
@@ -83,32 +110,56 @@
     <ClInclude Include="src\main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Inputs.h">
+    <ClInclude Include="src\core\Inputs.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\Texture.h">
+    <ClInclude Include="src\core\Scene.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene.h">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Spritesheet.h">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Sprite.h">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="src\XMLHelper.h">
+    <ClInclude Include="src\core\subsystems\XMLHelper.h">
       <Filter>Header Files\System\Subsystems</Filter>
     </ClInclude>
-    <ClInclude Include="src\LuaHandler.h">
+    <ClInclude Include="src\core\subsystems\LuaHandler.h">
       <Filter>Header Files\System\Subsystems</Filter>
     </ClInclude>
-    <ClInclude Include="src\Font.h">
+    <ClInclude Include="src\core\Defines.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\Defines.h">
-      <Filter>Header Files\System</Filter>
+    <ClInclude Include="src\entities\GameObject.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\IObject.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\Texture.h">
+      <Filter>Header Files\System\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\Spritesheet.h">
+      <Filter>Header Files\System\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\Sprite.h">
+      <Filter>Header Files\System\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\Font.h">
+      <Filter>Header Files\System\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\UI.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\TextureManager.h">
+      <Filter>Header Files\System\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\Vector2D.h">
+      <Filter>Header Files\System\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\Transform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\characters\Character.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\characters\Warrior.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -132,11 +183,29 @@
     <Image Include="res\spritesheet.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\fonts\vingue.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\images\spritesheet.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\images\icon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\images\mouse_cursor.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="LICENSE" />
     <None Include="README.md" />
     <None Include="res\sud.aps" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="res\fonts\vingue.xml" />
   </ItemGroup>
 </Project>

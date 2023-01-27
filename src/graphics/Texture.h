@@ -22,7 +22,7 @@ private:
 
 	std::string fileName;
 
-	void load( void );
+	void Load( void );
 
 };
 

@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "Texture.h"
-#include "Defines.h"
+#include "../core/Defines.h"
 
 
 typedef struct FontItem {
@@ -23,7 +23,7 @@ class Font {
 public:
 	Font( std::string fn, Texture* tex );
 	~Font( void );
-	void draw( const char* text, int x, int y, float size );
+	void Draw( const char* text, int x, int y, float size );
 
 private:
 	Texture* fontImage;
@@ -35,8 +35,8 @@ private:
 	int fontWidth;
 	int fontHeight;
 	int fontSpace;
-	void parseXML( std::string xmlFileName );
-	int getWithOfFontString( const char* text );
+	void ParseXML( std::string xmlFileName );
+	int GetWithOfFontString( const char* text );
 
 };
 

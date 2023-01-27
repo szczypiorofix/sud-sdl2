@@ -11,11 +11,11 @@ public:
 	Spritesheet(std::string fileName, SDL_Renderer* renderer, int tileWidth, int tileHeight);
 	~Spritesheet( void );
 
-	void load( void );
+	void Load( void );
 
-	void draw( void );
+	void Draw( void );
 
-	void unload( void );
+	void Unload( void );
 
 private:
 	std::string fileName;

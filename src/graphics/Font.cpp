@@ -2,7 +2,7 @@
 #include <iostream>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
-#include "XMLHelper.h"
+#include "../core/subsystems/XMLHelper.h"
 
 
 Font::Font( std::string fn, Texture* tex ) {
@@ -13,14 +13,14 @@ Font::Font( std::string fn, Texture* tex ) {
 	this->fontName = fn;
 	this->fontImage = tex;
 	this->fontItems = {};
-	this->parseXML( fn );
+	this->ParseXML( fn );
 }
 
 
 Font::~Font( void ) { }
 
 
-void Font::parseXML( std::string xmlFileName ) {
+void Font::ParseXML( std::string xmlFileName ) {
 
 	xmlDocPtr doc;
 	xmlNodePtr cur;
@@ -90,7 +90,7 @@ void Font::parseXML( std::string xmlFileName ) {
 }
 
 
-int Font::getWithOfFontString( const char* text ) {
+int Font::GetWithOfFontString( const char* text ) {
 	int c = 0;
 	for ( int i = 0; text[ i ] != 0; i++ ) {
 		for ( int j = 0; j < this->charsCount; j++ ) {
@@ -103,7 +103,7 @@ int Font::getWithOfFontString( const char* text ) {
 }
 
 
-void Font::draw( const char* text, int x, int y, float size ) {
+void Font::Draw( const char* text, int x, int y, float size ) {
 	int c = 0;
 	while ( text[ c ] != 0 ) {
 		for ( int i = 0; i < this->charsCount; i++ ) {

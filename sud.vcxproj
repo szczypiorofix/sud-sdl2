@@ -84,7 +84,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -94,10 +94,13 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2.lib;SDL2Main.lib;SDL2_image.lib;lua53.lib;libxml2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>XCOPY "$(SolutionDir)res" "$(TargetDir)res"  /S /Y</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -109,8 +112,11 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2Main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2Main.lib;SDL2_image.lib;lua53.lib;libxml2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>XCOPY "$(SolutionDir)res" "$(TargetDir)res"  /S /Y</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -141,38 +147,54 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Defines.cpp" />
-    <ClCompile Include="src\Font.cpp" />
-    <ClCompile Include="src\LuaHandler.cpp" />
-    <ClCompile Include="src\Sprite.cpp" />
-    <ClCompile Include="src\Spritesheet.cpp" />
-    <ClCompile Include="src\Scene.cpp" />
-    <ClCompile Include="src\Inputs.cpp" />
+    <ClCompile Include="src\characters\Character.cpp" />
+    <ClCompile Include="src\characters\Warrior.cpp" />
+    <ClCompile Include="src\core\Defines.cpp" />
+    <ClCompile Include="src\graphics\Font.cpp" />
+    <ClCompile Include="src\core\subsystems\LuaHandler.cpp" />
+    <ClCompile Include="src\graphics\Sprite.cpp" />
+    <ClCompile Include="src\graphics\Spritesheet.cpp" />
+    <ClCompile Include="src\core\Scene.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\GameSystem.cpp" />
-    <ClCompile Include="src\Texture.cpp" />
-    <ClCompile Include="src\XMLHelper.cpp" />
+    <ClCompile Include="src\core\GameSystem.cpp" />
+    <ClCompile Include="src\graphics\Texture.cpp" />
+    <ClCompile Include="src\core\subsystems\XMLHelper.cpp" />
+    <ClCompile Include="src\entities\UI.cpp" />
+    <ClCompile Include="src\graphics\TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Defines.h" />
-    <ClInclude Include="src\Font.h" />
-    <ClInclude Include="src\LuaHandler.h" />
-    <ClInclude Include="src\Sprite.h" />
-    <ClInclude Include="src\Spritesheet.h" />
-    <ClInclude Include="src\Scene.h" />
-    <ClInclude Include="src\Inputs.h" />
+    <ClInclude Include="src\characters\Character.h" />
+    <ClInclude Include="src\characters\Warrior.h" />
+    <ClInclude Include="src\entities\GameObject.h" />
+    <ClInclude Include="src\entities\IObject.h" />
+    <ClInclude Include="src\core\Defines.h" />
+    <ClInclude Include="src\graphics\Font.h" />
+    <ClInclude Include="src\core\subsystems\LuaHandler.h" />
+    <ClInclude Include="src\graphics\Sprite.h" />
+    <ClInclude Include="src\graphics\Spritesheet.h" />
+    <ClInclude Include="src\core\Scene.h" />
+    <ClInclude Include="src\core\Inputs.h" />
     <ClInclude Include="res\resource.h" />
     <ClInclude Include="src\main.h" />
-    <ClInclude Include="src\GameSystem.h" />
-    <ClInclude Include="src\Texture.h" />
-    <ClInclude Include="src\XMLHelper.h" />
+    <ClInclude Include="src\core\GameSystem.h" />
+    <ClInclude Include="src\graphics\Texture.h" />
+    <ClInclude Include="src\core\subsystems\XMLHelper.h" />
+    <ClInclude Include="src\entities\UI.h" />
+    <ClInclude Include="src\graphics\TextureManager.h" />
+    <ClInclude Include="src\physics\Transform.h" />
+    <ClInclude Include="src\physics\Vector2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="res\sud.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\bitmap1.bmp" />
+    <Image Include="res\fonts\vingue.png" />
     <Image Include="res\icon.ico" />
     <Image Include="res\icon.png" />
+    <Image Include="res\images\icon.png" />
+    <Image Include="res\images\mouse_cursor.png" />
+    <Image Include="res\images\spritesheet.png" />
     <Image Include="res\loaded.png" />
     <Image Include="res\mouse_cursor.png" />
     <Image Include="res\spritesheet.png" />
@@ -182,6 +204,9 @@
     <None Include="LICENSE" />
     <None Include="README.md" />
     <None Include="res\sud.aps" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="res\fonts\vingue.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
