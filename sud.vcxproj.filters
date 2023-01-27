@@ -107,9 +107,6 @@
     <ClInclude Include="res\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\main.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\core\Inputs.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
