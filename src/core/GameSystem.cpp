@@ -17,13 +17,21 @@ namespace SUD {
 
 		luaHandler = NULL;
 		
+		vsyncOn = true;
+		lockFPS = false;
+
 		quitGame = false;
 
-		delta = 0.0001f;
-		time2 = 0.0f;
-		start = 0;
-		end = 0;
-		secondsElapsed = 0.0f;
+		// timers
+		startPerf = 0;
+		endPerf = 0;
+		elapsedMS = 0.0f;
+		targetFPS = 60.0f;
+		startTicks = 0;
+		frameTime = 0.0f;
+		endTicks = 0;
+		fps = 0.0f;
+
 	}
 
 
@@ -93,7 +101,7 @@ namespace SUD {
 	void GameSystem::InitRenderer( void ) {
 		SDL_Log( "Initializing renderer" );
 		// keep v-sync on
-		renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
+		renderer = SDL_CreateRenderer( window, -1, vsyncOn ? ( SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC ) : ( SDL_RENDERER_ACCELERATED ) );
 		if ( renderer == NULL ) {
 			SDL_LogError( SDL_LogCategory::SDL_LOG_CATEGORY_RENDER, "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
 			exit( 1 );
@@ -110,8 +118,6 @@ namespace SUD {
 			exit( 1 );
 		}
 	}
-
-
 
 	void GameSystem::InitLuaState(void) {
 		SDL_Log("Initializing Lua State");
@@ -144,34 +150,25 @@ namespace SUD {
 
 
 	void GameSystem::LoadAssets( void ) {
-
 		SDL_Log( "Loading assets" );
 
+		// TEXTURES
 		TextureManager::GetInstance()->Load( "mm_gui_button", DIR_RES_IMAGES + "mm-gui-button.png" );
 		TextureManager::GetInstance()->Load( "main_spritesheet", DIR_RES_IMAGES + "spritesheet.png");
 
+
+		// FONTS
 		SDL_Log("Loading font");
-		fontTexture = new Texture( DIR_RES_FONTS + "vingue.png", renderer );
-		font = new Font( "vingue", fontTexture );
+		fontTexture = new Texture( DIR_RES_FONTS + "noto_mono.png", renderer );
+		font = new Font( "noto_mono", fontTexture );
 
+
+		// UI ELEMENTS
 		UI* mm_gui_button = new UI(new Properties("mm_gui_button", 360, 300, 168, 32));
-
-		//printf("UI name %s\n", logo->GetProps()->TextureID.c_str() );
-		//printf( "UI width %d\n", logo->GetProps()->Width );
-		
-
 		scene->AddUIObject( "mm_gui_button", mm_gui_button );
 
-		//Vector2D v1(1, 2), v2(3,4), v3(0,0);
-		//v3 = v1 * 2;
-		//v3.Log("v3: ");
 
-
-		//Transform tf;
-		//tf.Log();
-
-
-
+		// LUA SCRIPTS
 		if (luaHandler->LoadFile("script1.lua")) {
 			printf("Successfully loaded lua script!\n");
 
@@ -192,22 +189,7 @@ namespace SUD {
 			luaHandler->Close();
 		}
 
-
-
-		//if (luaHandler->ProcessText("x=476")) {
-		//	int xx = 0;
-		//	luaHandler->GetInt("x", xx);
-		//	printf("Lua script: xx = %d\n", xx);
-		//	luaHandler->Close();
-		//}
-		//else {
-		//	printf("Cannot process Lua script as string!\n");
-		//}
-
-
-
 		scene->Load();
-
 	}
 
 	SDL_Renderer* GameSystem::GetRenderer() {
@@ -238,48 +220,58 @@ namespace SUD {
 
 	void GameSystem::Update( double dt ) {
 		scene->Update( dt );
-		printf("Seconds: %.2f\n", secondsElapsed);
 	}
 
 	void GameSystem::Render( void ) {
-
 		scene->Draw();
 
-		//font->Draw(std::string( "FPS: " + std::to_string( secondsElapsed ) ).c_str(), 10, 10, 0.25f );
+		//font->Draw( "¥CÆÊ£ÑÓŒS¯¹æê³ñóœ¿Ÿ FPS: " + std::to_string( fps ), 10, 10, 0.60f);
 
-		//font->draw( "single user DUNGEON", 50, 50, 0.35f );
+
+
+		//font->Draw( L"A¥CÆEÊL£NÑOÓSŒZ¯a¹cæeêl³nñoósœzŸæ", 10, 10, 0.60f );
+		
+		font->Draw( L"Pewnego razu trzy œwinki posz³y na spacer w góry.", 10, 20, 0.60f );
+		font->Draw( L"By³a przepiêkna pogoda.", 10, 60, 0.60f );
+
+
+		//printf("¥ÆÊ£ÑÓŒ¯¹æê³ñóœ¿Ÿ FPS \n");
+		//font->Draw( "single user DUNGEON", 50, 50, 0.35f );
 		//TextureManager::GetInstance()->Draw( "main_spritesheet", 10, 10, 128, 128, SDL_FLIP_NONE );
-
 	}
 
 	void GameSystem::GameLoop( void ) {
 		
-		time2 = SDL_GetTicks();
-
 		while ( !quitGame ) {
-		
-			delta = ( SDL_GetTicks() - time2 ) / 1000;
-			time2 = SDL_GetTicks();
-			
-			start = SDL_GetPerformanceCounter();
+
+			startTicks = SDL_GetTicks();
+			startPerf = SDL_GetPerformanceCounter();
+
 
 			Input();
-			Update( delta );
+			Update( 0 );
 
 			// Clear renderer
 			SDL_RenderClear( renderer );
 
 			// draw everything
 			Render();
+						
 
 			// Update screen
 			SDL_RenderPresent( renderer );
 
-			end = SDL_GetPerformanceCounter();
-			secondsElapsed = ( end - start ) / ( float ) SDL_GetPerformanceFrequency() * 1000.0f;
+			// End frame timing
+			endPerf = SDL_GetPerformanceCounter();
 
+			elapsedMS = ( endPerf - startPerf ) / ( float ) SDL_GetPerformanceFrequency() * 1000.0f;
+			if ( lockFPS ) {
+				SDL_Delay( floor( ( 1000.0f / targetFPS ) - elapsedMS ) );
+			}
 
-			SDL_Delay( 16.66666f - secondsElapsed );
+			endTicks = SDL_GetTicks();
+			frameTime = ( endTicks - startTicks ) / 1000.0f;
+			fps = 1.0f / frameTime;
 
 		}
 

@@ -6,14 +6,14 @@
 
 
 Font::Font( std::string fn, Texture* tex ) {
-	this->charsCount = 0;
-	this->fontWidth = 0;
-	this->fontHeight = 0;
-	this->fontSpace = 0;
-	this->fontName = fn;
-	this->fontImage = tex;
-	this->fontItems = {};
-	this->ParseXML( fn );
+	charsCount = 0;
+	fontWidth = 0;
+	fontHeight = 0;
+	fontSpace = 0;
+	fontName = fn;
+	fontImage = tex;
+	fontItems = {};
+	ParseXML( fn );
 }
 
 
@@ -21,7 +21,6 @@ Font::~Font( void ) { }
 
 
 void Font::ParseXML( std::string xmlFileName ) {
-
 	xmlDocPtr doc;
 	xmlNodePtr cur;
 
@@ -38,17 +37,15 @@ void Font::ParseXML( std::string xmlFileName ) {
 		exit( 1 );
 	}
 
-	//printf("Reading %s file.", xmlFile.c_str() );
-
 	if ( xmlStrcmp( cur->name, ( const xmlChar* ) "font" ) ) {
 		std::cout << "Document of the wrong type. Root node must be 'font'." << std::endl;
 		xmlFreeDoc( doc );
 		exit( 1 );
 	}
 
-	this->fontWidth = XMLHelper::readPropShort( cur, ( const xmlChar* ) "width" );
-	this->fontHeight = XMLHelper::readPropShort( cur, ( const xmlChar* ) "height" );
-	this->fontSpace = XMLHelper::readPropShort( cur, ( const xmlChar* ) "space" );
+	fontWidth = XMLHelper::readPropInt( cur,  "width" );
+	fontHeight = XMLHelper::readPropInt( cur,  "height" );
+	fontSpace = XMLHelper::readPropInt( cur,  "space" );
 
 	cur = cur->xmlChildrenNode;
 
@@ -56,30 +53,30 @@ void Font::ParseXML( std::string xmlFileName ) {
 
 	while ( mainItems != nullptr ) {
 		if ( !xmlStrcmp( mainItems->name, ( const xmlChar* ) "item" ) ) {
-			this->charsCount++;
+			charsCount++;
 		}
 		mainItems = mainItems->next;
 	}
 
-	this->fontItems.clear();
-	this->fontItems.reserve( this->charsCount );
+	fontItems.clear();
+	fontItems.reserve( charsCount );
 
 	mainItems = cur;
 	while ( mainItems != nullptr ) {
 		if ( !xmlStrcmp( mainItems->name, ( const xmlChar* ) "item" ) ) {
 			FontItem* tempItem = new FontItem();
-			tempItem->ascii = XMLHelper::readPropShort( mainItems, ( const xmlChar* ) "ascii" );
-			tempItem->ucode = XMLHelper::readPropShort( mainItems, ( const xmlChar* ) "ucode" );
-			tempItem->top = XMLHelper::readPropShort( mainItems, ( const xmlChar* ) "top" );
-			tempItem->bottom = XMLHelper::readPropShort( mainItems, ( const xmlChar* ) "bottom" );
-			tempItem->x = XMLHelper::readPropShort( mainItems, ( const xmlChar* ) "x" );
-			tempItem->y = XMLHelper::readPropShort( mainItems, ( const xmlChar* ) "y" );
-			tempItem->width = XMLHelper::readPropShort( mainItems, ( const xmlChar* ) "width" );
-			tempItem->height = XMLHelper::readPropShort( mainItems, ( const xmlChar* ) "height" );
-			tempItem->leading = XMLHelper::readPropShort( mainItems, ( const xmlChar* ) "leading" );
-			tempItem->trailing = XMLHelper::readPropShort( mainItems, ( const xmlChar* ) "trailing" );
-
-			this->fontItems.push_back( tempItem );
+			tempItem->ascii = XMLHelper::readPropInt( mainItems,  "ascii" );
+			tempItem->ucode = XMLHelper::readPropInt( mainItems, "ucode" );
+			tempItem->top = XMLHelper::readPropInt( mainItems, "top" );
+			tempItem->bottom = XMLHelper::readPropInt( mainItems, "bottom" );
+			tempItem->x = XMLHelper::readPropInt( mainItems, "x" );
+			tempItem->y = XMLHelper::readPropInt( mainItems, "y" );
+			tempItem->width = XMLHelper::readPropInt( mainItems,  "width" );
+			tempItem->height = XMLHelper::readPropInt( mainItems,  "height" );
+			tempItem->leading = XMLHelper::readPropInt( mainItems, "leading" );
+			tempItem->trailing = XMLHelper::readPropInt( mainItems,  "trailing" );
+			//std::cout << "Font prop: ASCII=" << tempItem->ascii << ", UCODE=" << tempItem->ucode << ", char: " << (wchar_t)( tempItem->ucode > 0 ? tempItem->ucode : tempItem->ascii ) << std::endl;
+			fontItems.push_back( tempItem );
 		}
 		mainItems = mainItems->next;
 	}
@@ -90,44 +87,24 @@ void Font::ParseXML( std::string xmlFileName ) {
 }
 
 
-int Font::GetWithOfFontString( const char* text ) {
-	int c = 0;
-	for ( int i = 0; text[ i ] != 0; i++ ) {
-		for ( int j = 0; j < this->charsCount; j++ ) {
-			if ( text[ i ] == this->fontItems.at( j )->ascii ) {
-				c += this->fontItems.at( j )->width;
-			}
-		}
-	}
-	return c;
-}
-
-
-void Font::Draw( const char* text, int x, int y, float size ) {
-	int c = 0;
-	while ( text[ c ] != 0 ) {
-		for ( int i = 0; i < this->charsCount; i++ ) {
-			if ( text[ c ] == this->fontItems.at( i )->ascii ) {
-
+void Font::Draw( std::wstring text, int x, int y, float size ) {
+	for ( size_t i = 0; i < text.length(); i++ ) {
+		for ( size_t j = 0; j < fontItems.size(); j++ ) {
+			if ( text.at( i ) == fontItems.at( j )->ascii || text.at( i ) == fontItems.at( j )->ucode ) {
 				SDL_Rect dest = {
-					x + fontItems.at( i )->trailing + fontItems.at( i )->leading + ( int ) ( c * fontWidth * size ),
-					( int ) y,  // +fontItems[i]->top;
+					x + fontItems.at( j )->trailing + fontItems.at( j )->leading + ( int ) ( i * fontWidth * size ),
+					( int ) (y + fontItems.at( j )->top ),
 					( int ) ( fontWidth * size ),
-					( int ) ( fontHeight * size )
+					( int ) ( ( fontItems.at( j )->height + fontItems.at( j )->bottom ) * size )
 				};
-
 				SDL_Rect src = {
-					( int ) fontItems.at( i )->x,
-					( int ) fontItems.at( i )->y,
-					( int ) fontItems.at( i )->width,
-					( int ) fontItems.at( i )->height
+					( int ) fontItems.at( j )->x,
+					( int ) fontItems.at( j )->y,
+					( int ) fontItems.at( j )->width,
+					( int ) fontItems.at( j )->height
 				};
-
 				this->fontImage->draw(src, dest);
-
 			}
 		}
-		c++;
 	}
 }
-

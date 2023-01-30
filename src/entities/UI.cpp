@@ -3,7 +3,7 @@
 
 
 UI::UI() {
-	printf("Default UI constructor ...\n");
+	printf( "Default UI constructor ...\n" );
 	borderWidth = 0;
 	isHovered = false;
 	isClicked = false;
@@ -19,7 +19,7 @@ void UI::Draw() {
 	} else {
 		TextureManager::GetInstance()->DrawSprite( props->TextureID, props->X, props->Y, props->Width, props->Height, 0, 0, props->Width, props->Height, SDL_FLIP_NONE );
 	}
-	
+
 }
 
 void UI::Update( double dt ) {
@@ -29,26 +29,42 @@ void UI::Update( double dt ) {
 void UI::Input( SDL_Event* event ) {
 	int mx = 0;
 	int my = 0;
-	if ( (*event).type == SDL_MOUSEMOTION ) {
+
+	if ( ( *event ).type == SDL_MOUSEMOTION ) {
 		isHovered = false;
 		SDL_GetMouseState( &mx, &my );
-		if ( 
-			mx > props->X 
-			&& mx < props->X + props->Width 
-			&& my > props->Y 
+		if (
+			mx > props->X
+			&& mx < props->X + props->Width
+			&& my > props->Y
 			&& my < props->Y + props->Height
-		) {
+			) {
 			isHovered = true;
 		}
+	}
+
+	if ( ( *event ).type == SDL_MOUSEBUTTONDOWN && ( *event ).button.button == SDL_BUTTON_LEFT ) {
+		isClicked = true;
 	} else {
-		if ( ( *event ).type == SDL_MOUSEBUTTONDOWN && ( *event ).button.button == SDL_BUTTON_LEFT ) {
-			isClicked = true;
-		} else {
-			if ( ( *event ).type == SDL_MOUSEBUTTONUP && ( *event ).button.button == SDL_BUTTON_LEFT ) {
-				isClicked = false;
-			}
+		if ( ( *event ).type == SDL_MOUSEBUTTONUP && ( *event ).button.button == SDL_BUTTON_LEFT ) {
+			isClicked = false;
 		}
 	}
+
+	if ( (*event ).type == SDL_KEYDOWN ) {
+		switch ( (*event ).key.keysym.sym ) {
+			case SDLK_LEFT:
+				this->props->X -= 4;
+				break;
+			case SDLK_RIGHT:
+				this->props->X += 4;
+				break;
+			default:
+				break;
+		}
+	}
+
+
 	//if ( isHovered ) {
 	//	printf( "%d:%d\n", mx, my );
 	//}

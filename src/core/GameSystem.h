@@ -1,7 +1,6 @@
 #pragma once
 
 #include <iostream>
-
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
@@ -46,23 +45,15 @@ namespace SUD {
 		GameSystem(void);
 
 		SUD::Inputs* inputs;
-
 		SDL_Window* window;
-
 		SDL_Renderer* renderer;
-
 		SDL_Cursor* cursor;
-
 		Scene* scene;
-
 		Texture* fontTexture;
-
 		LuaHandler* luaHandler;
-
 		Font* font;
 
 		bool quitGame;
-
 
 		void Close( void );
 
@@ -85,14 +76,20 @@ namespace SUD {
 		void Input( void );
 		void Render( void );
 
+		Uint64 startPerf;
+		Uint64 endPerf;
+		float elapsedMS;
 
-		double delta;
-		double time2;
+		Uint32 endTicks;
+		Uint32 startTicks;
 
-		Uint64 start;
-		Uint64 end;
+		float fps;
+		float frameTime;
 
-		float secondsElapsed;
+		bool lockFPS;
+		bool vsyncOn;
+		
+		float targetFPS;
 
 	};
 

@@ -2,16 +2,15 @@
 
 #include <libxml/parser.h>
 #include <libxml/tree.h>
-
+#include <string>
 
 
 class XMLHelper {
 
 public:
-	static int readPropInt( xmlNodePtr node, const xmlChar* prop );
-	static short readPropShort( xmlNodePtr node, const xmlChar* prop );
+	static int readPropInt( xmlNodePtr node, std::string prop );
 private:
 	static int xmlCharToInt( const xmlChar* a );
-	static short xmlCharToShort( const xmlChar* a );
+
 };
 
