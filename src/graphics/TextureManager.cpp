@@ -10,7 +10,7 @@ TextureManager::TextureManager() {
 bool TextureManager::Load( std::string id, std::string fileName ) {
 	SDL_Surface* surface = IMG_Load( fileName.c_str() );
 	if ( surface == NULL ) {
-		SDL_Log( "Failed to load surface: %s, %s", fileName.c_str(), SDL_GetError() );
+		SDL_Log( "Failed to load surface: '%s', %s", fileName.c_str(), SDL_GetError() );
 		return false;
 	}
 

@@ -1,6 +1,9 @@
 #pragma once
 
 #include "GameObject.h"
+#include "../core/UIEvents.h"
+
+using namespace Events;
 
 
 class UI : public GameObject {
@@ -8,13 +11,21 @@ class UI : public GameObject {
 
 public:
 
-	UI();
-
 	UI( Properties* props ) : GameObject( props ) {
 		this->props = props;
 		borderWidth = 0;
 		isHovered = false;
 		isClicked = false;
+		isMouseDown = false;
+		isMouseUp = false;
+
+		//event = nullptr;
+		//uiEvent = {
+		//	0,
+		//	""
+		//};
+
+		//clickCallback = ( *clickCallback ); // WTF ??!!
 	}
 
 	SDL_Color foregroundColor{ 255,255,255,255 };
@@ -29,8 +40,15 @@ public:
 
 	bool isHovered;
 	bool isClicked;
+	bool isMouseDown;
+	bool isMouseUp;
+
+	//void AddOnClickCallback( UIEvents* event, void (UIEvents::* OnClickCallback )( UIEvent uiEvent ) );
+
 
 private:
-
+	
+	//UIEvents* event;
+	//UIEvent uiEvent;
 };
 

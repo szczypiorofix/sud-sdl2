@@ -2,7 +2,6 @@
 #include "../Defines.h"
 
 
-
 LuaHandler::LuaHandler() {
     luaState = nullptr;
 }
@@ -13,13 +12,11 @@ LuaHandler::~LuaHandler( void ) {
 }
 
 
-
 void LuaHandler::Open( void ) {
     if ( luaState == nullptr ) {
         printf("LUA: Initializing new Lua State\n");
         luaState = luaL_newstate();
         luaL_openlibs( luaState );
-        //SetLuaPath(luaState, "res\scripts");
     }
 }
 
@@ -38,13 +35,18 @@ bool LuaHandler::LoadFile(const std::string fileName) {
         Open();
     }
     std::string fn = DIR_RES_SCRIPTS + fileName;
+    printf( "LUA: Loading file '%s'\n", fileName.c_str() );
     if (fn.length() > 0 ) {
-        luaL_loadfile(luaState, fn.c_str());
+        if ( luaL_loadfile( luaState, fn.c_str() ) != LUA_OK ) {
+            printf( "LUA: Error while luaL_loadfile script file ('%s'): %s\n", fileName.c_str(), lua_tostring( luaState, -1 ) );
+            return false;
+        }
         if (lua_pcall(luaState, 0, 0, 0) == LUA_OK) {
+            printf( "LUA: Script file '%s' loaded. \n", fileName.c_str() );
             return true;
         }
     }
-    printf("Lua error while reading script file (%s): %s\n", fileName.c_str(), lua_tostring(luaState, -1) );
+    printf("LUA: Error while reading script file ('%s'): %s\n", fileName.c_str(), lua_tostring(luaState, -1) );
     return false;
 }
 
@@ -64,7 +66,7 @@ bool LuaHandler::GetGlobal(const char* name) {
 
 bool LuaHandler::GetInt(const char*variableName, int& value) {    
     if (!GetGlobal(variableName)) {
-        printf("Cannot find variable: %s\n", variableName);
+        printf("LUA: Cannot find variable: %s\n", variableName);
         return false;
     }
 
@@ -102,4 +104,3 @@ bool LuaHandler::GetFunctionIntValue( const char* functionName, int& value ) {
     }
     return false;
 }
-

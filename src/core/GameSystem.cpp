@@ -1,23 +1,31 @@
 #include "GameSystem.h"
+#include <conio.h>
+#include <iostream>
+
+using namespace Events;
 
 
 namespace SUD {
 
 	GameSystem::GameSystem( void ) {
-		window = NULL;
-		renderer = NULL;
+		window = nullptr;
+		renderer = nullptr;
 		inputs = new SUD::Inputs();
 
-		cursor = NULL;
+		cursor = nullptr;
 
-		fontTexture = NULL;
-		font = NULL;
+		fontTexture = nullptr;
+		font = nullptr;
 
-		scene = NULL;
+		music = nullptr;
 
-		luaHandler = NULL;
+		scene = nullptr;
+
+		luaHandler = nullptr;
 		
-		vsyncOn = true;
+		mm_gui_button = nullptr;
+
+		vsyncOn = false;
 		lockFPS = false;
 
 		quitGame = false;
@@ -32,11 +40,16 @@ namespace SUD {
 		endTicks = 0;
 		fps = 0.0f;
 
+		reloadLuaScripts = 0;
 	}
 
 
 	void GameSystem::Close( void ) {
 		scene->Unload();
+
+		delete font;
+
+		delete music;
 
 		TextureManager::GetInstance()->Clean();
 
@@ -66,6 +79,8 @@ namespace SUD {
 		InitLuaState();
 
 		InitMouse();
+
+		InitSFX();
 
 		InitScenes();
 
@@ -132,21 +147,35 @@ namespace SUD {
 
 		SDL_Surface* cursorIcon = IMG_Load( std::string( DIR_RES_IMAGES + "mouse_cursor.png" ).c_str() );
 		if ( cursorIcon == nullptr ) {
-			printf("Cannot initialize mouse cursor surface!\m");
+			printf("Cannot initialize mouse cursor surface!\n");
 			exit( 1 );
 		}
 		cursor = SDL_CreateColorCursor( cursorIcon, 0, 0 );
 		if ( cursor == nullptr ) {
-			printf( "Cannot attach mouse icon to cursor!\m" );
+			printf( "Cannot attach mouse icon to cursor!\n" );
 			exit( 1 );
 		}
 		SDL_SetCursor( cursor );
 	}
 
 
-	void GameSystem::InitScenes(void) {
+	void GameSystem::InitSFX( void ) {
+		music = new Music();
+		if ( !music->Init() ) {
+			printf( "Cannot initialize BASS!\n" );
+			exit( 1 );
+		}
+	}
+
+
+	void GameSystem::InitScenes( void ) {
 		scene = new Scene("loading_scene", renderer);
 	}
+
+
+	//void clickCallback() {
+	//	printf("Click callback!\n");
+	//}
 
 
 	void GameSystem::LoadAssets( void ) {
@@ -156,44 +185,49 @@ namespace SUD {
 		TextureManager::GetInstance()->Load( "mm_gui_button", DIR_RES_IMAGES + "mm-gui-button.png" );
 		TextureManager::GetInstance()->Load( "main_spritesheet", DIR_RES_IMAGES + "spritesheet.png");
 
-
 		// FONTS
 		SDL_Log("Loading font");
-		fontTexture = new Texture( DIR_RES_FONTS + "noto_mono.png", renderer );
-		font = new Font( "noto_mono", fontTexture );
-
+		fontTexture = new Texture( DIR_RES_FONTS + "noto_0.png", renderer );
+		font = new Font( "noto", fontTexture );
 
 		// UI ELEMENTS
-		UI* mm_gui_button = new UI(new Properties("mm_gui_button", 360, 300, 168, 32));
+		mm_gui_button = new UI(new Properties("mm_gui_button", 360, 300, 168, 32));
+		//mm_gui_button->AddOnClickCallback( clickCallback );
+
+
+		//UIEvent e = { 12, "Todd" };
+		//UIEvents* evt = new UIEvents( e );
+
+		//mm_gui_button->AddOnClickCallback( evt, &UIEvents::OnClickCallback );
+
 		scene->AddUIObject( "mm_gui_button", mm_gui_button );
 
 
 		// LUA SCRIPTS
-		if (luaHandler->LoadFile("script1.lua")) {
-			printf("Successfully loaded lua script!\n");
+		ReloadLuaScripts();
 
-			int xx = 0;
-			luaHandler->GetInt("x", xx);
-			printf("Lua script: x = %d\n", xx);
 
-			int valueFromFunction = 0;
-			luaHandler->GetFunctionIntValue( "GetSomeValue", valueFromFunction );
-			printf("Get value from Lua function? : %d\n", valueFromFunction );
-
-			std::vector<std::string> returnValues{};
-			luaHandler->GetFunctionStringTuple( "DawajMnieTupla", returnValues, 2 );
-			for ( unsigned int i = 0; i < returnValues.size(); i++ ) {
-				printf("DawajMnieTupla value %d = %s\n", i, returnValues.at(i).c_str());
-			}
-
-			luaHandler->Close();
-		}
-
+		// SCENE
 		scene->Load();
+
+		// MUSIC
+		//music->LoadFile( "1fineday.xm", true ); // One fine day... https://modarchive.org/index.php?request=view_by_moduleid&query=60034
+		//music->LoadFile( "menu-music.ogg", true ); // I don't know, I don't remember
+		//music->LoadFile( "icefront.s3m", true ); // Ice Frontier https://modarchive.org/index.php?request=view_by_moduleid&query=44366
+		music->LoadFile( "a_world_of_dreams_5.mod", true ); // A World Of Dreams 5 https://modarchive.org/index.php?request=view_by_moduleid&query=85975
+		music->SetVolume( 0.25f );
+		music->PlayMusic();
+
 	}
 
 	SDL_Renderer* GameSystem::GetRenderer() {
 		return renderer;
+	}
+
+	void GameSystem::ReloadLuaScripts() {
+		// LUA SCRIPTS
+		luaHandler->LoadFile( "script1.lua" );
+		luaHandler->Close();
 	}
 
 
@@ -213,26 +247,41 @@ namespace SUD {
 				}
 
 				scene->Input( inputs->eventHandler );
-
 			}
 		}
 	}
 
 	void GameSystem::Update( double dt ) {
+		
 		scene->Update( dt );
+
+		if ( mm_gui_button->isClicked ) {
+			printf( "GameSystem - button was clicked!\n" );
+			if ( reloadLuaScripts == 0 ) {
+				reloadLuaScripts = 1;
+			}
+		}
+
+		if ( reloadLuaScripts == 1 ) {
+			reloadLuaScripts = 0;
+			system( "cls" );
+			ReloadLuaScripts();
+		}
+
 	}
 
 	void GameSystem::Render( void ) {
 		scene->Draw();
 
+
 		//font->Draw( "•C∆ £—”åSØèπÊÍ≥ÒÛúøü FPS: " + std::to_string( fps ), 10, 10, 0.60f);
-
-
-
 		//font->Draw( L"A•C∆E L£N—O”SåZØèaπcÊeÍl≥nÒoÛsúzüÊ", 10, 10, 0.60f );
 		
+
+
 		font->Draw( L"Pewnego razu trzy úwinki posz≥y na spacer w gÛry.", 10, 20, 0.60f );
 		font->Draw( L"By≥a przepiÍkna pogoda.", 10, 60, 0.60f );
+
 
 
 		//printf("•∆ £—”åØèπÊÍ≥ÒÛúøü FPS \n");
@@ -249,6 +298,7 @@ namespace SUD {
 
 
 			Input();
+
 			Update( 0 );
 
 			// Clear renderer

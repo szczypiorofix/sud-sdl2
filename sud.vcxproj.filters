@@ -55,6 +55,21 @@
     <Filter Include="Header Files\System\Physics">
       <UniqueIdentifier>{98a8550d-8216-4259-af61-2d072a3bb2de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Images">
+      <UniqueIdentifier>{f2db94e0-b29b-4a73-8e39-cab42a9d6b76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Scripts">
+      <UniqueIdentifier>{01ecea97-e66b-48b5-a47f-838f1be0ad2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\SFX">
+      <UniqueIdentifier>{160c745b-01b4-4323-a4c9-cea7b7bf56d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Music">
+      <UniqueIdentifier>{ea883a07-068a-4d73-a701-2f2c575bae0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Fonts">
+      <UniqueIdentifier>{368e6ebd-bed7-4c31-b469-d716f8d7f6ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\GameSystem.cpp">
@@ -96,8 +111,14 @@
     <ClCompile Include="src\characters\Character.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\characters\Warrior.cpp">
+    <ClCompile Include="src\core\Music.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\UIEvents.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\characters\Warrior.cpp">
+      <Filter>Source Files\Entity</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -152,11 +173,17 @@
     <ClInclude Include="src\physics\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\characters\Character.h">
+    <ClInclude Include="src\core\Music.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\UIEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\characters\Warrior.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\characters\Character.h">
+      <Filter>Header Files\Entity</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -168,32 +195,35 @@
     <Image Include="res\icon.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\loaded.png">
-      <Filter>Resource Files</Filter>
+    <Image Include="res\images\mouse_cursor.png">
+      <Filter>Resource Files\Images</Filter>
     </Image>
-    <Image Include="res\mouse_cursor.png">
-      <Filter>Resource Files</Filter>
+    <Image Include="res\images\mm-gui-controlls.png">
+      <Filter>Resource Files\Images</Filter>
     </Image>
-    <Image Include="res\icon.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\spritesheet.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\fonts\vingue.png">
-      <Filter>Resource Files</Filter>
+    <Image Include="res\images\mm-gui-button.png">
+      <Filter>Resource Files\Images</Filter>
     </Image>
     <Image Include="res\images\spritesheet.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="res\spritesheet.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="res\fonts\noto_mono.png">
+      <Filter>Resource Files\Fonts</Filter>
+    </Image>
+    <Image Include="res\fonts\noto_0.png">
+      <Filter>Resource Files\Fonts</Filter>
+    </Image>
+    <Image Include="res\fonts\vingue.png">
+      <Filter>Resource Files\Fonts</Filter>
+    </Image>
+    <Image Include="res\icon.png">
+      <Filter>Resource Files\Images</Filter>
     </Image>
     <Image Include="res\images\icon.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\images\mouse_cursor.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\bitmap1.bmp">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Images</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
@@ -201,8 +231,49 @@
     <None Include="LICENSE" />
     <None Include="README.md" />
     <None Include="res\sud.aps" />
+    <None Include="sud.code-workspace" />
+    <None Include="res\scripts\Player.lua">
+      <Filter>Resource Files\Scripts</Filter>
+    </None>
+    <None Include="res\scripts\script1.lua">
+      <Filter>Resource Files\Scripts</Filter>
+    </None>
+    <None Include="res\scripts\GameObject.lua">
+      <Filter>Resource Files\Scripts</Filter>
+    </None>
+    <None Include="res\scripts\Vector2.lua">
+      <Filter>Resource Files\Scripts</Filter>
+    </None>
+    <None Include="res\music\1fineday.xm">
+      <Filter>Resource Files\Music</Filter>
+    </None>
+    <None Include="res\music\ex-aws_cave.xm">
+      <Filter>Resource Files\Music</Filter>
+    </None>
+    <None Include="res\music\menu-music.ogg">
+      <Filter>Resource Files\Music</Filter>
+    </None>
+    <None Include="res\fonts\noto.fnt">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="res\images\mm-gui-controlls.pyxel">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="res\images\mm-gui-button.pyxel">
+      <Filter>Resource Files\Images</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="res\fonts\vingue.xml" />
+    <Xml Include="res\fonts\noto_mono.xml">
+      <Filter>Resource Files\Fonts</Filter>
+    </Xml>
+    <Xml Include="res\fonts\vingue.xml">
+      <Filter>Resource Files\Fonts</Filter>
+    </Xml>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="res\fonts\ubuntu.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </Font>
   </ItemGroup>
 </Project>

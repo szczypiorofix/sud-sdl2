@@ -92,10 +92,11 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2Main.lib;SDL2_image.lib;lua53.lib;libxml2.lib;libxml2_a.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2Main.lib;SDL2_image.lib;lua53.lib;libxml2.lib;libxml2_a.lib;bass.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>XCOPY "$(SolutionDir)res" "$(TargetDir)res"  /S /Y</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -112,10 +113,11 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2Main.lib;SDL2_image.lib;lua53.lib;libxml2.lib;libxml2_a.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2Main.lib;SDL2_image.lib;lua53.lib;libxml2.lib;libxml2_a.lib;bass.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>XCOPY "$(SolutionDir)res" "$(TargetDir)res"  /S /Y</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -150,6 +152,8 @@
     <ClCompile Include="src\characters\Character.cpp" />
     <ClCompile Include="src\characters\Warrior.cpp" />
     <ClCompile Include="src\core\Defines.cpp" />
+    <ClCompile Include="src\core\Music.cpp" />
+    <ClCompile Include="src\core\UIEvents.cpp" />
     <ClCompile Include="src\graphics\Font.cpp" />
     <ClCompile Include="src\core\subsystems\LuaHandler.cpp" />
     <ClCompile Include="src\graphics\Sprite.cpp" />
@@ -165,6 +169,8 @@
   <ItemGroup>
     <ClInclude Include="src\characters\Character.h" />
     <ClInclude Include="src\characters\Warrior.h" />
+    <ClInclude Include="src\core\Music.h" />
+    <ClInclude Include="src\core\UIEvents.h" />
     <ClInclude Include="src\entities\GameObject.h" />
     <ClInclude Include="src\entities\IObject.h" />
     <ClInclude Include="src\core\Defines.h" />
@@ -187,25 +193,41 @@
     <ResourceCompile Include="res\sud.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\bitmap1.bmp" />
+    <Image Include="res\fonts\noto_0.png" />
+    <Image Include="res\fonts\noto_mono.png" />
     <Image Include="res\fonts\vingue.png" />
     <Image Include="res\icon.ico" />
     <Image Include="res\icon.png" />
     <Image Include="res\images\icon.png" />
+    <Image Include="res\images\mm-gui-button.png" />
+    <Image Include="res\images\mm-gui-controlls.png" />
     <Image Include="res\images\mouse_cursor.png" />
     <Image Include="res\images\spritesheet.png" />
-    <Image Include="res\loaded.png" />
-    <Image Include="res\mouse_cursor.png" />
     <Image Include="res\spritesheet.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="LICENSE" />
     <None Include="README.md" />
+    <None Include="res\fonts\noto.fnt" />
+    <None Include="res\images\mm-gui-button.pyxel" />
+    <None Include="res\images\mm-gui-controlls.pyxel" />
+    <None Include="res\music\1fineday.xm" />
+    <None Include="res\music\ex-aws_cave.xm" />
+    <None Include="res\music\menu-music.ogg" />
+    <None Include="res\scripts\GameObject.lua" />
+    <None Include="res\scripts\Player.lua" />
+    <None Include="res\scripts\script1.lua" />
+    <None Include="res\scripts\Vector2.lua" />
     <None Include="res\sud.aps" />
+    <None Include="sud.code-workspace" />
   </ItemGroup>
   <ItemGroup>
+    <Xml Include="res\fonts\noto_mono.xml" />
     <Xml Include="res\fonts\vingue.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="res\fonts\ubuntu.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

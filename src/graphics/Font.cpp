@@ -5,80 +5,211 @@
 #include "../core/subsystems/XMLHelper.h"
 
 
-Font::Font( std::string fn, Texture* tex ) {
-	charsCount = 0;
-	fontWidth = 0;
-	fontHeight = 0;
-	fontSpace = 0;
+Font::Font( const std::string fn, Texture* tex ) {
 	fontName = fn;
 	fontImage = tex;
-	fontItems = {};
+
+	fontChars = {};
+
+	size = 0;
+	bold = false;
+	italic = false;
+	charset = "";
+	unicode = false;
+	stretchH = 0;
+	smooth = false;
+	aa = false;
+	paddingTop = 0;
+	paddingRight = 0;
+	paddingBottom = 0;
+	paddingLeft = 0;
+	spacingLeft = 0;
+	spacingRight = 0;
+	outline = 0;
+
+	lineHeight = 0;
+	base = 0;
+	scaleW = 0;
+	scaleH = 0;
+	pages = 0;
+	packed = false;
+	alphaChnl = 0.0f;
+	redChnl = 0.0f;
+	greenChnl = 0.0f;
+	blueChnl = 0.0f;
+
+	pagesList = {};
+	charCount = 0;
+
 	ParseXML( fn );
 }
 
+Font::Font( const Font& fnt ) {
+	fontImage = fnt.fontImage;
+	imageWidth = fnt.imageWidth;
+	imageHeight = fnt.imageHeight;
 
-Font::~Font( void ) { }
+	fontChars = fnt.fontChars;
+
+	// Info
+	fontName = fnt.fontName;
+	size = fnt.size;
+	bold = fnt.bold;
+	italic = fnt.italic;
+	charset = fnt.charset;
+	unicode = fnt.unicode;
+	stretchH = fnt.stretchH;
+	smooth = fnt.smooth;
+	aa = fnt.aa;
+	paddingTop = fnt.paddingTop;
+	paddingRight = fnt.paddingRight;
+	paddingBottom = fnt.paddingBottom;
+	paddingLeft = fnt.paddingLeft;
+	spacingLeft = fnt.spacingLeft;
+	spacingRight = fnt.spacingRight;
+	outline = fnt.outline;
+
+	// Common
+	lineHeight = fnt.lineHeight;
+	base = fnt.base;
+	scaleW = fnt.scaleW;
+	scaleH = fnt.scaleH;
+	pages = fnt.pages;
+	packed = fnt.packed;
+	alphaChnl = fnt.alphaChnl;
+	redChnl = fnt.redChnl;
+	greenChnl = fnt.greenChnl;
+	blueChnl = fnt.blueChnl;
+	
+	pagesList = fnt.pagesList;
+
+	charCount = fnt.charCount;
+}
 
 
-void Font::ParseXML( std::string xmlFileName ) {
+
+
+Font::~Font( void ) {
+	printf("Deleting fontImage: '%s'\n", fontName.c_str());
+	delete fontImage;
+}
+
+
+void Font::ParseXML( const std::string xmlFileName ) {
 	xmlDocPtr doc;
-	xmlNodePtr cur;
+	xmlNodePtr fontNode;
 
-	std::string xmlFile = DIR_RES_FONTS + xmlFileName + ".xml";
+	std::string xmlFile = DIR_RES_FONTS + xmlFileName + ".fnt";
 	doc = xmlParseFile( xmlFile.c_str() );
 	if ( !doc ) {
 		std::cout << "Document cannot be parsed successfully." << std::endl;
 		exit( 1 );
 	}
 
-	cur = xmlDocGetRootElement( doc );
-	if ( !cur ) {
+	fontNode = xmlDocGetRootElement( doc );
+	if ( !fontNode ) {
 		std::cout << "Empty document." << std::endl;
 		exit( 1 );
 	}
 
-	if ( xmlStrcmp( cur->name, ( const xmlChar* ) "font" ) ) {
+	if ( xmlStrcmp( fontNode->name, ( const xmlChar* ) "font" ) ) {
 		std::cout << "Document of the wrong type. Root node must be 'font'." << std::endl;
 		xmlFreeDoc( doc );
 		exit( 1 );
 	}
 
-	fontWidth = XMLHelper::readPropInt( cur,  "width" );
-	fontHeight = XMLHelper::readPropInt( cur,  "height" );
-	fontSpace = XMLHelper::readPropInt( cur,  "space" );
+	xmlNodePtr fontChildren = fontNode->xmlChildrenNode;
+	
 
-	cur = cur->xmlChildrenNode;
+	while ( fontChildren != nullptr ) {
 
-	xmlNodePtr mainItems = cur;
-
-	while ( mainItems != nullptr ) {
-		if ( !xmlStrcmp( mainItems->name, ( const xmlChar* ) "item" ) ) {
-			charsCount++;
+		if ( !xmlStrcmp( fontChildren->name, ( const xmlChar* ) "info" ) ) {
+			fontName = XMLHelper::readPropString( fontChildren, "face" );
+			size = XMLHelper::readPropUInt16( fontChildren, "size" );
+			bold = XMLHelper::readPropBool( fontChildren, "bold" );
+			italic = XMLHelper::readPropBool( fontChildren, "italic" );
+			charset = XMLHelper::readPropString( fontChildren, "charset" );
+			unicode = XMLHelper::readPropBool( fontChildren, "unicode" );
+			stretchH = XMLHelper::readPropUInt16( fontChildren, "stretchH" );
+			smooth = XMLHelper::readPropBool( fontChildren, "smooth" );
+			aa = XMLHelper::readPropBool( fontChildren, "aa" );
+			// padding
+			std::string padding = XMLHelper::readPropString( fontChildren, "padding" );
+			std::vector<std::string> paddingVector = XMLHelper::explode( padding, ',' );
+			if ( paddingVector.size() != 4 ) {
+				printf("Error! Padding vector is not equal 4 !!\n");
+				exit( 1 );
+			}
+			for ( unsigned int i = 0; i < paddingVector.size(); i++ ) {
+				switch ( i ) {
+					case 1:
+						paddingLeft = (Uint16) std::stoi( paddingVector.at( i ) );
+						break;
+					case 2:
+						paddingBottom = ( Uint16 ) std::stoi( paddingVector.at( i ) );
+						break;
+					case 3:
+						paddingRight = ( Uint16 ) std::stoi( paddingVector.at( i ) );
+						break;
+					default:
+						paddingTop = ( Uint16 ) std::stoi( paddingVector.at( i ) );
+				}
+			}
+			// spacing
+			std::string spacing = XMLHelper::readPropString( fontChildren, "spacing" );
+			std::vector<std::string> spacingVector = XMLHelper::explode( spacing, ',' );
+			//std::cout << "Spacing: " << spacing << std::endl;
+			if ( spacingVector.size() != 2 ) {
+				printf( "Error! Spacing vector is not equal 2 !!\n" );
+				exit( 1 );
+			}
+			spacingLeft = ( Uint16 ) std::stoi( spacingVector.at( 0 ) );
+			spacingRight = ( Uint16 ) std::stoi( spacingVector.at( 1 ) );
+			outline = XMLHelper::readPropUInt16( fontChildren, "outline" );
 		}
-		mainItems = mainItems->next;
-	}
 
-	fontItems.clear();
-	fontItems.reserve( charsCount );
-
-	mainItems = cur;
-	while ( mainItems != nullptr ) {
-		if ( !xmlStrcmp( mainItems->name, ( const xmlChar* ) "item" ) ) {
-			FontItem* tempItem = new FontItem();
-			tempItem->ascii = XMLHelper::readPropInt( mainItems,  "ascii" );
-			tempItem->ucode = XMLHelper::readPropInt( mainItems, "ucode" );
-			tempItem->top = XMLHelper::readPropInt( mainItems, "top" );
-			tempItem->bottom = XMLHelper::readPropInt( mainItems, "bottom" );
-			tempItem->x = XMLHelper::readPropInt( mainItems, "x" );
-			tempItem->y = XMLHelper::readPropInt( mainItems, "y" );
-			tempItem->width = XMLHelper::readPropInt( mainItems,  "width" );
-			tempItem->height = XMLHelper::readPropInt( mainItems,  "height" );
-			tempItem->leading = XMLHelper::readPropInt( mainItems, "leading" );
-			tempItem->trailing = XMLHelper::readPropInt( mainItems,  "trailing" );
-			//std::cout << "Font prop: ASCII=" << tempItem->ascii << ", UCODE=" << tempItem->ucode << ", char: " << (wchar_t)( tempItem->ucode > 0 ? tempItem->ucode : tempItem->ascii ) << std::endl;
-			fontItems.push_back( tempItem );
+		if ( !xmlStrcmp( fontChildren->name, ( const xmlChar* ) "common" ) ) {
+			lineHeight = XMLHelper::readPropUInt32( fontChildren, "lineHeight" );
+			base = XMLHelper::readPropUInt32( fontChildren, "base" );
+			scaleW = XMLHelper::readPropUInt32( fontChildren, "scaleW" );
+			scaleH = XMLHelper::readPropUInt32( fontChildren, "scaleH" );
+			pages = XMLHelper::readPropUInt16( fontChildren, "pages" );
+			packed = XMLHelper::readPropBool( fontChildren, "packed" );
+			alphaChnl = XMLHelper::readPropFloat( fontChildren, "alphaChnl" );
+			redChnl = XMLHelper::readPropFloat( fontChildren, "redChnl" );
+			greenChnl = XMLHelper::readPropFloat( fontChildren, "greenChnl" );
+			blueChnl = XMLHelper::readPropFloat( fontChildren, "blueChnl" );
 		}
-		mainItems = mainItems->next;
+
+		if ( !xmlStrcmp( fontChildren->name, ( const xmlChar* ) "pages" ) ) {
+			xmlNodePtr pagesChildren = fontChildren->xmlChildrenNode;
+			while ( pagesChildren != nullptr ) {
+				if ( !xmlStrcmp( pagesChildren->name, ( const xmlChar* ) "page" ) ) {
+					pagesList.emplace( XMLHelper::readPropInt( pagesChildren, "id" ), XMLHelper::readPropString( pagesChildren, "file" ) );
+				}
+				pagesChildren = pagesChildren->next;
+			}
+
+			//std::map<int, std::string>::iterator it;
+			//for ( it = pagesList.begin(); it != pagesList.end(); it++ ) {
+			//	std::cout << it->first << ':' << it->second << std::endl;
+			//}
+		}
+
+		if ( !xmlStrcmp( fontChildren->name, ( const xmlChar* ) "chars" ) ) {
+			xmlNodePtr charsChildren = fontChildren->xmlChildrenNode;
+			while ( charsChildren != nullptr ) {
+				/*if ( !xmlStrcmp( charsChildren->name, ( const xmlChar* ) "char" ) ) {
+					printf( "Char id = %i\n", XMLHelper::readPropInt( charsChildren, "id" ) );
+				}*/
+				FontChar* tempChar = new FontChar();
+				tempChar->id = XMLHelper::readPropInt( charsChildren, "id" );
+				fontChars.push_back( tempChar );
+				charsChildren = charsChildren->next;
+			}
+		}
+
+		fontChildren = fontChildren->next;
 	}
 
 	xmlFreeDoc( doc );
@@ -87,24 +218,26 @@ void Font::ParseXML( std::string xmlFileName ) {
 }
 
 
-void Font::Draw( std::wstring text, int x, int y, float size ) {
-	for ( size_t i = 0; i < text.length(); i++ ) {
-		for ( size_t j = 0; j < fontItems.size(); j++ ) {
-			if ( text.at( i ) == fontItems.at( j )->ascii || text.at( i ) == fontItems.at( j )->ucode ) {
-				SDL_Rect dest = {
-					x + fontItems.at( j )->trailing + fontItems.at( j )->leading + ( int ) ( i * fontWidth * size ),
-					( int ) (y + fontItems.at( j )->top ),
-					( int ) ( fontWidth * size ),
-					( int ) ( ( fontItems.at( j )->height + fontItems.at( j )->bottom ) * size )
-				};
-				SDL_Rect src = {
-					( int ) fontItems.at( j )->x,
-					( int ) fontItems.at( j )->y,
-					( int ) fontItems.at( j )->width,
-					( int ) fontItems.at( j )->height
-				};
-				this->fontImage->draw(src, dest);
-			}
-		}
-	}
+void Font::Draw( const std::wstring text, int x, int y, float size ) {
+	
+	//for ( size_t i = 0; i < text.length(); i++ ) {
+	//	for ( size_t j = 0; j < fontItems.size(); j++ ) {
+	//		if ( text.at( i ) == fontItems.at( j )->ascii || text.at( i ) == fontItems.at( j )->ucode ) {
+	//			SDL_Rect dest = {
+	//				x + fontItems.at( j )->trailing + fontItems.at( j )->leading + ( int ) ( i * fontWidth * size ),
+	//				( int ) (y + fontItems.at( j )->top ),
+	//				( int ) ( fontWidth * size ),
+	//				( int ) ( ( fontItems.at( j )->height + fontItems.at( j )->bottom ) * size )
+	//			};
+	//			SDL_Rect src = {
+	//				( int ) fontItems.at( j )->x,
+	//				( int ) fontItems.at( j )->y,
+	//				( int ) fontItems.at( j )->width,
+	//				( int ) fontItems.at( j )->height
+	//			};
+	//			this->fontImage->draw(src, dest);
+	//		}
+	//	}
+	//}
+
 }

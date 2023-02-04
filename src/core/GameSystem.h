@@ -12,7 +12,9 @@
 #include "../graphics/TextureManager.h"
 #include "../physics/Vector2D.h"
 #include "subsystems/LuaHandler.h"
+#include "Music.h"
 #include "../physics/Transform.h"
+#include "UIEvents.h"
 
 
 
@@ -40,6 +42,8 @@ namespace SUD {
 
 		SDL_Renderer* GetRenderer();
 
+		void ReloadLuaScripts();
+
 	private:
 
 		GameSystem(void);
@@ -52,6 +56,7 @@ namespace SUD {
 		Texture* fontTexture;
 		LuaHandler* luaHandler;
 		Font* font;
+		Music* music;
 
 		bool quitGame;
 
@@ -65,6 +70,8 @@ namespace SUD {
 		void InitLuaState( void );
 
 		void InitMouse( void );
+
+		void InitSFX( void );
 
 		void InitScenes( void );
 
@@ -90,6 +97,11 @@ namespace SUD {
 		bool vsyncOn;
 		
 		float targetFPS;
+
+		UI* mm_gui_button;
+
+		// Lua
+		int reloadLuaScripts; // 0 - idle, 1 - reloading, 2 - end
 
 	};
 
