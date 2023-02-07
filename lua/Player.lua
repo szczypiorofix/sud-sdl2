@@ -22,6 +22,4 @@ function Player:new()
     return Player
 end
 
-
-
 return Player

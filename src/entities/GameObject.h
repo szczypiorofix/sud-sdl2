@@ -3,7 +3,7 @@
 #include <SDL2/SDL.h>
 #include <lua535/lua.hpp>
 #include "IObject.h"
-#include "../physics/Transform.h"
+#include "../helpers/Transform.h"
 
 
 

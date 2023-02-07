@@ -14,8 +14,10 @@ namespace SUD {
 
 		cursor = nullptr;
 
-		fontTexture = nullptr;
-		font = nullptr;
+		notoFontTexture = nullptr;
+		vingueFontTexture = nullptr;
+		notoFont = nullptr;
+		vingueFont = nullptr;
 
 		music = nullptr;
 
@@ -25,7 +27,7 @@ namespace SUD {
 		
 		mm_gui_button = nullptr;
 
-		vsyncOn = false;
+		vsyncOn = true;
 		lockFPS = false;
 
 		quitGame = false;
@@ -38,7 +40,12 @@ namespace SUD {
 		startTicks = 0;
 		frameTime = 0.0f;
 		endTicks = 0;
-		fps = 0.0f;
+		_fps = 0.0f;
+		delayMS = 0.0f;
+		delayMSCounter = 0;
+		delayFrameCounter = 0;
+		fpsSum = 0.0f;
+		FPS = 0;
 
 		reloadLuaScripts = 0;
 	}
@@ -47,7 +54,8 @@ namespace SUD {
 	void GameSystem::Close( void ) {
 		scene->Unload();
 
-		delete font;
+		delete notoFont;
+		delete vingueFont;
 
 		delete music;
 
@@ -186,12 +194,15 @@ namespace SUD {
 		TextureManager::GetInstance()->Load( "main_spritesheet", DIR_RES_IMAGES + "spritesheet.png");
 
 		// FONTS
-		SDL_Log("Loading font");
-		fontTexture = new Texture( DIR_RES_FONTS + "noto_0.png", renderer );
-		font = new Font( "noto", fontTexture );
+		SDL_Log("Loading fonts");
+		notoFontTexture = new Texture( DIR_RES_FONTS + "noto_0.png", renderer );
+		notoFont = new Font( "noto", notoFontTexture );
+
+		vingueFontTexture = new Texture( DIR_RES_FONTS + "vingue_0.png", renderer );
+		vingueFont = new Font( "vingue", vingueFontTexture );
 
 		// UI ELEMENTS
-		mm_gui_button = new UI(new Properties("mm_gui_button", 360, 300, 168, 32));
+		mm_gui_button = new UI(new Properties("mm_gui_button", 360, 240, 168, 32));
 		//mm_gui_button->AddOnClickCallback( clickCallback );
 
 
@@ -216,7 +227,10 @@ namespace SUD {
 		//music->LoadFile( "icefront.s3m", true ); // Ice Frontier https://modarchive.org/index.php?request=view_by_moduleid&query=44366
 		music->LoadFile( "a_world_of_dreams_5.mod", true ); // A World Of Dreams 5 https://modarchive.org/index.php?request=view_by_moduleid&query=85975
 		music->SetVolume( 0.25f );
-		music->PlayMusic();
+		//music->PlayMusic();
+
+		printf("F1 - vsync ON/OFF\n");
+		printf( "F2 - FPS lock to %f ON/OFF\n", targetFPS );
 
 	}
 
@@ -226,7 +240,7 @@ namespace SUD {
 
 	void GameSystem::ReloadLuaScripts() {
 		// LUA SCRIPTS
-		luaHandler->LoadFile( "script1.lua" );
+		luaHandler->LoadFile( "main.lua" );
 		luaHandler->Close();
 	}
 
@@ -241,11 +255,25 @@ namespace SUD {
 						case SDLK_ESCAPE:
 							quitGame = true;
 							break;
+
 						default:
 							break;
 					}
 				}
+				if ( ( *inputs->eventHandler ).type == SDL_KEYUP ) {
+					switch ( ( *inputs->eventHandler ).key.keysym.sym ) {
+						case SDLK_F1:							
+							vsyncOn = !vsyncOn;
+							break;
 
+						case SDLK_F2:
+							lockFPS = !lockFPS;
+							break;
+
+						default:
+							break;
+					}
+				}
 				scene->Input( inputs->eventHandler );
 			}
 		}
@@ -273,16 +301,25 @@ namespace SUD {
 	void GameSystem::Render( void ) {
 		scene->Draw();
 
-
 		//font->Draw( "¥CÆÊ£ÑÓŒS¯¹æê³ñóœ¿Ÿ FPS: " + std::to_string( fps ), 10, 10, 0.60f);
-		//font->Draw( L"A¥CÆEÊL£NÑOÓSŒZ¯a¹cæeêl³nñoósœzŸæ", 10, 10, 0.60f );
 		
+		std::wstring vs = vsyncOn ? L"ON" : L"OFF";
+		std::wstring fpslk = lockFPS ? L"ON" : L"OFF";
+
+		notoFont->Draw( L"AVG FPS: " + std::to_wstring( FPS ), 10, 10, 1.0f, COLOR_RED );
+		notoFont->Draw( L"VSYNC: " + vs, 10, 40, 16.0f, COLOR_CYAN);
+		notoFont->Draw( L"FPS LOCK (60): " + fpslk, 10, 70, 2.0f, COLOR_CYAN );
+
+		//notoFont->Draw( L"A¥CÆEÊL£NÑOÓSŒZ¯a¹cæeêl³nñoósœzŸ¿", 10, 100, 2.0f, COLOR_GREEN );
 
 
-		font->Draw( L"Pewnego razu trzy œwinki posz³y na spacer w góry.", 10, 20, 0.60f );
-		font->Draw( L"By³a przepiêkna pogoda.", 10, 60, 0.60f );
+
+		//vingueFont->Draw( L"A¥CÆEÊL£NÑOÓSŒZ¯a¹cæeêl³nñoósœzŸ¿", 10, 50, 32.0f );
 
 
+		//notoFont->Draw( L"Pewnego razu trzy œwinki posz³y na spacer w góry.", 10, 220, 2.0f, COLOR_CYAN );
+		//notoFont->Draw( L"By³a przepiêkna pogoda.", 10, 260, 16.0f, COLOR_YELLOW );
+		//notoFont->Draw( L"Trzy œwinki zgubi³y siê w górach...", 10, 300, 16.0f, COLOR_GRAY );
 
 		//printf("¥ÆÊ£ÑÓŒ¯¹æê³ñóœ¿Ÿ FPS \n");
 		//font->Draw( "single user DUNGEON", 50, 50, 0.35f );
@@ -316,12 +353,26 @@ namespace SUD {
 
 			elapsedMS = ( endPerf - startPerf ) / ( float ) SDL_GetPerformanceFrequency() * 1000.0f;
 			if ( lockFPS ) {
-				SDL_Delay( floor( ( 1000.0f / targetFPS ) - elapsedMS ) );
+				delayMS = floor( ( 1000.0f / targetFPS ) - elapsedMS );
+				SDL_Delay( delayMS );
 			}
 
 			endTicks = SDL_GetTicks();
 			frameTime = ( endTicks - startTicks ) / 1000.0f;
-			fps = 1.0f / frameTime;
+			_fps = 1.0f / frameTime;
+
+			fpsSum += _fps;
+			delayFrameCounter++;
+
+			delayMSCounter += (endTicks - startTicks);
+			//printf("time: %i\n", delayMSCounter);
+
+			if ( delayMSCounter >= 100 ) {
+				FPS = ( int ) ( fpsSum / delayFrameCounter );
+				delayMSCounter = 0;
+				delayFrameCounter = 0;
+				fpsSum = 0.0f;
+			}
 
 		}
 

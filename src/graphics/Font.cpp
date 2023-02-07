@@ -8,6 +8,8 @@
 Font::Font( const std::string fn, Texture* tex ) {
 	fontName = fn;
 	fontImage = tex;
+	imageWidth = 0;
+	imageHeight = 0;
 
 	fontChars = {};
 
@@ -197,13 +199,27 @@ void Font::ParseXML( const std::string xmlFileName ) {
 		}
 
 		if ( !xmlStrcmp( fontChildren->name, ( const xmlChar* ) "chars" ) ) {
+
+			charCount = XMLHelper::readPropUInt32( fontChildren, "count" );
+
 			xmlNodePtr charsChildren = fontChildren->xmlChildrenNode;
 			while ( charsChildren != nullptr ) {
-				/*if ( !xmlStrcmp( charsChildren->name, ( const xmlChar* ) "char" ) ) {
-					printf( "Char id = %i\n", XMLHelper::readPropInt( charsChildren, "id" ) );
-				}*/
+				//if ( !xmlStrcmp( charsChildren->name, ( const xmlChar* ) "char" ) ) {
+				//	printf( "Char id = %i\n", XMLHelper::readPropInt( charsChildren, "id" ) );
+				//}
 				FontChar* tempChar = new FontChar();
+				
 				tempChar->id = XMLHelper::readPropInt( charsChildren, "id" );
+				tempChar->x = XMLHelper::readPropInt( charsChildren, "x" );
+				tempChar->y = XMLHelper::readPropInt( charsChildren, "y" );
+				tempChar->width = XMLHelper::readPropInt( charsChildren, "width" );
+				tempChar->height = XMLHelper::readPropInt( charsChildren, "height" );
+				tempChar->xoffset = XMLHelper::readPropInt( charsChildren, "xoffset" );
+				tempChar->yoffset = XMLHelper::readPropInt( charsChildren, "yoffset" );
+				tempChar->xadvance = XMLHelper::readPropInt( charsChildren, "xadvance" );
+				tempChar->page = XMLHelper::readPropInt( charsChildren, "page" );
+				tempChar->chnl = XMLHelper::readPropInt( charsChildren, "chnl" );
+
 				fontChars.push_back( tempChar );
 				charsChildren = charsChildren->next;
 			}
@@ -218,26 +234,24 @@ void Font::ParseXML( const std::string xmlFileName ) {
 }
 
 
-void Font::Draw( const std::wstring text, int x, int y, float size ) {
-	
-	//for ( size_t i = 0; i < text.length(); i++ ) {
-	//	for ( size_t j = 0; j < fontItems.size(); j++ ) {
-	//		if ( text.at( i ) == fontItems.at( j )->ascii || text.at( i ) == fontItems.at( j )->ucode ) {
-	//			SDL_Rect dest = {
-	//				x + fontItems.at( j )->trailing + fontItems.at( j )->leading + ( int ) ( i * fontWidth * size ),
-	//				( int ) (y + fontItems.at( j )->top ),
-	//				( int ) ( fontWidth * size ),
-	//				( int ) ( ( fontItems.at( j )->height + fontItems.at( j )->bottom ) * size )
-	//			};
-	//			SDL_Rect src = {
-	//				( int ) fontItems.at( j )->x,
-	//				( int ) fontItems.at( j )->y,
-	//				( int ) fontItems.at( j )->width,
-	//				( int ) fontItems.at( j )->height
-	//			};
-	//			this->fontImage->draw(src, dest);
-	//		}
-	//	}
-	//}
-
+void Font::Draw( const std::wstring text, int x, int y, float size, SDL_Color color ) {
+	for ( size_t i = 0; i < text.length(); i++ ) {
+		for ( size_t j = 0; j < fontChars.size(); j++ ) {
+			if ( text.at( i ) == fontChars.at( j )->id ) {
+				SDL_Rect src = {
+					(int)fontChars.at(j)->x,
+					(int)fontChars.at(j)->y,
+					(int)fontChars.at(j)->width,
+					(int)fontChars.at(j)->height
+				};
+				SDL_Rect dest = {
+					x + ( i * 14 ),
+					y + fontChars.at( j )->yoffset,
+					fontChars.at( j )->width,
+					fontChars.at( j )->height
+				};
+				this->fontImage->draw(src, dest, color);
+			}
+		}
+	}
 }

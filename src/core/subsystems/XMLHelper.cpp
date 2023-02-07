@@ -9,6 +9,7 @@ int XMLHelper::readPropInt( xmlNodePtr node, std::string prop ) {
 		return 0;
 	}
 	int i = std::stoi( std::string( ( const char* ) c ) );
+	xmlFree( c );
 	return i == -1 ? 0 : i;
 }
 
@@ -20,6 +21,7 @@ Uint16 XMLHelper::readPropUInt16( xmlNodePtr node, std::string prop ) {
 		return 0;
 	}
 	Uint16 i = ( Uint16 )std::stoi( std::string( ( const char* ) c ) );
+	xmlFree( c );
 	return i == -1 ? 0 : i;
 }
 
@@ -30,6 +32,7 @@ Uint32 XMLHelper::readPropUInt32( xmlNodePtr node, std::string prop ) {
 		return 0;
 	}
 	Uint32 i = ( Uint32 )std::stoi( std::string( ( const char* ) c ) );
+	xmlFree( c );
 	return i == -1 ? 0 : i;
 }
 
@@ -37,8 +40,10 @@ Uint32 XMLHelper::readPropUInt32( xmlNodePtr node, std::string prop ) {
 std::string XMLHelper::readPropString( xmlNodePtr node, std::string prop ) {
 	xmlChar* c = xmlGetProp( node, ( const xmlChar* ) prop.c_str() );
 	if ( c == nullptr ) {
+		xmlFree( c );
 		return "";
 	}
+	xmlFree( c );
 	return std::string( (char*) c );
 }
 
@@ -46,17 +51,21 @@ std::string XMLHelper::readPropString( xmlNodePtr node, std::string prop ) {
 bool XMLHelper::readPropBool( xmlNodePtr node, std::string prop ) {
 	xmlChar* c = xmlGetProp( node, ( const xmlChar* ) prop.c_str() );
 	if ( c == nullptr ) {
+		xmlFree( c );
 		return false;
 	}
 	int i = std::stoi( std::string( ( const char* ) c ) );
+	xmlFree( c );
 	return i != 0;
 }
 
 float XMLHelper::readPropFloat( xmlNodePtr node, std::string prop ) {
 	xmlChar* c = xmlGetProp( node, ( const xmlChar* ) prop.c_str() );
 	if ( c == nullptr ) {
+		xmlFree( c );
 		return 0.0f;
 	}
+	xmlFree( c );
 	return std::stof( std::string( ( const char* ) c ) );
 }
 

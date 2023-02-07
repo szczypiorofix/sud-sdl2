@@ -150,13 +150,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\characters\Character.cpp" />
-    <ClCompile Include="src\characters\Warrior.cpp" />
     <ClCompile Include="src\core\Defines.cpp" />
-    <ClCompile Include="src\core\Music.cpp" />
+    <ClCompile Include="src\core\audio\Music.cpp" />
     <ClCompile Include="src\core\UIEvents.cpp" />
     <ClCompile Include="src\graphics\Font.cpp" />
     <ClCompile Include="src\core\subsystems\LuaHandler.cpp" />
-    <ClCompile Include="src\graphics\Sprite.cpp" />
     <ClCompile Include="src\graphics\Spritesheet.cpp" />
     <ClCompile Include="src\core\Scene.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -168,26 +166,24 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\characters\Character.h" />
-    <ClInclude Include="src\characters\Warrior.h" />
-    <ClInclude Include="src\core\Music.h" />
+    <ClInclude Include="src\core\audio\Music.h" />
     <ClInclude Include="src\core\UIEvents.h" />
     <ClInclude Include="src\entities\GameObject.h" />
     <ClInclude Include="src\entities\IObject.h" />
     <ClInclude Include="src\core\Defines.h" />
     <ClInclude Include="src\graphics\Font.h" />
     <ClInclude Include="src\core\subsystems\LuaHandler.h" />
-    <ClInclude Include="src\graphics\Sprite.h" />
     <ClInclude Include="src\graphics\Spritesheet.h" />
     <ClInclude Include="src\core\Scene.h" />
-    <ClInclude Include="src\core\Inputs.h" />
+    <ClInclude Include="src\core\input\Inputs.h" />
     <ClInclude Include="res\resource.h" />
     <ClInclude Include="src\core\GameSystem.h" />
     <ClInclude Include="src\graphics\Texture.h" />
     <ClInclude Include="src\core\subsystems\XMLHelper.h" />
     <ClInclude Include="src\entities\UI.h" />
     <ClInclude Include="src\graphics\TextureManager.h" />
-    <ClInclude Include="src\physics\Transform.h" />
-    <ClInclude Include="src\physics\Vector2D.h" />
+    <ClInclude Include="src\helpers\Transform.h" />
+    <ClInclude Include="src\helpers\Vector2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="res\sud.rc" />

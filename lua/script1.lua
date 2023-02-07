@@ -13,16 +13,27 @@ print( "Done." )
 -- Loading modules - finish
 
 
--- Testing ...
 
+
+-- Player ...
 p = Player:new{}
 p:setName("Todd")
 p:printName()
 
+-- Vector2
 local a = Vector2(10,2)
 local b = Vector2( 2, 3)
 local c = a + b
 
 print(c)
+
+
+-- Core
+systemCoreL = Core.new("LinuxSystem")
+systemCoreW = Core.new("WindowsSystem")
+
+print("systemCoreL = " .. systemCoreL.name)
+print("systemCoreW = " .. systemCoreW.name)
+
 
 -- end of file ...

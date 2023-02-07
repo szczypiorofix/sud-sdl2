@@ -1,5 +1,5 @@
 #include "Music.h"
-#include "Defines.h"
+#include "../Defines.h"
 #include <iostream>
 
 

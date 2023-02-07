@@ -5,15 +5,15 @@
 #include <SDL2/SDL_image.h>
 
 #include "Defines.h"
-#include "Inputs.h"
+#include "input/Inputs.h"
 #include "../graphics/Texture.h"
 #include "Scene.h"
 #include "../graphics/Font.h"
 #include "../graphics/TextureManager.h"
-#include "../physics/Vector2D.h"
+#include "../helpers/Vector2D.h"
 #include "subsystems/LuaHandler.h"
-#include "Music.h"
-#include "../physics/Transform.h"
+#include "audio/Music.h"
+#include "../helpers/Transform.h"
 #include "UIEvents.h"
 
 
@@ -53,10 +53,14 @@ namespace SUD {
 		SDL_Renderer* renderer;
 		SDL_Cursor* cursor;
 		Scene* scene;
-		Texture* fontTexture;
 		LuaHandler* luaHandler;
-		Font* font;
+
 		Music* music;
+
+		Texture* notoFontTexture;
+		Texture* vingueFontTexture;
+		Font* notoFont;
+		Font* vingueFont;
 
 		bool quitGame;
 
@@ -86,12 +90,19 @@ namespace SUD {
 		Uint64 startPerf;
 		Uint64 endPerf;
 		float elapsedMS;
+		float delayMS;
+		int delayMSCounter;
+		
+		int delayFrameCounter;
+		float fpsSum;
 
 		Uint32 endTicks;
 		Uint32 startTicks;
 
-		float fps;
+		float _fps;
 		float frameTime;
+
+		int FPS;
 
 		bool lockFPS;
 		bool vsyncOn;

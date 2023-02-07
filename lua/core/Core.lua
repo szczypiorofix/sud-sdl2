@@ -1,7 +1,12 @@
-
 local Core = {}
 
-print("Core.lua loaded...")
+-- MetaCore = {}
+Core.__indes = Core
 
+function Core.new(name)
+    local instance = setmetatable({}, Core)
+    instance.name = name
+    return instance
+end
 
 return Core

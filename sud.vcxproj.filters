@@ -93,9 +93,6 @@
     <ClCompile Include="src\graphics\Texture.cpp">
       <Filter>Source Files\System\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\Sprite.cpp">
-      <Filter>Source Files\System\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="src\graphics\Spritesheet.cpp">
       <Filter>Source Files\System\Graphics</Filter>
     </ClCompile>
@@ -111,14 +108,11 @@
     <ClCompile Include="src\characters\Character.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\Music.cpp">
+    <ClCompile Include="src\core\audio\Music.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\core\UIEvents.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\characters\Warrior.cpp">
-      <Filter>Source Files\Entity</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -128,7 +122,7 @@
     <ClInclude Include="res\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\Inputs.h">
+    <ClInclude Include="src\core\input\Inputs.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
     <ClInclude Include="src\core\Scene.h">
@@ -155,9 +149,6 @@
     <ClInclude Include="src\graphics\Spritesheet.h">
       <Filter>Header Files\System\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\Sprite.h">
-      <Filter>Header Files\System\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="src\graphics\Font.h">
       <Filter>Header Files\System\Graphics</Filter>
     </ClInclude>
@@ -167,20 +158,17 @@
     <ClInclude Include="src\graphics\TextureManager.h">
       <Filter>Header Files\System\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\physics\Vector2D.h">
+    <ClInclude Include="src\helpers\Vector2D.h">
       <Filter>Header Files\System\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="src\physics\Transform.h">
+    <ClInclude Include="src\helpers\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\Music.h">
+    <ClInclude Include="src\core\audio\Music.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
     <ClInclude Include="src\core\UIEvents.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\characters\Warrior.h">
-      <Filter>Header Files\Entity</Filter>
     </ClInclude>
     <ClInclude Include="src\characters\Character.h">
       <Filter>Header Files\Entity</Filter>
