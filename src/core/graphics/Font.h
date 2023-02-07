@@ -2,7 +2,7 @@
 #include <vector>
 #include <map>
 #include "Texture.h"
-#include "../core/Defines.h"
+#include "../Defines.h"
 
 
 typedef struct FontChar {

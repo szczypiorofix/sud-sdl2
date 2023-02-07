@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../entities/GameObject.h"
+#include "GameObject.h"
 
 
 

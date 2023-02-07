@@ -312,8 +312,6 @@ namespace SUD {
 
 		//notoFont->Draw( L"A¥CÆEÊL£NÑOÓSŒZ¯a¹cæeêl³nñoósœzŸ¿", 10, 100, 2.0f, COLOR_GREEN );
 
-
-
 		//vingueFont->Draw( L"A¥CÆEÊL£NÑOÓSŒZ¯a¹cæeêl³nñoósœzŸ¿", 10, 50, 32.0f );
 
 
@@ -321,7 +319,6 @@ namespace SUD {
 		//notoFont->Draw( L"By³a przepiêkna pogoda.", 10, 260, 16.0f, COLOR_YELLOW );
 		//notoFont->Draw( L"Trzy œwinki zgubi³y siê w górach...", 10, 300, 16.0f, COLOR_GRAY );
 
-		//printf("¥ÆÊ£ÑÓŒ¯¹æê³ñóœ¿Ÿ FPS \n");
 		//font->Draw( "single user DUNGEON", 50, 50, 0.35f );
 		//TextureManager::GetInstance()->Draw( "main_spritesheet", 10, 10, 128, 128, SDL_FLIP_NONE );
 	}
@@ -365,7 +362,6 @@ namespace SUD {
 			delayFrameCounter++;
 
 			delayMSCounter += (endTicks - startTicks);
-			//printf("time: %i\n", delayMSCounter);
 
 			if ( delayMSCounter >= 100 ) {
 				FPS = ( int ) ( fpsSum / delayFrameCounter );

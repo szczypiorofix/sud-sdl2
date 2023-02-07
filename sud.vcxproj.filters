@@ -75,43 +75,43 @@
     <ClCompile Include="src\core\GameSystem.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\Scene.cpp">
+    <ClCompile Include="src\core\scene\Scene.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\subsystems\XMLHelper.cpp">
+    <ClCompile Include="src\core\helpers\XMLHelper.cpp">
       <Filter>Source Files\System\Subsystems</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\subsystems\LuaHandler.cpp">
+    <ClCompile Include="src\core\helpers\LuaHandler.cpp">
       <Filter>Source Files\System\Subsystems</Filter>
     </ClCompile>
     <ClCompile Include="src\core\Defines.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\Texture.cpp">
+    <ClCompile Include="src\core\graphics\Texture.cpp">
       <Filter>Source Files\System\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\Spritesheet.cpp">
+    <ClCompile Include="src\core\graphics\Spritesheet.cpp">
       <Filter>Source Files\System\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\Font.cpp">
+    <ClCompile Include="src\core\graphics\Font.cpp">
       <Filter>Source Files\System\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\entities\UI.cpp">
+    <ClCompile Include="src\core\scene\UI.cpp">
       <Filter>Source Files\Entity</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\TextureManager.cpp">
+    <ClCompile Include="src\core\graphics\TextureManager.cpp">
       <Filter>Source Files\System\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\characters\Character.cpp">
+    <ClCompile Include="src\objects\Character.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\core\audio\Music.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\UIEvents.cpp">
+    <ClCompile Include="src\core\scene\UIEvents.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -125,52 +125,52 @@
     <ClInclude Include="src\core\input\Inputs.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\Scene.h">
+    <ClInclude Include="src\core\scene\Scene.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\subsystems\XMLHelper.h">
+    <ClInclude Include="src\core\helpers\XMLHelper.h">
       <Filter>Header Files\System\Subsystems</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\subsystems\LuaHandler.h">
+    <ClInclude Include="src\core\helpers\LuaHandler.h">
       <Filter>Header Files\System\Subsystems</Filter>
     </ClInclude>
     <ClInclude Include="src\core\Defines.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\entities\GameObject.h">
+    <ClInclude Include="src\objects\GameObject.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="src\entities\IObject.h">
+    <ClInclude Include="src\objects\IObject.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\Texture.h">
+    <ClInclude Include="src\core\graphics\Texture.h">
       <Filter>Header Files\System\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\Spritesheet.h">
+    <ClInclude Include="src\core\graphics\Spritesheet.h">
       <Filter>Header Files\System\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\Font.h">
+    <ClInclude Include="src\core\graphics\Font.h">
       <Filter>Header Files\System\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\entities\UI.h">
+    <ClInclude Include="src\core\scene\UI.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\TextureManager.h">
+    <ClInclude Include="src\core\graphics\TextureManager.h">
       <Filter>Header Files\System\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\helpers\Vector2D.h">
+    <ClInclude Include="src\core\graphics\Vector2D.h">
       <Filter>Header Files\System\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="src\helpers\Transform.h">
+    <ClInclude Include="src\core\graphics\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\core\audio\Music.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\UIEvents.h">
+    <ClInclude Include="src\core\scene\UIEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\characters\Character.h">
+    <ClInclude Include="src\objects\Character.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
   </ItemGroup>

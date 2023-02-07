@@ -3,7 +3,7 @@
 #include <SDL2/SDL.h>
 #include <map>
 #include <string>
-#include "../entities/UI.h"
+#include "../scene/UI.h"
 #include "../graphics/Spritesheet.h"
 
 

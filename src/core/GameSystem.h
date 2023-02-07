@@ -6,15 +6,16 @@
 
 #include "Defines.h"
 #include "input/Inputs.h"
-#include "../graphics/Texture.h"
-#include "Scene.h"
-#include "../graphics/Font.h"
-#include "../graphics/TextureManager.h"
-#include "../helpers/Vector2D.h"
-#include "subsystems/LuaHandler.h"
+#include "graphics/Texture.h"
+#include "scene/Scene.h"
+#include "graphics/Font.h"
+#include "graphics/TextureManager.h"
+#include "graphics/Vector2D.h"
+#include "graphics/Transform.h"
+#include "helpers/LuaHandler.h"
 #include "audio/Music.h"
-#include "../helpers/Transform.h"
-#include "UIEvents.h"
+
+#include "scene/UIEvents.h"
 
 
 

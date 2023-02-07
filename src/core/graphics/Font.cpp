@@ -2,7 +2,7 @@
 #include <iostream>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
-#include "../core/subsystems/XMLHelper.h"
+#include "../helpers/XMLHelper.h"
 
 
 Font::Font( const std::string fn, Texture* tex ) {

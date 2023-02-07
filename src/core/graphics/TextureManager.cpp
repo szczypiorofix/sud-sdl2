@@ -1,5 +1,5 @@
 #include "TextureManager.h"
-#include "../core/GameSystem.h"
+#include "../GameSystem.h"
 
 
 

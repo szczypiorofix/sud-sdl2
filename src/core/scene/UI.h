@@ -1,7 +1,7 @@
 #pragma once
 
-#include "GameObject.h"
-#include "../core/UIEvents.h"
+#include "../../objects/GameObject.h"
+#include "UIEvents.h"
 
 using namespace Events;
 
