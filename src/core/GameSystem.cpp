@@ -202,7 +202,7 @@ namespace SUD {
 		vingueFont = new Font( "vingue", vingueFontTexture );
 
 		// UI ELEMENTS
-		mm_gui_button = new UI(new Properties("mm_gui_button", 360, 240, 168, 32));
+		mm_gui_button = new UI(new Properties("mm_gui_button", 360, 340, 168, 32));
 		//mm_gui_button->AddOnClickCallback( clickCallback );
 
 
@@ -229,7 +229,7 @@ namespace SUD {
 		music->SetVolume( 0.25f );
 		//music->PlayMusic();
 
-		printf("F1 - vsync ON/OFF\n");
+		printf( "F1 - vsync ON/OFF\n" );
 		printf( "F2 - FPS lock to %f ON/OFF\n", targetFPS );
 
 	}
@@ -240,8 +240,18 @@ namespace SUD {
 
 	void GameSystem::ReloadLuaScripts() {
 		// LUA SCRIPTS
-		luaHandler->LoadFile( "main.lua" );
+		
+		//luaHandler->LoadScript( "main.lua" );
+		//luaHandler->LoadScript( "Vector2.lua" );
+		//luaHandler->RunLoadedScripts();
+
+
+
+
+		luaHandler->RunScript("main.lua");
+
 		luaHandler->Close();
+
 	}
 
 
@@ -303,15 +313,23 @@ namespace SUD {
 
 		//font->Draw( "¥CÆÊ£ÑÓŒS¯¹æê³ñóœ¿Ÿ FPS: " + std::to_string( fps ), 10, 10, 0.60f);
 		
-		std::wstring vs = vsyncOn ? L"ON" : L"OFF";
-		std::wstring fpslk = lockFPS ? L"ON" : L"OFF";
+		//std::wstring vs = vsyncOn ? L"ON" : L"OFF";
+		//std::wstring fpslk = lockFPS ? L"ON" : L"OFF";
 
-		notoFont->Draw( L"AVG FPS: " + std::to_wstring( FPS ), 10, 10, 1.0f, COLOR_RED );
-		notoFont->Draw( L"VSYNC: " + vs, 10, 40, 16.0f, COLOR_CYAN);
-		notoFont->Draw( L"FPS LOCK (60): " + fpslk, 10, 70, 2.0f, COLOR_CYAN );
+		//notoFont->Draw( L"AVG FPS ssss 1234567890", 10, 10, 14.0f, COLOR_RED );
+		//notoFont->Draw( L"VSYNC: " + vs, 10, 40, 14.0f, COLOR_CYAN);
+		//notoFont->Draw( L"FPS LOCK (60): " + fpslk, 10, 70, 14.0f, COLOR_CYAN );
+
+
+
+		notoFont->Draw( L"A¥BCÆDEÊFGHIJKL£MNÑOÓPRSŒTUWYZ¯", 10, 10, 10.0f, COLOR_CYAN );
+		notoFont->Draw( L"A¥B CÆD EÊF GHI JKL £MN ÑOÓ PRS ŒTU WYZ ¯", 10, 50, 10.0f, COLOR_CYAN );
+		notoFont->Draw( L"a¹bcædeêfghijkl³mnñoóprsœtuwyz¿Ÿ", 10, 90, 10.0f, COLOR_YELLOW );
+		notoFont->Draw( L"1234567890-=!@#$%^&*()_+{}:;',\"./?<>", 10, 130, 10.0f, COLOR_GREEN );
+
+
 
 		//notoFont->Draw( L"A¥CÆEÊL£NÑOÓSŒZ¯a¹cæeêl³nñoósœzŸ¿", 10, 100, 2.0f, COLOR_GREEN );
-
 		//vingueFont->Draw( L"A¥CÆEÊL£NÑOÓSŒZ¯a¹cæeêl³nñoósœzŸ¿", 10, 50, 32.0f );
 
 
@@ -365,6 +383,7 @@ namespace SUD {
 
 			if ( delayMSCounter >= 100 ) {
 				FPS = ( int ) ( fpsSum / delayFrameCounter );
+				//printf("FPS: %i\n", FPS);
 				delayMSCounter = 0;
 				delayFrameCounter = 0;
 				fpsSum = 0.0f;

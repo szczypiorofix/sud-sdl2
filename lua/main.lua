@@ -3,17 +3,28 @@
 package.path = package.path .. ";../lua/?.lua"
 
 -- Welcome print
-print( "Lua version: ".._VERSION.. ". Loading Lua modules ..." )
+-- print( "Lua version: ".._VERSION.. ". Loading Lua modules ..." )
 
 -- Loading Lua modules
 -- Core = require("core.Core")
 
+-- print("main.lua loaded")
 
-local obj = TestModel(42)
-print(obj:get())    -- 42
-obj:set(-1.5)
-print(obj:get())    -- -1.5
 
--- ....
--- return Core
+-- TestModel from c++
+-- local obj = TestModel(42)
+-- print("TestModel - get() = " .. obj:get())    -- 42
+-- obj:set(-1.5)
+-- print("TestModel - get() = " .. obj:get())    -- -1.5
+
+
+
+
+sprite = CreateSprite()
+MoveSprite(sprite, 2, 5)
+
+
+
+
+
 -- EOF

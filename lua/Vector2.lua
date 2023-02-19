@@ -44,4 +44,6 @@ function Vector2(x, y)
     return v
 end
 
+print("Vector2 object loaded")
+
 return Vector2

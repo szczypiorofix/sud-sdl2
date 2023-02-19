@@ -17,6 +17,7 @@ public:
 	int get() const {
 		return this->x;
 	}
+	std::string name;
 
 private:
 	int x;
@@ -32,7 +33,9 @@ public:
 
 	~LuaHandler( void );
 
-	bool LoadFile(const std::string fileName);
+	bool LoadScript( const std::string fileName );
+	bool RunScript( const std::string fileName );
+	bool RunLoadedScripts();
 
 	bool ProcessText(const char* content);
 
@@ -51,9 +54,14 @@ public:
 
 
 private:
-	lua_State* luaState;
+	lua_State* L;
 
 	void Open(void);
+
+	unsigned int loadedScriptsIndex;
+
+	void BeforeRunningScript();
+	void AfterRunningScript();
 
 	static int myobject_new( lua_State* L );
 	static int myobject_delete( lua_State* L );

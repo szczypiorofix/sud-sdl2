@@ -4,7 +4,8 @@
 
 
 LuaHandler::LuaHandler() {
-    luaState = nullptr;
+    L = nullptr;
+    loadedScriptsIndex = 0;
 }
 
 
@@ -14,20 +15,20 @@ LuaHandler::~LuaHandler( void ) {
 
 
 void LuaHandler::Open( void ) {
-    if ( luaState == nullptr ) {
+    if ( L == nullptr ) {
         printf("LUA: Initializing new Lua State\n");
-        luaState = luaL_newstate();
-        luaL_openlibs( luaState );
+        L = luaL_newstate();
+        luaL_openlibs( L );
     }
 }
 
 
 void LuaHandler::Close() {
-    printf("LUA: Shutting down Lua State\n");
-    if (!luaState)
+    printf("LUA: Shutting down cuurent Lua State\n");
+    if ( !L )
         return;
-    lua_close(luaState);
-    luaState = nullptr;
+    lua_close( L );
+    L = nullptr;
 }
 
 
@@ -40,13 +41,13 @@ int LuaHandler::myobject_new( lua_State* L ) {
 
 
 void LuaHandler::RegisterObject() {
-    lua_register( luaState, LUA_MYOBJECT, LuaHandler::myobject_new );
-    luaL_newmetatable( luaState, LUA_MYOBJECT );
-    lua_pushcfunction( luaState, myobject_delete ); lua_setfield( luaState, -2, "__gc" );
-    lua_pushvalue( luaState, -1 ); lua_setfield( luaState, -2, "__index" );
-    lua_pushcfunction( luaState, myobject_set ); lua_setfield( luaState, -2, "set" );
-    lua_pushcfunction( luaState, myobject_get ); lua_setfield( luaState, -2, "get" );
-    //lua_pop( luaState, 1 );
+    lua_register( L, LUA_MYOBJECT, LuaHandler::myobject_new );
+    luaL_newmetatable( L, LUA_MYOBJECT );
+    lua_pushcfunction( L, myobject_delete ); lua_setfield( L, -2, "__gc" );
+    lua_pushvalue( L, -1 ); lua_setfield( L, -2, "__index" );
+    lua_pushcfunction( L, myobject_set ); lua_setfield( L, -2, "set" );
+    lua_pushcfunction( L, myobject_get ); lua_setfield( L, -2, "get" );
+    lua_pop( L, 1 );
 }
 
 int LuaHandler::myobject_delete(lua_State * L) {
@@ -66,44 +67,146 @@ int LuaHandler::myobject_get( lua_State* L ) {
 }
 
 
-bool LuaHandler::LoadFile(const std::string fileName) {
-    if (luaState == nullptr) {
+
+
+struct Sprite {
+    int x;
+    int y;
+    void Move(int velX, int velY) {
+        x += velX;
+        y += velY;
+    }
+};
+
+
+auto CreateSprite = [](lua_State* L) -> int {
+    Sprite* sprite = (Sprite*)lua_newuserdata(L, sizeof(Sprite));
+    sprite->x = 0;
+    sprite->y = 0;
+    return 1;
+};
+
+auto MoveSprite = [](lua_State* L) -> int {
+    Sprite* sprite = (Sprite*)lua_touserdata( L, -3 );
+    lua_Number velX = lua_tonumber( L, -2 );
+    lua_Number velY = lua_tonumber( L, -1 );
+    sprite->Move(velX, velY);
+    return 0;
+};
+
+
+
+void LuaHandler::BeforeRunningScript() {
+    // before proceeding Lua script
+    //RegisterObject();
+    
+
+    lua_pushcfunction( L, CreateSprite );
+    lua_setglobal( L, "CreateSprite" );
+    lua_pushcfunction(L, MoveSprite);
+    lua_setglobal(L, "MoveSprite");
+
+
+}
+
+
+void LuaHandler::AfterRunningScript() {
+    // after proceeding Lua script
+
+    //printf("LUA: GC - memory reserved: %ikb\n", lua_gc(L, LUA_GCCOUNT, 0) );
+    //printf("LUA: Stack length: %i\n", lua_gettop(L));
+    //int maxStackSize = 24;
+    //printf("LUA: checkStack for %i elements: %i\n", maxStackSize, lua_checkstack( L, maxStackSize ) );
+
+
+
+    lua_getglobal(L, "sprite");
+    if (lua_isuserdata(L, -1)) {
+        Sprite* sprite = (Sprite*)lua_touserdata(L, -1);
+        printf("LUA: Sprite x=%i, y=%i\n", sprite->x, sprite->y);
+    }
+    else {
+        printf("LUA: Userdata of type 'Sprite' not found!\n");
+    }
+    
+    printf("LUA: Memory reserved: %ikb\n", lua_gc(L, LUA_GCCOUNT, 0));
+
+}
+
+
+
+bool LuaHandler::RunScript(const std::string fileName) {
+    if ( L == nullptr ) {
         Open();
     }
     std::string fn = DIR_RES_SCRIPTS + fileName;
-    printf( "LUA: Loading file '%s'\n", fileName.c_str() );
-    if (fn.length() > 0 ) {
-        
-        RegisterObject();
-
-        // luaL_dofile or luaL_loadfile ??
-        if ( luaL_dofile( luaState, fn.c_str() ) != LUA_OK ) {
-            printf( "LUA: Error while luaL_dofile script file ('%s'): %s\n", fileName.c_str(), lua_tostring( luaState, -1 ) );
+    printf("LUA: Running script: '%s'\n", fileName.c_str());
+    if (fn.length() > 0) {
+        BeforeRunningScript();
+        if ( luaL_dofile( L, fn.c_str()) != LUA_OK ) {
+            printf("LUA: Error while luaL_dofile script file ('%s'): %s\n", fileName.c_str(), lua_tostring( L, -1));
             return false;
         }
-
+        AfterRunningScript();
         return true;
-        
-        /*if (lua_pcall(luaState, 0, 0, 0) == LUA_OK) {
-            printf( "LUA: Script file '%s' loaded. \n", fileName.c_str() );
-            return true;
-        }*/
     }
-    printf("LUA: Error while reading script file ('%s'): %s\n", fileName.c_str(), lua_tostring(luaState, -1) );
+    printf("LUA: Error while reading script file ('%s'): %s\n", fileName.c_str(), lua_tostring(L, -1));
+    return false;
+}
+
+
+bool LuaHandler::LoadScript( const std::string fileName ) {
+    if ( L == nullptr ) {
+        Open();
+    }
+    std::string fn = DIR_RES_SCRIPTS + fileName;
+    printf( "LUA: Loading script '%s'\n", fileName.c_str() );
+    if (fn.length() > 0 ) {
+        if ( luaL_loadfile( L, fn.c_str() ) != LUA_OK ) {
+            printf( "LUA: Error while luaL_dofile script file ('%s'): %s\n", fileName.c_str(), lua_tostring( L, -1 ) );
+            return false;
+        }
+        loadedScriptsIndex++;
+        return true;
+    }
+    printf("LUA: Error while reading script file ('%s'): %s\n", fileName.c_str(), lua_tostring(L, -1) );
+    return false;
+}
+
+
+bool LuaHandler::RunLoadedScripts() {
+    if (L == nullptr) {
+        printf("LUA: Error! Lua state object is null! \n");
+        return false;
+    }
+
+    // No, it's not working ... :(
+    //for ( int i = 0; i < loadedScriptsIndex; i++ ) {
+    //    if ( lua_pcall(L, 0, 0, 0) != LUA_OK ) {
+    //        return false;
+    //    }
+    //    lua_pop( L, 1 );
+    //}
+
+    //if ( lua_pcall( L, 0, 0, 0 ) == LUA_OK ) {
+    //    printf( "LUA: Run all loaded Lua chunks. \n" );
+    //    return true;
+    //}
+    printf("LUA: Error! Loaded Lua chunks cannot be processed: %s\n", lua_tostring(L, -1) );
     return false;
 }
 
 
 bool LuaHandler::ProcessText(const char* content) {
-    if (luaState == nullptr) {
+    if (L == nullptr) {
         Open();
     }
-    return luaL_dostring(luaState, content) == 0;
+    return luaL_dostring(L, content) == 0;
 }
 
 
 bool LuaHandler::GetGlobal(const char* name) {
-    return lua_getglobal(this->luaState, name) != 0;
+    return lua_getglobal(this->L, name) != 0;
 }
 
 
@@ -113,23 +216,23 @@ bool LuaHandler::GetInt(const char*variableName, int& value) {
         return false;
     }
 
-    if (lua_isnumber(luaState, -1) == false) {
-        lua_pop(luaState, 1);
+    if (lua_isnumber(L, -1) == false) {
+        lua_pop(L, 1);
         return false;
     }
-    value = (int)(lua_tointeger(luaState, -1));
-    lua_pop(luaState, 1);
+    value = (int)(lua_tointeger(L, -1));
+    lua_pop(L, 1);
 
     return true;
 }
 
 bool LuaHandler::GetFunctionStringTuple( const char* functionName, std::vector<std::string>& returnValues, const int returnValuesCounter ) {
     Open();
-    lua_getglobal( luaState, functionName );
-    if ( lua_isfunction( luaState, -1 ) ) {
-        lua_pcall( luaState, 0, returnValuesCounter, 0); // Lua Statem, 0 function parameters, 1 parameter in return, 0 - error handling
+    lua_getglobal( L, functionName );
+    if ( lua_isfunction( L, -1 ) ) {
+        lua_pcall( L, 0, returnValuesCounter, 0); // Lua Statem, 0 function parameters, 1 parameter in return, 0 - error handling
         for ( int i = 0; i < returnValuesCounter; i++ ) {
-            returnValues.push_back( lua_tostring( luaState, (i + 1) * -1) );
+            returnValues.push_back( lua_tostring( L, (i + 1) * -1) );
             std::reverse( returnValues.begin(), returnValues.end());
         }
     }
@@ -139,10 +242,10 @@ bool LuaHandler::GetFunctionStringTuple( const char* functionName, std::vector<s
 
 bool LuaHandler::GetFunctionIntValue( const char* functionName, int& value ) {
     Open();
-    lua_getglobal( luaState, functionName );
-    if ( lua_isfunction( luaState, -1 ) ) {
-        lua_pcall( luaState, 0, 1, 0 ); // Lua Statem, 0 function parameters, 1 parameter in return, 0 - error handling
-        lua_Number luaValue = lua_tonumber( luaState, -1 );
+    lua_getglobal( L, functionName );
+    if ( lua_isfunction( L, -1 ) ) {
+        lua_pcall( L, 0, 1, 0 ); // Lua Statem, 0 function parameters, 1 parameter in return, 0 - error handling
+        lua_Number luaValue = lua_tonumber( L, -1 );
         value = ( int ) luaValue;
     }
     return false;

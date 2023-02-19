@@ -21,7 +21,7 @@
 
 namespace SUD {
 
-	const int SCREEN_WIDTH = 1024;
+	const int SCREEN_WIDTH = 1360;
 	const int SCREEN_HEIGHT = 768;
 
 	const std::string APP_NAME = "Single User Dungeon";

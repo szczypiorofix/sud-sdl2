@@ -9,4 +9,6 @@ function Core.new(name)
     return instance
 end
 
+print("Core object loaded...")
+
 return Core

@@ -139,7 +139,7 @@ void Font::ParseXML( const std::string xmlFileName ) {
 			std::string padding = XMLHelper::readPropString( fontChildren, "padding" );
 			std::vector<std::string> paddingVector = XMLHelper::explode( padding, ',' );
 			if ( paddingVector.size() != 4 ) {
-				printf("Error! Padding vector is not equal 4 !!\n");
+				printf("Error! Padding vector size is not equal 4 !!\n");
 				exit( 1 );
 			}
 			for ( unsigned int i = 0; i < paddingVector.size(); i++ ) {
@@ -160,7 +160,6 @@ void Font::ParseXML( const std::string xmlFileName ) {
 			// spacing
 			std::string spacing = XMLHelper::readPropString( fontChildren, "spacing" );
 			std::vector<std::string> spacingVector = XMLHelper::explode( spacing, ',' );
-			//std::cout << "Spacing: " << spacing << std::endl;
 			if ( spacingVector.size() != 2 ) {
 				printf( "Error! Spacing vector is not equal 2 !!\n" );
 				exit( 1 );
@@ -235,23 +234,28 @@ void Font::ParseXML( const std::string xmlFileName ) {
 
 
 void Font::Draw( const std::wstring text, int x, int y, float size, SDL_Color color ) {
+	int textWidth = 0;
 	for ( size_t i = 0; i < text.length(); i++ ) {
 		for ( size_t j = 0; j < fontChars.size(); j++ ) {
 			if ( text.at( i ) == fontChars.at( j )->id ) {
 				SDL_Rect src = {
-					(int)fontChars.at(j)->x,
-					(int)fontChars.at(j)->y,
-					(int)fontChars.at(j)->width,
-					(int)fontChars.at(j)->height
+					fontChars.at(j)->x,
+					fontChars.at(j)->y,
+					fontChars.at(j)->width,
+					fontChars.at(j)->height
 				};
 				SDL_Rect dest = {
-					x + ( i * 14 ),
+					x + textWidth,
 					y + fontChars.at( j )->yoffset,
 					fontChars.at( j )->width,
 					fontChars.at( j )->height
 				};
 				this->fontImage->draw(src, dest, color);
+				textWidth += fontChars.at( j )->width;
 			}
+		}
+		if ( i == text.length() ) {
+			textWidth = 0;
 		}
 	}
 }
