@@ -78,7 +78,6 @@ struct Sprite {
     }
 };
 
-
 auto CreateSprite = [](lua_State* L) -> int {
     Sprite* sprite = (Sprite*)lua_newuserdata(L, sizeof(Sprite));
     sprite->x = 0;
@@ -93,8 +92,6 @@ auto MoveSprite = [](lua_State* L) -> int {
     sprite->Move(velX, velY);
     return 0;
 };
-
-
 
 void LuaHandler::BeforeRunningScript() {
     // before proceeding Lua script
@@ -130,7 +127,6 @@ void LuaHandler::AfterRunningScript() {
     }
     
     printf("LUA: Memory reserved: %ikb\n", lua_gc(L, LUA_GCCOUNT, 0));
-
 }
 
 
