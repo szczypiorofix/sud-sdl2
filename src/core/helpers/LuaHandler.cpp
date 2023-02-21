@@ -1,5 +1,6 @@
 #include "LuaHandler.h"
 #include "../Defines.h"
+#include <cassert>
 
 
 
@@ -67,42 +68,116 @@ int LuaHandler::myobject_get( lua_State* L ) {
 }
 
 
+// ----- objects to use in Lua
+
+//struct Sprite {
+//    int x;
+//    int y;
+//    void Move(int velX, int velY) {
+//        x += velX;
+//        y += velY;
+//    }
+//};
+//
+//auto CreateSprite = [](lua_State* L) -> int {
+//    Sprite* sprite = (Sprite*)lua_newuserdata(L, sizeof(Sprite));
+//    sprite->x = 0;
+//    sprite->y = 0;
+//    return 1;
+//};
+//
+//auto MoveSprite = [](lua_State* L) -> int {
+//    Sprite* sprite = (Sprite*)lua_touserdata( L, -3 );
+//    lua_Number velX = lua_tonumber( L, -2 );
+//    lua_Number velY = lua_tonumber( L, -1 );
+//    sprite->Move(velX, velY);
+//    return 0;
+//};
 
 
-struct Sprite {
-    int x;
-    int y;
-    void Move(int velX, int velY) {
-        x += velX;
-        y += velY;
+
+
+
+struct Vec {
+
+    static int CreateVector2D( lua_State* L ) {
+        lua_newtable(L);
+        lua_pushstring(L, "x");
+        lua_pushnumber(L, 0);
+        lua_settable(L, -3);
+
+        lua_pushstring(L, "y");
+        lua_pushnumber(L, 0);
+        lua_settable(L, -3);
+
+        luaL_getmetatable(L, "VectorMetaTable");
+        lua_setmetatable(L, -2);
+
+        return 1;
     }
+
+    static int __add( lua_State* L ) {
+
+        printf("__add was called\n");
+        assert(lua_istable(L, -2));		// left table
+        assert(lua_istable(L, -1));		// right table
+
+        lua_pushstring(L, "x");
+        lua_gettable(L, -3);
+        lua_Number xLeft = lua_tonumber(L, -1);
+        lua_pop(L, 1);
+
+        lua_pushstring(L, "x");
+        lua_gettable(L, -2);
+        lua_Number xRight = lua_tonumber(L, -1);
+        lua_pop(L, 1);
+
+        lua_Number xAdded = xLeft + xRight;
+        printf("xAdded = %d\n", (int)xAdded);
+
+        Vec::CreateVector2D(L);
+        lua_pushstring(L, "x");
+        lua_pushnumber(L, xAdded);
+        lua_rawset(L, -3);
+
+        return 0;
+    }
+
 };
 
-auto CreateSprite = [](lua_State* L) -> int {
-    Sprite* sprite = (Sprite*)lua_newuserdata(L, sizeof(Sprite));
-    sprite->x = 0;
-    sprite->y = 0;
-    return 1;
-};
 
-auto MoveSprite = [](lua_State* L) -> int {
-    Sprite* sprite = (Sprite*)lua_touserdata( L, -3 );
-    lua_Number velX = lua_tonumber( L, -2 );
-    lua_Number velY = lua_tonumber( L, -1 );
-    sprite->Move(velX, velY);
-    return 0;
-};
+
 
 void LuaHandler::BeforeRunningScript() {
     // before proceeding Lua script
     //RegisterObject();
     
 
-    lua_pushcfunction( L, CreateSprite );
-    lua_setglobal( L, "CreateSprite" );
-    lua_pushcfunction(L, MoveSprite);
-    lua_setglobal(L, "MoveSprite");
 
+    // Preparing C/C++ functions to call in Lua
+    //lua_pushcfunction( L, CreateSprite );
+    //lua_setglobal( L, "CreateSprite" );
+    //lua_pushcfunction(L, MoveSprite);
+    //lua_setglobal(L, "MoveSprite");
+
+
+
+
+    lua_close(L);
+    L = nullptr;
+
+    L = luaL_newstate();
+
+
+
+    // Lua metatables
+    lua_pushcfunction(L, Vec::CreateVector2D);
+    lua_setglobal(L, "CreateVector");
+
+    luaL_newmetatable(L, "VectorMetaTable");
+    lua_pushstring(L, "__add");
+    lua_pushcfunction(L, Vec::__add);
+    lua_settable(L, -3);
 
 }
 
@@ -117,14 +192,36 @@ void LuaHandler::AfterRunningScript() {
 
 
 
-    lua_getglobal(L, "sprite");
-    if (lua_isuserdata(L, -1)) {
-        Sprite* sprite = (Sprite*)lua_touserdata(L, -1);
-        printf("LUA: Sprite x=%i, y=%i\n", sprite->x, sprite->y);
+
+
+    // ----------- get user object
+    //lua_getglobal(L, "sprite");
+    //if (lua_isuserdata(L, -1)) {
+    //    Sprite* sprite = (Sprite*)lua_touserdata(L, -1);
+    //    printf("LUA: Sprite x=%i, y=%i\n", sprite->x, sprite->y);
+    //}
+    //else {
+    //    printf("LUA: Userdata of type 'Sprite' not found!\n");
+    //}
+
+    const char* LUA_FILE = R"(
+		v1 = CreateVector()   -- v1 is a table
+		v2 = CreateVector()	  -- v2 is a table
+		v1.x = 11
+		v2.x = 42
+		v3 = v1 + v2
+		result = v3.x
+		)";
+
+    int x = luaL_dostring(L, LUA_FILE);
+    if (x != LUA_OK)
+    {
+        printf("Error: %s\n", lua_tostring(L, -1));
     }
-    else {
-        printf("LUA: Userdata of type 'Sprite' not found!\n");
-    }
+
+    lua_getglobal(L, "result");
+    lua_Number result = lua_tonumber(L, -1);
+    printf("result = %d\n", (int)result);
     
     printf("LUA: Memory reserved: %ikb\n", lua_gc(L, LUA_GCCOUNT, 0));
 }
@@ -139,10 +236,10 @@ bool LuaHandler::RunScript(const std::string fileName) {
     printf("LUA: Running script: '%s'\n", fileName.c_str());
     if (fn.length() > 0) {
         BeforeRunningScript();
-        if ( luaL_dofile( L, fn.c_str()) != LUA_OK ) {
-            printf("LUA: Error while luaL_dofile script file ('%s'): %s\n", fileName.c_str(), lua_tostring( L, -1));
-            return false;
-        }
+        //if ( luaL_dofile( L, fn.c_str()) != LUA_OK ) {
+        //    printf("LUA: Error while luaL_dofile script file ('%s'): %s\n", fileName.c_str(), lua_tostring( L, -1));
+        //    return false;
+        //}
         AfterRunningScript();
         return true;
     }

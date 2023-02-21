@@ -4,5 +4,15 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"editor.fontFamily": "Noto Mono, monospace",
+		"editor.lineHeight": 17,
+		"editor.fontLigatures": true,
+		"editor.mouseWheelZoom": true,
+		"editor.cursorWidth": 7,
+		"editor.autoIndent": "full",
+		"editor.showUnused": true,
+		"editor.tabSize": 4,
+		"editor.cursorBlinking": "phase"
+	}
 }
