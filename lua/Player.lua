@@ -14,7 +14,7 @@ function Player:new()
     end
 
     function Player:printName()
-        print("Player name "..p.name)
+        print("Player name is "..Player.name)
     end
 
     setmetatable(Player, self)

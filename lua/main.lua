@@ -28,13 +28,41 @@ package.path = package.path .. ";../lua/?.lua"
 
 
 -- Vector2D
+-- v1 = CreateVector()   -- v1 is a table
+-- v2 = CreateVector()	  -- v2 is a table
+-- v1.x = 11
+-- v2.x = 22
 
-v1 = CreateVector()   -- v1 is a table
-v2 = CreateVector()	  -- v2 is a table
-v1.x = 11
-v2.x = 42
-v3 = v1 + v2
-result = v3.x
+-- -- v3 = v1 + v2
+-- result = v1.x + v2.x
+
+-- res4 = v2.x
+
+
+
+-- player = {
+--     name = "Gracz1",
+--     age = 43
+-- }
+
+
+
+-- Player = require("Player")
+
+-- todd = Player:new()
+-- todd:setName("Todd Howard")
+-- -- todd:printName();
+
+
+
+
+
+
+level01 = {
+    sizeX = 20,
+    sizeY = 32,
+    content = "#########_____######"
+}
 
 
 

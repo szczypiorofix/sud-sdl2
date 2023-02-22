@@ -114,6 +114,9 @@
     <ClCompile Include="src\core\scene\UIEvents.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\helpers\LuaObjectParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\GameSystem.h">
@@ -172,6 +175,9 @@
     </ClInclude>
     <ClInclude Include="src\objects\Character.h">
       <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\helpers\LuaObjectParser.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

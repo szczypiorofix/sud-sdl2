@@ -149,6 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\helpers\LuaObjectParser.cpp" />
     <ClCompile Include="src\objects\Character.cpp" />
     <ClCompile Include="src\core\Defines.cpp" />
     <ClCompile Include="src\core\audio\Music.cpp" />
@@ -165,6 +166,7 @@
     <ClCompile Include="src\core\graphics\TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\core\helpers\LuaObjectParser.h" />
     <ClInclude Include="src\objects\Character.h" />
     <ClInclude Include="src\core\audio\Music.h" />
     <ClInclude Include="src\core\scene\UIEvents.h" />

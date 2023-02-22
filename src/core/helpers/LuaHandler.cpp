@@ -1,7 +1,6 @@
 #include "LuaHandler.h"
 #include "../Defines.h"
-#include <cassert>
-
+#include <assert.h>
 
 
 LuaHandler::LuaHandler() {
@@ -25,7 +24,7 @@ void LuaHandler::Open( void ) {
 
 
 void LuaHandler::Close() {
-    printf("LUA: Shutting down cuurent Lua State\n");
+    printf("LUA: Shutting down Lua State\n");
     if ( !L )
         return;
     lua_close( L );
@@ -99,7 +98,6 @@ int LuaHandler::myobject_get( lua_State* L ) {
 
 
 struct Vec {
-
     static int CreateVector2D( lua_State* L ) {
         lua_newtable(L);
         lua_pushstring(L, "x");
@@ -115,9 +113,7 @@ struct Vec {
 
         return 1;
     }
-
     static int __add( lua_State* L ) {
-
         printf("__add was called\n");
         assert(lua_istable(L, -2));		// left table
         assert(lua_istable(L, -1));		// right table
@@ -142,10 +138,15 @@ struct Vec {
 
         return 0;
     }
-
 };
 
 
+
+
+struct Player {
+    const char* name;
+    int age;
+};
 
 
 void LuaHandler::BeforeRunningScript() {
@@ -163,21 +164,17 @@ void LuaHandler::BeforeRunningScript() {
 
 
 
-    lua_close(L);
-    L = nullptr;
-
-    L = luaL_newstate();
-
-
-
     // Lua metatables
-    lua_pushcfunction(L, Vec::CreateVector2D);
-    lua_setglobal(L, "CreateVector");
+    //lua_pushcfunction(L, Vec::CreateVector2D);
+    //lua_setglobal(L, "CreateVector");
 
-    luaL_newmetatable(L, "VectorMetaTable");
-    lua_pushstring(L, "__add");
-    lua_pushcfunction(L, Vec::__add);
-    lua_settable(L, -3);
+    //luaL_newmetatable(L, "VectorMetaTable");
+    //lua_pushstring(L, "__add");
+    //lua_pushcfunction(L, Vec::__add);
+    //lua_settable(L, -3);
+
+
+
 
 }
 
@@ -190,10 +187,6 @@ void LuaHandler::AfterRunningScript() {
     //int maxStackSize = 24;
     //printf("LUA: checkStack for %i elements: %i\n", maxStackSize, lua_checkstack( L, maxStackSize ) );
 
-
-
-
-
     // ----------- get user object
     //lua_getglobal(L, "sprite");
     //if (lua_isuserdata(L, -1)) {
@@ -204,26 +197,54 @@ void LuaHandler::AfterRunningScript() {
     //    printf("LUA: Userdata of type 'Sprite' not found!\n");
     //}
 
-    const char* LUA_FILE = R"(
-		v1 = CreateVector()   -- v1 is a table
-		v2 = CreateVector()	  -- v2 is a table
-		v1.x = 11
-		v2.x = 42
-		v3 = v1 + v2
-		result = v3.x
-		)";
 
-    int x = luaL_dostring(L, LUA_FILE);
-    if (x != LUA_OK)
-    {
-        printf("Error: %s\n", lua_tostring(L, -1));
-    }
-
-    lua_getglobal(L, "result");
-    lua_Number result = lua_tonumber(L, -1);
-    printf("result = %d\n", (int)result);
     
-    printf("LUA: Memory reserved: %ikb\n", lua_gc(L, LUA_GCCOUNT, 0));
+
+
+
+    //lua_getglobal(L, "result");
+    //lua_Number result = lua_tonumber(L, -1);
+    //printf("result = %d\n", (int)result);
+
+
+
+ 
+    //lua_pushnumber(L, 12); // ln1
+    //lua_pushnumber(L, 23); // ln2
+
+    //lua_Number ln1 = lua_tonumber(L, -2);
+    //lua_Number ln2 = lua_tonumber(L, -1);
+    //printf("Lua ln1: %i\n", (int)ln1);
+    //printf("Lua ln2: %i\n", (int)ln2);
+
+
+    //struct Player {
+    //    const char* name;
+    //    int x;
+    //    int y;
+    //};
+
+    //lua_getglobal(L, "todd");
+
+    //if (lua_istable(L, -1)) {
+    //    lua_getfield(L, -1, "x");
+    //    lua_Number x = lua_tonumber(L, -1);
+    //    lua_getfield(L, -2, "y");
+    //    lua_Number y = lua_tonumber(L, -1);
+    //    lua_getfield(L, -3, "name");
+    //    const char* name = lua_tostring(L, -1);
+    //    printf("Player from Lua: name=%s, x=%i, y=%i\n", name, (int)x, (int)y);
+    //}
+    //else {
+    //    printf("Lua object is not a table!\n");
+    //}
+
+
+    Level* level01 = LuaObjectParser::GetLevel(L, "level01");
+
+
+    
+    printf( "LUA: Memory used: %ikb\n", lua_gc(L, LUA_GCCOUNT, 0) );
 }
 
 
@@ -236,10 +257,10 @@ bool LuaHandler::RunScript(const std::string fileName) {
     printf("LUA: Running script: '%s'\n", fileName.c_str());
     if (fn.length() > 0) {
         BeforeRunningScript();
-        //if ( luaL_dofile( L, fn.c_str()) != LUA_OK ) {
-        //    printf("LUA: Error while luaL_dofile script file ('%s'): %s\n", fileName.c_str(), lua_tostring( L, -1));
-        //    return false;
-        //}
+        if ( luaL_dofile( L, fn.c_str()) != LUA_OK ) {
+            printf("LUA: Error while luaL_dofile script file ('%s'): %s\n", fileName.c_str(), lua_tostring( L, -1));
+            return false;
+        }
         AfterRunningScript();
         return true;
     }

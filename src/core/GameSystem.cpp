@@ -246,12 +246,8 @@ namespace SUD {
 		//luaHandler->RunLoadedScripts();
 
 
-
-
 		luaHandler->RunScript("main.lua");
-
 		luaHandler->Close();
-
 	}
 
 

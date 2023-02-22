@@ -3,6 +3,7 @@
 #include <lua535/lua.hpp>
 #include <iostream>
 #include <vector>
+#include "LuaObjectParser.h"
 
 
 #define LUA_MYOBJECT "TestModel"
