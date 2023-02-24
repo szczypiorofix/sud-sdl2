@@ -1,8 +1,12 @@
 #pragma once
-#include <lua535/lua.hpp>
+
+extern "C" {
+	#include <lua542/lua.hpp>
+}
 
 
-typedef struct Level {
+
+struct Level {
 	int sizeX;
 	int sizeY;
 	const char* content;
@@ -19,7 +23,7 @@ typedef struct Level {
 		this->sizeY = sy;
 		this->content = c;
 	}
-} Level;
+};
 
 
 

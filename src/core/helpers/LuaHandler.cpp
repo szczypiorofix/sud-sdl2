@@ -3,6 +3,77 @@
 #include <assert.h>
 
 
+
+
+
+static int numberOfSpritesExisting;
+
+struct Sprite {
+    int x;
+    int y;
+
+    Sprite() : x(0), y(0) {
+        numberOfSpritesExisting++;
+    }
+
+    ~Sprite() {
+        numberOfSpritesExisting--;
+    }
+
+    void Move(int velX, int velY) {
+        x += velX;
+        y += velY;
+    }
+
+    void Draw() {
+        printf("Sprite %p, x = %d, y = %d\n", this, x, y);
+    }
+
+};
+
+
+auto CreateSprite = [](lua_State* L) -> int {
+    void* pointerToASprite = lua_newuserdata(L, sizeof(Sprite));
+    new (pointerToASprite) Sprite();
+    luaL_getmetatable(L, "SpriteMetaTable");
+    assert(lua_istable(L, -1));
+    lua_setmetatable(L, -2);
+    printf("Create sprite\n");
+    return 1;
+};
+
+auto DestroySprite = [](lua_State* L) -> int {
+    Sprite* sprite = (Sprite*)lua_touserdata(L, -1);
+    sprite->~Sprite();
+    printf("Destroy sprite\n");
+    return 0;
+};
+
+auto MoveSprite = [](lua_State* L) -> int {
+    Sprite* sprite = (Sprite*)lua_touserdata(L, -3);
+    lua_Number velX = lua_tonumber(L, -2);
+    lua_Number velY = lua_tonumber(L, -1);
+    sprite->Move((int)velX, (int)velY);
+    return 0;
+};
+
+auto DrawSprite = [](lua_State* L) -> int {
+    Sprite* sprite = (Sprite*)lua_touserdata(L, -1);
+    sprite->Draw();
+    return 0;
+};
+
+auto PrintSprite = [](lua_State* L) -> int {
+    Sprite* sprite = (Sprite*)lua_touserdata(L, -1);
+    printf("Sprite %p, x=%i, y=%i\n", &sprite, sprite->x, sprite->y);
+    return 0;
+};
+
+
+
+
+
+
 LuaHandler::LuaHandler() {
     L = nullptr;
     loadedScriptsIndex = 0;
@@ -176,6 +247,22 @@ void LuaHandler::BeforeRunningScript() {
 
 
 
+
+
+    luaL_newmetatable(L, "SpriteMetaTable");
+    lua_pushstring(L, "__gc");
+    lua_pushcfunction(L, DestroySprite);
+    lua_pushstring(L, "__tostring");
+    lua_pushcfunction(L, PrintSprite);
+    lua_settable(L, -5);
+
+    lua_pushcfunction(L, CreateSprite);
+    lua_setglobal(L, "CreateSprite");
+    lua_pushcfunction(L, MoveSprite);
+    lua_setglobal(L, "MoveSprite");
+    lua_pushcfunction(L, DrawSprite);
+    lua_setglobal(L, "DrawSprite");
+
 }
 
 
@@ -199,8 +286,6 @@ void LuaHandler::AfterRunningScript() {
 
 
     
-
-
 
     //lua_getglobal(L, "result");
     //lua_Number result = lua_tonumber(L, -1);
@@ -240,10 +325,13 @@ void LuaHandler::AfterRunningScript() {
     //}
 
 
-    Level* level01 = LuaObjectParser::GetLevel(L, "level01");
+    //Level* level01 = LuaObjectParser::GetLevel(L, "level01");
 
 
-    
+
+     
+    printf("numberOfSpritesExisting = %i\n", numberOfSpritesExisting);
+
     printf( "LUA: Memory used: %ikb\n", lua_gc(L, LUA_GCCOUNT, 0) );
 }
 

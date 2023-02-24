@@ -1,9 +1,9 @@
 #pragma once
 
-#include <lua535/lua.hpp>
+#include "LuaObjectParser.h"
 #include <iostream>
 #include <vector>
-#include "LuaObjectParser.h"
+
 
 
 #define LUA_MYOBJECT "TestModel"
@@ -52,7 +52,6 @@ public:
 	void Close(void);
 
 	void RegisterObject();
-
 
 private:
 	lua_State* L;

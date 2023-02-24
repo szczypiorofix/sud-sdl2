@@ -55,14 +55,23 @@ package.path = package.path .. ";../lua/?.lua"
 
 
 
+-- level01 = {
+--     sizeX = 20,
+--     sizeY = 32,
+--     content = "#########_____######"
+-- }
 
 
 
-level01 = {
-    sizeX = 20,
-    sizeY = 32,
-    content = "#########_____######"
-}
+sprite = CreateSprite()
+MoveSprite( sprite, 5, 7 )
+DrawSprite( sprite )
+print(sprite)
+
+sprite2 = CreateSprite()
+MoveSprite( sprite2, 3, 3 )
+DrawSprite( sprite2 )
+print(sprite2)
 
 
 
