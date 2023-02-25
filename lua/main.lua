@@ -63,15 +63,19 @@ package.path = package.path .. ";../lua/?.lua"
 
 
 
-sprite = CreateSprite()
-MoveSprite( sprite, 5, 7 )
-DrawSprite( sprite )
-print(sprite)
+sprite = Sprite:new()
+sprite:Move( 5, 7 )
+-- sprite:Draw()
+-- print(sprite)
 
-sprite2 = CreateSprite()
-MoveSprite( sprite2, 3, 3 )
-DrawSprite( sprite2 )
-print(sprite2)
+sprite2 = Sprite:new()
+sprite2:Move( 3, 3 )
+sprite2:Move(-1, 2)
+-- sprite2:Draw()
+
+-- print(sprite2)
+
+
 
 
 

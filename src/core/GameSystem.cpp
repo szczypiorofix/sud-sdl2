@@ -225,8 +225,8 @@ namespace SUD {
 		//music->LoadFile( "1fineday.xm", true ); // One fine day... https://modarchive.org/index.php?request=view_by_moduleid&query=60034
 		//music->LoadFile( "menu-music.ogg", true ); // I don't know, I don't remember
 		//music->LoadFile( "icefront.s3m", true ); // Ice Frontier https://modarchive.org/index.php?request=view_by_moduleid&query=44366
-		music->LoadFile( "a_world_of_dreams_5.mod", true ); // A World Of Dreams 5 https://modarchive.org/index.php?request=view_by_moduleid&query=85975
-		music->SetVolume( 0.25f );
+		//music->LoadFile( "a_world_of_dreams_5.mod", true ); // A World Of Dreams 5 https://modarchive.org/index.php?request=view_by_moduleid&query=85975
+		//music->SetVolume( 0.25f );
 		//music->PlayMusic();
 
 		printf( "F1 - vsync ON/OFF\n" );
