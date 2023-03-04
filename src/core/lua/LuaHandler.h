@@ -1,29 +1,9 @@
 #pragma once
 
-#include "LuaObjectParser.h"
 #include <iostream>
 #include <vector>
-
-
-
-#define LUA_MYOBJECT "TestModel"
-
-
-class TestModel {
-public:
-	TestModel( int _x ) : x( _x ) { }
-	void set( int _x ) {
-		this->x = _x;
-	}
-	int get() const {
-		return this->x;
-	}
-	std::string name;
-
-private:
-	int x;
-
-};
+#include "LuaObjectParser.h"
+#include "generic/Game.h"
 
 
 
@@ -53,6 +33,9 @@ public:
 
 	void RegisterObject();
 
+	LuaGen::Game* GetGame();
+	LuaGen::Level* GetLevel();
+
 private:
 	lua_State* L;
 
@@ -63,9 +46,7 @@ private:
 	void BeforeRunningScript();
 	void AfterRunningScript();
 
-	static int myobject_new( lua_State* L );
-	static int myobject_delete( lua_State* L );
-	static int myobject_set( lua_State* L );
-	static int myobject_get( lua_State* L );
+	LuaGen::Game* game;
+	LuaGen::Level* level;
 
 };

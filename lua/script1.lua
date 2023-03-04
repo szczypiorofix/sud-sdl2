@@ -13,8 +13,6 @@ print( "Done." )
 -- Loading modules - finish
 
 
-
-
 -- Player ...
 p = Player:new{}
 p:setName("Todd")
@@ -28,12 +26,10 @@ local c = a + b
 print(c)
 
 
+
 -- Core
 systemCoreL = Core.new("LinuxSystem")
 systemCoreW = Core.new("WindowsSystem")
 
 print("systemCoreL = " .. systemCoreL.name)
 print("systemCoreW = " .. systemCoreW.name)
-
-
--- end of file ...

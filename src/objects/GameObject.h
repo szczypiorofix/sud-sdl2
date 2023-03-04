@@ -4,24 +4,37 @@
 #include <lua535/lua.hpp>
 #include "IObject.h"
 #include "../core/graphics/Transform.h"
-
+#include "../core//Defines.h"
+#include "../core/graphics/Font.h"
 
 
 struct Properties {
 public:
-	Properties( std::string textureID, int x, int y, int width, int height, SDL_RendererFlip flip = SDL_FLIP_NONE ) {
+	Properties( std::string textureID, int x, int y, int width, int height, bool isGeneric, std::string title, Font* font, SDL_Color fontColor, SDL_Color backgroundColor, SDL_Color borderColor, SDL_RendererFlip flip = SDL_FLIP_NONE ) {
+		TextureID = textureID;
 		X = x;
 		Y = y;
-		Flip = flip;
 		Width = width;
 		Height = height;
-		TextureID = textureID;
+		IsGeneric = isGeneric;
+		Title = title;
+		_font = font;
+		FontColor = fontColor;
+		BackgroundColor = backgroundColor;
+		BorderColor = borderColor;
+		Flip = flip;
 	}
 
 public:
 	std::string TextureID;
 	int Width, Height;
 	int X, Y;
+	bool IsGeneric;
+	std::string Title;
+	Font* _font;
+	SDL_Color FontColor;
+	SDL_Color BackgroundColor;
+	SDL_Color BorderColor;
 	SDL_RendererFlip Flip;
 };
 
@@ -33,7 +46,7 @@ class GameObject : public IObject {
 public:
 
 	GameObject( bool active = true) {
-		props = new Properties( "default", 0, 0, 0, 0 );
+		props = new Properties( "default", 0, 0, 0, 0, true, "...", nullptr, COLOR_WHITE, COLOR_BLUE, COLOR_BLUE );
 		transform = new Transform(0,0);
 		this->active = active;
 	}

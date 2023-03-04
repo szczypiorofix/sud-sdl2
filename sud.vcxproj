@@ -149,13 +149,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\core\helpers\LuaObjectParser.cpp" />
+    <ClCompile Include="src\core\lua\LuaObjectParser.cpp" />
     <ClCompile Include="src\objects\Character.cpp" />
-    <ClCompile Include="src\core\Defines.cpp" />
     <ClCompile Include="src\core\audio\Music.cpp" />
     <ClCompile Include="src\core\scene\UIEvents.cpp" />
     <ClCompile Include="src\core\graphics\Font.cpp" />
-    <ClCompile Include="src\core\helpers\LuaHandler.cpp" />
+    <ClCompile Include="src\core\lua\LuaHandler.cpp" />
     <ClCompile Include="src\core\graphics\Spritesheet.cpp" />
     <ClCompile Include="src\core\scene\Scene.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -166,7 +165,9 @@
     <ClCompile Include="src\core\graphics\TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\core\helpers\LuaObjectParser.h" />
+    <ClInclude Include="src\core\lua\generic\Game.h" />
+    <ClInclude Include="src\core\lua\generic\Level.h" />
+    <ClInclude Include="src\core\lua\LuaObjectParser.h" />
     <ClInclude Include="src\objects\Character.h" />
     <ClInclude Include="src\core\audio\Music.h" />
     <ClInclude Include="src\core\scene\UIEvents.h" />
@@ -174,7 +175,7 @@
     <ClInclude Include="src\objects\IObject.h" />
     <ClInclude Include="src\core\Defines.h" />
     <ClInclude Include="src\core\graphics\Font.h" />
-    <ClInclude Include="src\core\helpers\LuaHandler.h" />
+    <ClInclude Include="src\core\lua\LuaHandler.h" />
     <ClInclude Include="src\core\graphics\Spritesheet.h" />
     <ClInclude Include="src\core\scene\Scene.h" />
     <ClInclude Include="src\core\input\Inputs.h" />

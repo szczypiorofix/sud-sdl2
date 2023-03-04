@@ -27,8 +27,13 @@ namespace SUD {
 		
 		mm_gui_button = nullptr;
 
+		game = nullptr;
+		level = nullptr;
+
 		vsyncOn = true;
 		lockFPS = false;
+
+		lockedRefreshSettings = true;
 
 		quitGame = false;
 
@@ -47,7 +52,11 @@ namespace SUD {
 		fpsSum = 0.0f;
 		FPS = 0;
 
-		reloadLuaScripts = 0;
+		reloadLuaScripts = false;
+
+		// Run only Lua scripts, without SDL window
+		runLuaScriptsOnly = false;
+
 	}
 
 
@@ -58,6 +67,8 @@ namespace SUD {
 		delete vingueFont;
 
 		delete music;
+
+		delete mm_gui_button;
 
 		TextureManager::GetInstance()->Clean();
 
@@ -78,22 +89,34 @@ namespace SUD {
 			SDL_Log( "Args[0]: %s\n", args[0]);
 		}
 
+		if ( runLuaScriptsOnly ) {
+			InitLuaHandler();
+			ReloadLuaScripts();
+			luaHandler->Close();
+			exit(0);
+		}
+
+		// Initialize main SDL modules
 		InitMainSDLModule();
 		InitSDLSettings();
 		InitWindow();
 		InitRenderer();
 		InitGraphics();
-
-		InitLuaState();
-
 		InitMouse();
 
+		// SFXs
 		InitSFX();
 
-		InitScenes();
+		// Initialize Lua scripts handler
+		InitLuaHandler();
 
+		// Load assets
 		LoadAssets();
 
+		// Initialize scenes
+		InitScenes();
+
+		// Start game loop
 		GameLoop();
 	}
 
@@ -142,7 +165,7 @@ namespace SUD {
 		}
 	}
 
-	void GameSystem::InitLuaState(void) {
+	void GameSystem::InitLuaHandler(void) {
 		SDL_Log("Initializing Lua State");
 		luaHandler = new LuaHandler();
 	}
@@ -176,50 +199,26 @@ namespace SUD {
 	}
 
 
-	void GameSystem::InitScenes( void ) {
-		scene = new Scene("loading_scene", renderer);
-	}
-
-
-	//void clickCallback() {
-	//	printf("Click callback!\n");
-	//}
-
-
-	void GameSystem::LoadAssets( void ) {
-		SDL_Log( "Loading assets" );
+	void GameSystem::LoadAssets(void) {
+		SDL_Log("Loading assets");
 
 		// TEXTURES
-		TextureManager::GetInstance()->Load( "mm_gui_button", DIR_RES_IMAGES + "mm-gui-button.png" );
-		TextureManager::GetInstance()->Load( "main_spritesheet", DIR_RES_IMAGES + "spritesheet.png");
+		TextureManager::GetInstance()->Load("mm_gui_button", DIR_RES_IMAGES + "mm-gui-button.png");
+		TextureManager::GetInstance()->Load("main_spritesheet", DIR_RES_IMAGES + "spritesheet.png");
+		TextureManager::GetInstance()->Load("noto_0", DIR_RES_FONTS + "noto_0.png");
+		TextureManager::GetInstance()->Load("vingue_0", DIR_RES_FONTS + "vingue_0.png");
 
 		// FONTS
 		SDL_Log("Loading fonts");
-		notoFontTexture = new Texture( DIR_RES_FONTS + "noto_0.png", renderer );
-		notoFont = new Font( "noto", notoFontTexture );
+		//notoFontTexture = new Texture(DIR_RES_FONTS + "noto_0.png", renderer);
+		notoFont = new Font("noto", TextureManager::GetInstance()->GetTexture("noto_0"));
 
-		vingueFontTexture = new Texture( DIR_RES_FONTS + "vingue_0.png", renderer );
-		vingueFont = new Font( "vingue", vingueFontTexture );
-
-		// UI ELEMENTS
-		mm_gui_button = new UI(new Properties("mm_gui_button", 360, 340, 168, 32));
-		//mm_gui_button->AddOnClickCallback( clickCallback );
+		//vingueFontTexture = new Texture(DIR_RES_FONTS + "vingue_0.png", renderer);
+		vingueFont = new Font("vingue", TextureManager::GetInstance()->GetTexture("vingue_0"));
 
 
-		//UIEvent e = { 12, "Todd" };
-		//UIEvents* evt = new UIEvents( e );
-
-		//mm_gui_button->AddOnClickCallback( evt, &UIEvents::OnClickCallback );
-
-		scene->AddUIObject( "mm_gui_button", mm_gui_button );
 
 
-		// LUA SCRIPTS
-		ReloadLuaScripts();
-
-
-		// SCENE
-		scene->Load();
 
 		// MUSIC
 		//music->LoadFile( "1fineday.xm", true ); // One fine day... https://modarchive.org/index.php?request=view_by_moduleid&query=60034
@@ -229,8 +228,25 @@ namespace SUD {
 		//music->SetVolume( 0.25f );
 		//music->PlayMusic();
 
-		printf( "F1 - vsync ON/OFF\n" );
-		printf( "F2 - FPS lock to %f ON/OFF\n", targetFPS );
+		if (!lockedRefreshSettings) {
+			printf("F1 - vsync ON/OFF\n");
+			printf("F2 - FPS lock to %f ON/OFF\n", targetFPS);
+		}
+
+	}
+
+
+	void GameSystem::InitScenes( void ) {
+		scene = new Scene("loading_scene", renderer);
+
+		// UI ELEMENTS
+		mm_gui_button = new UI(new Properties("", 360, 340, 98, 32, true, "RELOAD", notoFont, COLOR_WHITE, COLOR_BLUE, COLOR_RED));
+
+		scene->AddUIObject("mm_gui_button", mm_gui_button);
+
+		scene->Load();
+
+		ReloadLuaScripts();
 
 	}
 
@@ -247,7 +263,21 @@ namespace SUD {
 
 
 		luaHandler->RunScript("main.lua");
+		
+		//level = luaHandler->GetLevel();
+		
 		luaHandler->Close();
+
+		//printf("GameSystem level %s\n", level->name);
+
+		//game = luaHandler->GetGame();
+		//printf("GameSystem: got 'game' name=%s\n", game->name);
+
+		//printf("GameSystem: got 'level' name=%s, content=%s\n", level->name, level->content);
+		//printf("GameSystem: got 'game->level' name=%s, content=%s\n", game->level->name, game->level->content);
+
+
+
 	}
 
 
@@ -268,12 +298,16 @@ namespace SUD {
 				}
 				if ( ( *inputs->eventHandler ).type == SDL_KEYUP ) {
 					switch ( ( *inputs->eventHandler ).key.keysym.sym ) {
-						case SDLK_F1:							
-							vsyncOn = !vsyncOn;
+						case SDLK_F1:
+							if ( !lockedRefreshSettings ) {
+								vsyncOn = !vsyncOn;
+							}
 							break;
 
 						case SDLK_F2:
-							lockFPS = !lockFPS;
+							if (!lockedRefreshSettings) {
+								lockFPS = !lockFPS;
+							}
 							break;
 
 						default:
@@ -290,14 +324,11 @@ namespace SUD {
 		scene->Update( dt );
 
 		if ( mm_gui_button->isClicked ) {
-			printf( "GameSystem - button was clicked!\n" );
-			if ( reloadLuaScripts == 0 ) {
-				reloadLuaScripts = 1;
-			}
+			reloadLuaScripts = true;
 		}
 
-		if ( reloadLuaScripts == 1 ) {
-			reloadLuaScripts = 0;
+		if ( reloadLuaScripts ) {
+			reloadLuaScripts = false;
 			system( "cls" );
 			ReloadLuaScripts();
 		}
@@ -318,10 +349,12 @@ namespace SUD {
 
 
 
-		notoFont->Draw( L"A¥BCÆDEÊFGHIJKL£MNÑOÓPRSŒTUWYZ¯", 10, 10, 10.0f, COLOR_CYAN );
-		notoFont->Draw( L"A¥B CÆD EÊF GHI JKL £MN ÑOÓ PRS ŒTU WYZ ¯", 10, 50, 10.0f, COLOR_CYAN );
-		notoFont->Draw( L"a¹bcædeêfghijkl³mnñoóprsœtuwyz¿Ÿ", 10, 90, 10.0f, COLOR_YELLOW );
-		notoFont->Draw( L"1234567890-=!@#$%^&*()_+{}:;',\"./?<>", 10, 130, 10.0f, COLOR_GREEN );
+
+		//notoFont->Draw( L"A¥BCÆDEÊFGHIJKL£MNÑOÓPRSŒTUWYZ¯", 10, 10, 10.0f, COLOR_CYAN );
+		//notoFont->Draw( L"A¥B CÆD EÊF GHI JKL £MN ÑOÓ PRS ŒTU WYZ ¯", 10, 50, 10.0f, COLOR_CYAN );
+		//notoFont->Draw( L"a¹bcædeêfghijkl³mnñoóprsœtuwyz¿Ÿ", 10, 90, 10.0f, COLOR_YELLOW );
+		//notoFont->Draw( L"1234567890-=!@#$%^&*()_+{}:;',\"./?<>", 10, 130, 10.0f, COLOR_GREEN );
+
 
 
 
@@ -334,7 +367,20 @@ namespace SUD {
 		//notoFont->Draw( L"Trzy œwinki zgubi³y siê w górach...", 10, 300, 16.0f, COLOR_GRAY );
 
 		//font->Draw( "single user DUNGEON", 50, 50, 0.35f );
-		//TextureManager::GetInstance()->Draw( "main_spritesheet", 10, 10, 128, 128, SDL_FLIP_NONE );
+		//TextureManager::GetInstance()->Draw( "main_spritesheet", 10, 10, 256, 256, SDL_FLIP_NONE );
+
+
+		//if (game != nullptr) {
+		//	for (int y = 0; y < game->level->height; y++) {
+
+		//		for (int x = 0; x < game->level->width; x++) {
+		//			//int charIndex = x * game->level->width + y;
+		//			//printf("ID: %i\n", charIndex);
+		//		}
+
+		//	}
+		//}
+
 	}
 
 	void GameSystem::GameLoop( void ) {

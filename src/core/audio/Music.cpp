@@ -55,7 +55,7 @@ bool Music::LoadFile( const std::string fileName, bool _loop ) {
 Music::~Music() {
 	BASS_StreamFree( stream );
 	BASS_MusicFree( music );
-	printf("MUSIC - memory released\n");
+	printf("INFO: Music memory released\n");
 }
 
 

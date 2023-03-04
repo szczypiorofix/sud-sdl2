@@ -3,11 +3,12 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include "../helpers/XMLHelper.h"
-
+#include "../GameSystem.h"
 
 Font::Font( const std::string fn, Texture* tex ) {
 	fontName = fn;
 	fontImage = tex;
+	fontTexture = nullptr;
 	imageWidth = 0;
 	imageHeight = 0;
 
@@ -44,6 +45,48 @@ Font::Font( const std::string fn, Texture* tex ) {
 	charCount = 0;
 
 	ParseXML( fn );
+}
+
+Font::Font(const std::string fn, SDL_Texture* _fontTexture) {
+	fontName = fn;
+	fontImage = nullptr;
+	fontTexture = _fontTexture;
+	imageWidth = 0;
+	imageHeight = 0;
+
+	fontChars = {};
+
+	size = 0;
+	bold = false;
+	italic = false;
+	charset = "";
+	unicode = false;
+	stretchH = 0;
+	smooth = false;
+	aa = false;
+	paddingTop = 0;
+	paddingRight = 0;
+	paddingBottom = 0;
+	paddingLeft = 0;
+	spacingLeft = 0;
+	spacingRight = 0;
+	outline = 0;
+
+	lineHeight = 0;
+	base = 0;
+	scaleW = 0;
+	scaleH = 0;
+	pages = 0;
+	packed = false;
+	alphaChnl = 0.0f;
+	redChnl = 0.0f;
+	greenChnl = 0.0f;
+	blueChnl = 0.0f;
+
+	pagesList = {};
+	charCount = 0;
+
+	ParseXML(fn);
 }
 
 Font::Font( const Font& fnt ) {
@@ -92,8 +135,8 @@ Font::Font( const Font& fnt ) {
 
 
 Font::~Font( void ) {
-	printf("Deleting fontImage: '%s'\n", fontName.c_str());
-	delete fontImage;
+	//printf("Deleting fontImage: '%s'\n", fontName.c_str());
+	//delete fontImage;
 }
 
 
@@ -250,7 +293,15 @@ void Font::Draw( const std::wstring text, int x, int y, float size, SDL_Color co
 					fontChars.at( j )->width,
 					fontChars.at( j )->height
 				};
-				this->fontImage->draw(src, dest, color);
+
+				if ( fontImage != nullptr ) {
+					fontImage->draw(src, dest, color);
+				}
+				if ( fontTexture != nullptr ) {
+					SDL_SetTextureColorMod( fontTexture, color.r, color.g, color.b);
+					SDL_RenderCopyEx(SUD::GameSystem::GetInstance()->GetRenderer(), fontTexture, &src, &dest, 0, nullptr, SDL_FLIP_NONE);
+				}
+				
 				textWidth += fontChars.at( j )->width;
 			}
 		}

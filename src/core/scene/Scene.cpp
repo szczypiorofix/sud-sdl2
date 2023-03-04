@@ -26,7 +26,7 @@ void Scene::Load( void ) {
 	//spriteSheet->Load();
 	std::map<std::string, UI*>::iterator it;
 	for ( it = gameObjectsUI.begin(); it != gameObjectsUI.end(); it++ ) {
-
+		// doing nothing for now
 	}
 }
 

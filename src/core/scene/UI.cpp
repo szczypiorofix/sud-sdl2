@@ -1,6 +1,6 @@
 #include "UI.h"
 #include "../graphics/TextureManager.h"
-
+#include "../GameSystem.h"
 
 
 void UI::Input( SDL_Event* event ) {
@@ -66,20 +66,6 @@ void UI::Input( SDL_Event* event ) {
 
 
 void UI::Update( double dt ) {
-
-	//if ( isMouseDown ) {
-	//	printf( "UI:isMouseDown\n" );
-	//}
-
-	//if ( isMouseUp ) {
-	//	printf( "UI:isMouseUp\n" );
-	//}
-
-	//if ( isClicked ) {
-	//	printf( "UI:isClicked\n" );
-	//	( this->event->OnClickCallback )( uiEvent );
-	//}
-
 	isMouseUp = false;
 }
 
@@ -87,41 +73,54 @@ void UI::Update( double dt ) {
 void UI::Draw() {
 	if ( isHovered ) {
 		if ( isMouseDown ) {
-			TextureManager::GetInstance()->DrawSprite( props->TextureID, props->X, props->Y, props->Width, props->Height, 0, 64, props->Width, props->Height, SDL_FLIP_NONE );
+			if (props->TextureID != "") {
+				TextureManager::GetInstance()->DrawSprite(props->TextureID, props->X, props->Y, props->Width, props->Height, 0, 64, props->Width, props->Height, SDL_FLIP_NONE);
+			}
+			else {
+				_drawGenericButton();
+			}
+			
 		} else {
-			TextureManager::GetInstance()->DrawSprite( props->TextureID, props->X, props->Y, props->Width, props->Height, 0, 32, props->Width, props->Height, SDL_FLIP_NONE );
+			if (props->TextureID != "") {
+				TextureManager::GetInstance()->DrawSprite(props->TextureID, props->X, props->Y, props->Width, props->Height, 0, 32, props->Width, props->Height, SDL_FLIP_NONE);
+			}
+			else {
+				_drawGenericButton();
+			}
 		}
 	} else {
-		TextureManager::GetInstance()->DrawSprite( props->TextureID, props->X, props->Y, props->Width, props->Height, 0, 0, props->Width, props->Height, SDL_FLIP_NONE );
+		if (props->TextureID != "") {
+			TextureManager::GetInstance()->DrawSprite(props->TextureID, props->X, props->Y, props->Width, props->Height, 0, 0, props->Width, props->Height, SDL_FLIP_NONE);
+		}
+		else {
+			_drawGenericButton();
+		}
 	}
-
-	// resetting events
-	/*isMouseUp = false;
-	isClicked = false;*/
-	//isHovered = false;
-
-	//if ( isClicked ) {
-	//	isClicked = false;
-	//}
-
-	//if ( isMouseUp && !isClicked) {
-	//	isClicked = true;
-	//}
 
 	isClicked = false;
 }
 
+void UI::_drawGenericButton() {
+	const SDL_Rect rect = {
+		props->X,
+		props->Y,
+		props->Width,
+		props->Height
+	};
 
-void UI::Clean() {
+	SDL_Color oldColor;
+	SDL_GetRenderDrawColor(SUD::GameSystem::GetInstance()->GetRenderer(), &oldColor.r, &oldColor.g, &oldColor.b, &oldColor.a);
+	SDL_SetRenderDrawColor(SUD::GameSystem::GetInstance()->GetRenderer(), props->BackgroundColor.r, props->BackgroundColor.g, props->BackgroundColor.b, props->BackgroundColor.a);
+
+	SDL_RenderFillRect(SUD::GameSystem::GetInstance()->GetRenderer(), &rect);
+
+	props->_font->Draw(L"Reload", props->X + 5, props->Y + 5, 1.0f, props->FontColor);
+
+	SDL_SetRenderDrawColor(SUD::GameSystem::GetInstance()->GetRenderer(), oldColor.r, oldColor.g, oldColor.b, oldColor.a);
 
 }
 
-//void UI::AddOnClickCallback( UIEvents* event, void( UIEvents::* _OnClickCallback )( UIEvent uiEvent ) ) {
-//	this->event = event;
-//}
 
+void UI::Clean() {
+}
 
-
-//void UI::AddOnClickCallback( void ( *clickCallback )( ) ) {
-//	this->clickCallback = clickCallback;
-//}

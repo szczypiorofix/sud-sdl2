@@ -1,6 +1,5 @@
 #include "LuaHandler.h"
 #include "../Defines.h"
-//#include <assert.h>
 
 
 
@@ -8,6 +7,8 @@
 LuaHandler::LuaHandler() {
     L = nullptr;
     loadedScriptsIndex = 0;
+    game = nullptr;
+    level = nullptr;
 }
 
 
@@ -22,6 +23,8 @@ void LuaHandler::Open( void ) {
         L = luaL_newstate();
         luaL_openlibs( L );
     }
+    //game = new LuaGen::Game("game");
+    //level = new LuaGen::Level();
 }
 
 
@@ -35,47 +38,23 @@ void LuaHandler::Close() {
 }
 
 
-int LuaHandler::myobject_new( lua_State* L ) {
-    double x = luaL_checknumber( L, 1 );
-    *reinterpret_cast< TestModel** >( lua_newuserdata( L, sizeof( TestModel* ) ) ) = new TestModel( x );
-    luaL_setmetatable( L, LUA_MYOBJECT );
-    return 1;
+LuaGen::Game* LuaHandler::GetGame() {
+    return game;
 }
 
-
-void LuaHandler::RegisterObject() {
-    lua_register( L, LUA_MYOBJECT, LuaHandler::myobject_new );
-    luaL_newmetatable( L, LUA_MYOBJECT );
-    lua_pushcfunction( L, myobject_delete ); lua_setfield( L, -2, "__gc" );
-    lua_pushvalue( L, -1 ); lua_setfield( L, -2, "__index" );
-    lua_pushcfunction( L, myobject_set ); lua_setfield( L, -2, "set" );
-    lua_pushcfunction( L, myobject_get ); lua_setfield( L, -2, "get" );
-    lua_pop( L, 1 );
+LuaGen::Level* LuaHandler::GetLevel() {
+    printf("Getting level %s\n", level->name);
+    return level;
 }
-
-int LuaHandler::myobject_delete(lua_State * L) {
-    delete* reinterpret_cast< TestModel** >( lua_touserdata( L, 1 ) );
-    return 0;
-}
-
-// MyObject member functions in Lua
-int LuaHandler::myobject_set(lua_State * L) {
-    ( *reinterpret_cast< TestModel** >( luaL_checkudata( L, 1, LUA_MYOBJECT ) ) )->set( luaL_checknumber( L, 2 ) );
-    return 0;
-}
-
-int LuaHandler::myobject_get( lua_State* L ) {
-    lua_pushnumber( L, ( *reinterpret_cast< TestModel** >( luaL_checkudata( L, 1, LUA_MYOBJECT ) ) )->get() );
-    return 1;
-}
-
 
 
 void LuaHandler::BeforeRunningScript() {
     // before proceeding Lua script
     //RegisterObject();
     
-    LuaObjectParser::RegisterSpriteObject( L );
+    //LuaObjectParser::RegisterSpriteObject( L );
+
+    LuaObjectParser::RegisterGameObject( L );
 
 }
 
@@ -83,13 +62,27 @@ void LuaHandler::BeforeRunningScript() {
 void LuaHandler::AfterRunningScript() {
     // after proceeding Lua script
 
-
     //Level* level01 = LuaObjectParser::GetLevel(L, "level01");
-    
 
-    // Finally - getting sprite object from Lua!
-    Sprite* sprite1 = LuaObjectParser::GetSprite(L, "sprite2");
-    printf("Getting Sprite object from Lua: address=%p x=%i, y=%i\n", &sprite1, sprite1->x, sprite1->y);
+    //Sprite* sprite = LuaObjectParser::GetSprite(L, "sprite2");
+    //if (sprite) {
+    //    printf("Getting Sprite object from Lua: address=%p name=%s, x=%i, y=%i\n", &sprite, sprite->name.c_str(), sprite->x, sprite->y);
+    //}
+
+    //game = LuaObjectParser::GetGame(L, "game");
+    //level = LuaObjectParser::GetLevel(L, "level");
+    //printf("Level name=%s, content=%s\n", level->name, level->content);
+
+
+
+    // There should be copy constructor!
+    game = LuaObjectParser::GetGame(L, "game");
+
+
+
+    //printf("LuaHandler game name=%s\n", game->name);
+    //printf("LuaHandler game level name=%s\n", game->level->content);
+
 
     printf( "LUA: Memory used: %ikb\n", lua_gc(L, LUA_GCCOUNT, 0) );
 

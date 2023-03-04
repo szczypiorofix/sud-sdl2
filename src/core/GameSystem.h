@@ -12,9 +12,9 @@
 #include "graphics/TextureManager.h"
 #include "graphics/Vector2D.h"
 #include "graphics/Transform.h"
-#include "helpers/LuaHandler.h"
+#include "lua/LuaHandler.h"
 #include "audio/Music.h"
-
+#include "lua/generic/Game.h"
 #include "scene/UIEvents.h"
 
 
@@ -72,7 +72,7 @@ namespace SUD {
 		void InitWindow( void );
 		void InitRenderer( void );
 		void InitGraphics( void );
-		void InitLuaState( void );
+		void InitLuaHandler( void );
 
 		void InitMouse( void );
 
@@ -110,10 +110,17 @@ namespace SUD {
 		
 		float targetFPS;
 
+		bool lockedRefreshSettings;
+
 		UI* mm_gui_button;
 
 		// Lua
-		int reloadLuaScripts; // 0 - idle, 1 - reloading, 2 - end
+		bool reloadLuaScripts;
+		bool runLuaScriptsOnly;
+		//
+
+		LuaGen::Game* game;
+		LuaGen::Level* level;
 
 	};
 

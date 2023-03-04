@@ -24,6 +24,7 @@ class Font {
 public:
 
 	Font( const std::string fn, Texture* tex );
+	Font( const std::string fn, SDL_Texture* fontTexture );
 	Font( const Font& fnt );
 	~Font( void );
 
@@ -32,6 +33,8 @@ public:
 private:
 
 	Texture* fontImage;
+	SDL_Texture* fontTexture;
+	
 	int imageWidth;
 	int imageHeight;
 

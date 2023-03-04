@@ -84,11 +84,8 @@
     <ClCompile Include="src\core\helpers\XMLHelper.cpp">
       <Filter>Source Files\System\Subsystems</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\helpers\LuaHandler.cpp">
+    <ClCompile Include="src\core\lua\LuaHandler.cpp">
       <Filter>Source Files\System\Subsystems</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\Defines.cpp">
-      <Filter>Source Files\System</Filter>
     </ClCompile>
     <ClCompile Include="src\core\graphics\Texture.cpp">
       <Filter>Source Files\System\Graphics</Filter>
@@ -114,7 +111,7 @@
     <ClCompile Include="src\core\scene\UIEvents.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\helpers\LuaObjectParser.cpp">
+    <ClCompile Include="src\core\lua\LuaObjectParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -134,7 +131,7 @@
     <ClInclude Include="src\core\helpers\XMLHelper.h">
       <Filter>Header Files\System\Subsystems</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\helpers\LuaHandler.h">
+    <ClInclude Include="src\core\lua\LuaHandler.h">
       <Filter>Header Files\System\Subsystems</Filter>
     </ClInclude>
     <ClInclude Include="src\core\Defines.h">
@@ -176,7 +173,13 @@
     <ClInclude Include="src\objects\Character.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\helpers\LuaObjectParser.h">
+    <ClInclude Include="src\core\lua\LuaObjectParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\lua\generic\Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\lua\generic\Level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,7 +4,7 @@ function GameObject:new()
     GameObject = {
         x = 0,
         y = 0,
-        name = "game_object"
+        name = "default_game_object"
     }
     setmetatable(GameObject, self)
     self._index = self
