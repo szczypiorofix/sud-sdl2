@@ -246,7 +246,7 @@ namespace SUD {
 
 		scene->Load();
 
-		ReloadLuaScripts();
+		reloadLuaScripts = true;
 
 	}
 
@@ -255,29 +255,22 @@ namespace SUD {
 	}
 
 	void GameSystem::ReloadLuaScripts() {
-		// LUA SCRIPTS
-		
-		//luaHandler->LoadScript( "main.lua" );
-		//luaHandler->LoadScript( "Vector2.lua" );
-		//luaHandler->RunLoadedScripts();
+		// LUA SCRIPT
 
-
-		luaHandler->RunScript("main.lua");
+		luaHandler->RunScript("main.lua");		
 		
 		//level = luaHandler->GetLevel();
-		
+		game = luaHandler->GetGame();
+
+		LuaGen::Level* l = game->level;
+
 		luaHandler->Close();
 
-		//printf("GameSystem level %s\n", level->name);
+		
 
-		//game = luaHandler->GetGame();
-		//printf("GameSystem: got 'game' name=%s\n", game->name);
-
-		//printf("GameSystem: got 'level' name=%s, content=%s\n", level->name, level->content);
-		//printf("GameSystem: got 'game->level' name=%s, content=%s\n", game->level->name, game->level->content);
-
-
-
+		//printf("GameSystem game name=%s\n", game->name.c_str());
+		//printf("GameSystem gane level name=%s\n", game->level->name.c_str());
+	
 	}
 
 

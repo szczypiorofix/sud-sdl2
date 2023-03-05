@@ -15,13 +15,15 @@ namespace LuaGen {
 			name = _name;
 		};
 
-		~Game() {
-			//delete level;
+		Game( const Game& _game ) {
+			this->name = _game.name;
+			this->level = new Level( *(_game.level) );
 		}
 
-		void Init() {};
+		~Game() {
+		}
 
-		const char* name;
+		std::string name;
 
 		Level* level;
 

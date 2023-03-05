@@ -221,8 +221,6 @@ int LuaObjectParser::_newLevel(lua_State* L) {
     void* pointerToLevel = lua_newuserdata(L, sizeof(Level));
     Level* level = new (pointerToLevel) Level();
 
-    //int levelIndex = lua_gettop(L);
-
     int tableId = 0;
 
     if (lua_istable(L, 2)) {
@@ -287,7 +285,7 @@ int LuaObjectParser::_tostringLevel(lua_State* L) {
     using namespace LuaGen;
     Level* level = (Level*)lua_touserdata(L, -1);
     std::stringstream ss;
-    ss << "Level object memaddr=" << (void const*)level << ", name=" << level->name << ", width=" << level->width << ", height=" << level->height << ", content=" << level->content;
+    ss << "Level.__tostring memaddr=" << (void const*)level << ", name=" << level->name << ", width=" << level->width << ", height=" << level->height << ", content=" << level->content;
     std::string s = ss.str();
     lua_pushstring(L, s.c_str());
     return 1;
@@ -303,7 +301,7 @@ int LuaObjectParser::_indexLevel(lua_State* L) {
 
     if (strcmp(index, "name") == 0) {
         printf("(GET)Level->name\n");
-        lua_pushstring(L, level->name);
+        lua_pushstring(L, level->name.c_str());
         return 1;
     }
     else if (strcmp(index, "width") == 0) {
@@ -318,7 +316,7 @@ int LuaObjectParser::_indexLevel(lua_State* L) {
     }
     else if (strcmp(index, "content") == 0) {
         printf("(GET)Level->content\n");
-        lua_pushstring(L, level->content);
+        lua_pushstring(L, level->content.c_str());
         return 1;
     }
     else {
@@ -341,22 +339,22 @@ int LuaObjectParser::_newindexLevel(lua_State* L) {
     if (strcmp(index, "name") == 0) {
         const char* name = lua_tostring(L, -1);
         printf("Level: set 'name' to %s\n", name);
-        level->name = lua_tostring(L, -1);
+        level->name = name;
     }
     else if (strcmp(index, "width") == 0) {
         lua_Number width = lua_tonumber(L, -1);
         printf("Level: set 'width' to %i\n", (int)width);
-        level->width = lua_tonumber(L, -1);
+        level->width = width;
     }
     else if (strcmp(index, "height") == 0) {
         lua_Number height = lua_tonumber(L, -1);
         printf("Level: set 'height' to %i\n", (int)height);
-        level->height = lua_tonumber(L, -1);
+        level->height = height;
     }
     else if (strcmp(index, "content") == 0) {
         const char* content = lua_tostring(L, -1);
         printf("Level: set 'content' to %s\n", content);
-        level->content = lua_tostring(L, -1);
+        level->content = content;
     }
     else {
         printf("Level: user trying to add unknown field '%s' to the object\n", index);
@@ -375,7 +373,7 @@ LuaGen::Level* LuaObjectParser::GetLevel(lua_State* L, const char* objectName) {
     lua_getglobal(L, objectName);
     if (lua_isuserdata(L, -1)) {
         LuaGen::Level* level = (LuaGen::Level*)lua_touserdata(L, -1);
-        printf("Returning level : %s\n", level->name);
+        printf("Returning level : %s\n", level->name.c_str());
         return level;
     }
     printf("Object %s (Level) not found !!!\n", objectName);
@@ -440,6 +438,7 @@ int LuaObjectParser::_newGame(lua_State* L) {
     Game* game = new (pointerToAGame) Game("default_game");
     game->level = new Level();
 
+    // string parameter
     if (lua_isstring(L, -2)) {
         const char* gameName = lua_tostring(L, -2);
         printf("Game: parameter 'name' set to '%s'\n", gameName);
@@ -469,23 +468,25 @@ int LuaObjectParser::_destroyGame(lua_State* L) {
 int LuaObjectParser::_indexGame(lua_State* L) {
     using namespace LuaGen;
 
-    assert(lua_isuserdata(L, -2));
-    assert(lua_isstring(L, -1));
+    assert(lua_isuserdata(L, 1)); // userdata - 1
+    assert(lua_isstring(L, 2));   // string   - 2
+        
 
-    Game* game = (Game*)lua_touserdata(L, -2);
-    const char* index = lua_tostring(L, -1);
+    Game* game = (Game*)lua_touserdata(L, 1);
+    const char* index = lua_tostring(L, 2);
 
     if (strcmp(index, "name") == 0) {
         printf("(GET)Game->name\n");
-        lua_pushstring(L, game->name);
+        lua_pushstring(L, game->name.c_str());
         return 1;
     }
     else if (strcmp(index, "level") == 0) {
         printf("(GET)Game->level\n");
 
-        //lua_pushstring(L, index);
+        luaL_getmetatable(L, "GameMetaTable");
+        //assert(lua_istable(L, -1));
+        //lua_setmetatable(L, 3);
 
-        
         TestStack(L);
 
         return 1;
@@ -493,6 +494,7 @@ int LuaObjectParser::_indexGame(lua_State* L) {
         lua_getglobal(L, "Game");
         lua_pushstring(L, index);
         lua_rawget(L, -2);
+
         return 1;
     }
 }
@@ -516,7 +518,7 @@ int LuaObjectParser::_newindexGame(lua_State* L) {
         if (lua_isuserdata(L, -1)) {
             Level* level = (Level*)lua_touserdata(L, -1);
             game->level = level;
-            printf("Game: set 'level' with name '%s' to game object\n", game->level->name);
+            printf("Game: set 'level' with name '%s' to game object\n", game->level->name.c_str());
         }
     } else {
         printf("Game: user trying to add unknown field '%s' to the object\n", index);
@@ -547,20 +549,34 @@ int LuaObjectParser::_concatstringGame(lua_State* L) {
     using namespace LuaGen;
 
     std::string leftString = "";
-    std::string objectString = "";
+    std::string rightString = "";
 
-    if (lua_isstring(L, -2)) {
+    bool leftIsString = false;
+
+    if (lua_isstring(L, -2) && lua_isuserdata(L, -1) ) {
+        leftIsString = true;
         leftString = std::string(lua_tostring(L, -2));
-    }
-
-    if (lua_isuserdata(L, -1)) {
         Game* game = (Game*)lua_touserdata(L, -1);
         std::stringstream ss;
         ss << "Game object memaddr=" << (void const*)game << ", name=" << game->name;
-        objectString = ss.str();
+        rightString = ss.str();
     }
 
-    lua_pushstring(L, (leftString + objectString).c_str());
+    if (lua_isstring(L, -1) && lua_isuserdata(L, -2)) {
+        leftString = std::string(lua_tostring(L, -1));
+        Game* game = (Game*)lua_touserdata(L, -2);
+        std::stringstream ss;
+        ss << "Game object memaddr=" << (void const*)game << ", name=" << game->name;
+        rightString = ss.str();
+    }
+
+    if (leftIsString) {
+        lua_pushstring(L, (leftString + rightString).c_str());
+    }
+    else {
+        lua_pushstring(L, (rightString + leftString).c_str());
+    }
+    
     return 1;
 }
 
@@ -568,7 +584,7 @@ LuaGen::Game* LuaObjectParser::GetGame(lua_State* L, const char* objectName) {
     lua_getglobal(L, objectName);
     if (lua_isuserdata(L, -1)) {
         LuaGen::Game* game = (LuaGen::Game*)lua_touserdata(L, -1);
-        printf("Returning game : %s\n", game->name);
+        //printf("Returning game : %s\n", game->name.c_str());
         return game;
     }
     printf("Object %s (Game) not found !!!\n", objectName);

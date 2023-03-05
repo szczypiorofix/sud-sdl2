@@ -29,6 +29,12 @@ level = Level:new(
     }
 )
 
+level.name = "Nowa gra 01"
+
+-- print(level.name)
+-- print(level.content)
+
+
 
 -- level.name = "level_001"
 -- level.width = 12
@@ -44,12 +50,12 @@ level = Level:new(
 
 -- ############ GAME ################
 game = Game:new("new game")
-
 game.level = level
+print(game.level)
 
 
-print("LUA GAME->LEVEL")
-print(game.level.width)
+-- print("LUA GAME->LEVEL")
+-- print(game.level.width)
 
 
 -- game.level = level

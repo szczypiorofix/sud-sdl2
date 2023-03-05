@@ -39,11 +39,16 @@ void LuaHandler::Close() {
 
 
 LuaGen::Game* LuaHandler::GetGame() {
+    if (game == nullptr) {
+        printf("WARNING! Game object is null!\n");
+    }
     return game;
 }
 
 LuaGen::Level* LuaHandler::GetLevel() {
-    printf("Getting level %s\n", level->name);
+    if (level == nullptr) {
+        printf("WARNING! Level object is null!\n");
+    }
     return level;
 }
 
@@ -75,10 +80,17 @@ void LuaHandler::AfterRunningScript() {
 
 
 
-    // There should be copy constructor!
+
     game = LuaObjectParser::GetGame(L, "game");
 
 
+    //level = new LuaGen::Level( *(LuaObjectParser::GetLevel(L, "level")) );
+    //level = new LuaGen::Level("nn", 12, 16, "-content-");
+
+    //printf("LuaHandler level name=%s\n", level->name.c_str());
+    //printf("LuaHandler level width=%i\n", level->width);
+    //printf("LuaHandler level height=%i\n", level->height);
+    //printf("LuaHandler level content=%s\n", level->content.c_str());
 
     //printf("LuaHandler game name=%s\n", game->name);
     //printf("LuaHandler game level name=%s\n", game->level->content);
