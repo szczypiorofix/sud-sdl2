@@ -31,152 +31,6 @@ void LuaObjectParser::TestStack(lua_State* L) {
 }
 
 
-// ==================== SPRITE =========================
-
-void LuaObjectParser::RegisterSpriteObject(lua_State* L) {
-    // New table
-    lua_newtable(L);
-    // Sprite table index on Lua stack 
-    int spriteTableIdx = lua_gettop(L);
-    lua_pushvalue(L, spriteTableIdx);
-    lua_setglobal(L, "Sprite");
-
-    // Sprite contructor
-    lua_pushcfunction(L, LuaObjectParser::_newSprite);
-    lua_setfield(L, -2, "new");
-
-    // Sprite Move method
-    lua_pushcfunction(L, LuaObjectParser::_moveSprite);
-    lua_setfield(L, -2, "Move");
-
-    // Sprite Draw method
-    lua_pushcfunction(L, LuaObjectParser::_drawSprite);
-    lua_setfield(L, -2, "Draw");
-
-    // Creating new metatable
-    luaL_newmetatable(L, "SpriteMetaTable");
-
-    lua_pushstring(L, "__gc"); // Garbage Collector metamethod - runs Sprite destructor
-    lua_pushcfunction(L, LuaObjectParser::_destroySprite);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "__tostring"); // tostring metamethod override
-    lua_pushcfunction(L, LuaObjectParser::_tostringSprite);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "__index"); // seting the proper index for SpriteMetaTable
-    lua_pushcfunction(L, LuaObjectParser::_indexSprite);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "__newindex"); // seting the proper new index for SpriteMetaTable
-    lua_pushcfunction(L, LuaObjectParser::_newindexSprite);
-    lua_settable(L, -3);
-}
-
-int LuaObjectParser::_newSprite(lua_State* L) {
-	void* pointerToASprite = lua_newuserdata(L, sizeof(Sprite));
-	Sprite* sprite = new (pointerToASprite) Sprite();
-
-    if (lua_isstring(L, -2)) {
-        const char* spriteName = lua_tostring(L, -2);
-        sprite->name = spriteName;
-    }
-    
-    printf("A new sprite has been created (name=%s).\n", sprite->name.c_str());
-    luaL_getmetatable(L, "SpriteMetaTable");
-	assert(lua_istable(L, -1));
-	lua_setmetatable(L, -2);
-	return 1;
-};
-
-int LuaObjectParser::_destroySprite(lua_State* L) {
-	Sprite* sprite = (Sprite*)lua_touserdata(L, -1);
-	sprite->~Sprite();
-	printf("Destroy sprite\n");
-	return 0;
-};
-
-int LuaObjectParser::_moveSprite(lua_State* L) {
-	Sprite* sprite = (Sprite*)lua_touserdata(L, -3);
-	lua_Number velX = lua_tonumber(L, -2);
-	lua_Number velY = lua_tonumber(L, -1);
-	sprite->Move((int)velX, (int)velY);
-	return 0;
-}
-
-int LuaObjectParser::_drawSprite(lua_State* L) {
-	Sprite* sprite = (Sprite*)lua_touserdata(L, -1);
-	sprite->Draw();
-	return 0;
-};
-
-int LuaObjectParser::_tostringSprite(lua_State* L) {
-	Sprite* sprite = (Sprite*)lua_touserdata(L, -1);
-	std::stringstream ss;
-	ss << "Sprite object memaddr=" << (void const*)sprite << ", name=" << sprite->name << ", x=" << sprite->x << ", y=" << sprite->y;
-	std::string s = ss.str();
-	lua_pushstring(L, s.c_str());
-	return 1;
-}
-
-int LuaObjectParser::_indexSprite(lua_State* L) {
-    assert(lua_isuserdata(L, -2));
-    assert(lua_isstring(L, -1));
-    
-    Sprite* sprite = (Sprite*)lua_touserdata(L, -2);
-    const char* index = lua_tostring(L, -1);
-
-    if (strcmp(index, "x") == 0) {
-        lua_pushnumber(L, sprite->x);
-        return 1;
-    } else if (strcmp(index, "y") == 0) {
-        lua_pushnumber(L, sprite->y);
-        return 1;
-    } else if (strcmp(index, "name") == 0) {
-         lua_pushstring(L, sprite->name.c_str());
-         return 1;
-    } else {
-        lua_getglobal(L, "Sprite");
-        lua_pushstring(L, index);
-        lua_rawget(L, -2);
-        return 1;
-    }
-}
-
-int LuaObjectParser::_newindexSprite(lua_State* L) {
-    assert(lua_isuserdata(L, -3));
-    assert(lua_isstring(L, -2));
-    // -1 - value we want to set
-
-    Sprite* sprite = (Sprite*)lua_touserdata(L, -3);
-    const char* index = lua_tostring(L, -2);
-    if (strcmp(index, "x") == 0) {
-        sprite->x = (int)lua_tonumber(L, -1);
-    } else if (strcmp(index, "y") == 0) {
-        sprite->y = (int)lua_tonumber(L, -1);
-    } else if (strcmp(index, "name") == 0) {
-        sprite->name = lua_tostring(L, -1);
-    } else {
-        assert(false);	//don't want you to write to my native object!!
-    }
-
-    return 0;
-}
-
-Sprite* LuaObjectParser::GetSprite(lua_State* L, const char* objectName) {
-    lua_getglobal(L, objectName);
-    if (lua_isuserdata(L, -1)) {
-        Sprite* sprite = (Sprite*)lua_touserdata(L, -1);
-        return sprite;
-    }
-    printf("Object %s (Sprite) not found !!!\n", objectName);
-    return nullptr;
-}
-
-// ================= SPRITE =================
-
-
-
 
 // ============== LEVEL ====================
 
@@ -268,7 +122,6 @@ int LuaObjectParser::_newLevel(lua_State* L) {
         lua_remove(L, -1); // remove from stack after assign
     }
 
-    //lua_pop(L, 4);
     //TestStack(L);
     return 1;
 }
@@ -359,12 +212,12 @@ int LuaObjectParser::_newindexLevel(lua_State* L) {
     else {
         printf("Level: user trying to add unknown field '%s' to the object\n", index);
 
-        lua_getuservalue(L, 1); // 1
-        lua_pushvalue(L, 2);    // 2
-        lua_pushvalue(L, 3);    // 3
-        lua_settable(L, -3);    // 1[2] = 3
+        //lua_getuservalue(L, 1); // 1
+        //lua_pushvalue(L, 2);    // 2
+        //lua_pushvalue(L, 3);    // 3
+        //lua_settable(L, -3);    // 1[2] = 3
 
-        TestStack(L);
+        //TestStack(L);
     }
     return 0;
 }
@@ -399,10 +252,6 @@ void LuaObjectParser::RegisterGameObject(lua_State* L) {
     // Game contructor
     lua_pushcfunction(L, LuaObjectParser::_newGame);
     lua_setfield(L, -2, "new");
-
-    // Game Move method
-    lua_pushcfunction(L, LuaObjectParser::_runGame);
-    lua_setfield(L, -2, "run");
 
     // Creating new metatable
     luaL_newmetatable(L, "GameMetaTable");
@@ -452,6 +301,12 @@ int LuaObjectParser::_newGame(lua_State* L) {
 
     TestStack(L);
 
+    // Stack:
+    // 1 - table - metatable GameMetaTable
+    // 2 - string - parameter (name)
+    // 3 - userdata - game
+    // 
+
     return 1;
 };
 
@@ -468,8 +323,8 @@ int LuaObjectParser::_destroyGame(lua_State* L) {
 int LuaObjectParser::_indexGame(lua_State* L) {
     using namespace LuaGen;
 
-    assert(lua_isuserdata(L, 1)); // userdata - 1
-    assert(lua_isstring(L, 2));   // string   - 2
+    assert(lua_isuserdata(L, 1)); // userdata - 1 (game)
+    assert(lua_isstring(L, 2));   // string   - 2 (parameter)
         
 
     Game* game = (Game*)lua_touserdata(L, 1);
@@ -483,9 +338,22 @@ int LuaObjectParser::_indexGame(lua_State* L) {
     else if (strcmp(index, "level") == 0) {
         printf("(GET)Game->level\n");
 
-        luaL_getmetatable(L, "GameMetaTable");
+        //lua_newtable(L);
+
+        //luaL_getmetatable(L, "GameMetaTable"); // table - 3 (game metatable)
         //assert(lua_istable(L, -1));
-        //lua_setmetatable(L, 3);
+        //lua_setmetatable(L, -2);
+
+        //luaL_getmetatable(L, "GameMetaTable");
+        //lua_getfield(L, 1, "level");
+
+        //lua_newtable(L);
+        //lua_pushstring(L, "level");
+        //lua_settable(L, 3);
+        //lua_gettable(L, -1);
+        //lua_getfield(L, 3, "level");
+
+
 
         TestStack(L);
 
@@ -526,14 +394,6 @@ int LuaObjectParser::_newindexGame(lua_State* L) {
     return 0;
 }
 
-
-int LuaObjectParser::_runGame(lua_State* L) {
-    // Just launch the function ... always
-    if ( lua_isfunction(L, -1) ) {
-        lua_pcall(L, 0, 0, 0);
-    }
-    return 0;
-}
 
 int LuaObjectParser::_tostringGame(lua_State* L) {
     using namespace LuaGen;

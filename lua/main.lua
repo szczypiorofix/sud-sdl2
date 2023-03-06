@@ -29,10 +29,8 @@ level = Level:new(
     }
 )
 
-level.name = "Nowa gra 01"
+-- level.name = "Nowa gra 01"
 
--- print(level.name)
--- print(level.content)
 
 
 
@@ -45,7 +43,6 @@ level.name = "Nowa gra 01"
 -- .. "#..........#"
 -- .. "#..........#"
 -- .. "############"
-
 
 
 -- ############ GAME ################

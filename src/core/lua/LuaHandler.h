@@ -14,9 +14,7 @@ public:
 
 	~LuaHandler( void );
 
-	bool LoadScript( const std::string fileName );
 	bool RunScript( const std::string fileName );
-	bool RunLoadedScripts();
 
 	bool ProcessText(const char* content);
 
@@ -40,8 +38,6 @@ private:
 	lua_State* L;
 
 	void Open(void);
-
-	unsigned int loadedScriptsIndex;
 
 	void BeforeRunningScript();
 	void AfterRunningScript();
