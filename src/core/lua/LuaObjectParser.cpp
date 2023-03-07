@@ -70,7 +70,7 @@ void LuaObjectParser::RegisterLevelObject(lua_State* L) {
 int LuaObjectParser::_newLevel(lua_State* L) {
     using namespace LuaGen;
 
-    printf("Level: constructor\n");
+    //printf("Level: constructor\n");
 
     void* pointerToLevel = lua_newuserdata(L, sizeof(Level));
     Level* level = new (pointerToLevel) Level();
@@ -106,24 +106,24 @@ int LuaObjectParser::_newLevel(lua_State* L) {
         lua_getfield(L, tableId, "width");
         lua_Number pWidth = lua_tonumber(L, -1);
         //printf("Level: constructor - set parameter 'width' to %i\n", (int)pWidth);
-        level->width = pWidth;
+        level->width = (uint32_t)pWidth;
         lua_remove(L, -1); // remove from stack after assign
 
         lua_getfield(L, tableId, "height");
         lua_Number pHeight = lua_tonumber(L, -1);
         //printf("Level: constructor - set parameter 'height' to %i\n", (int)pHeight);
-        level->height = pHeight;
+        level->height = (uint32_t)pHeight;
         lua_remove(L, -1); // remove from stack after assign
 
         lua_getfield(L, tableId, "background");
         const char* pBackground = lua_tostring(L, -1);
-        printf("Level: constructor - set parameter 'background' to %s\n", pBackground);
+        //printf("Level: constructor - set parameter 'background' to %s\n", pBackground);
         level->background = pBackground;
         lua_remove(L, -1); // remove from stack after assign
 
         lua_getfield(L, tableId, "foreground");
         const char* pForeground = lua_tostring(L, -1);
-        printf("Level: constructor - set parameter 'foreground' to %s\n", pForeground);
+        //printf("Level: constructor - set parameter 'foreground' to %s\n", pForeground);
         level->foreground = pForeground;
         lua_remove(L, -1); // remove from stack after assign
     }
@@ -136,7 +136,7 @@ int LuaObjectParser::_destroyLevel(lua_State* L) {
     using namespace LuaGen;
     Level* level = (Level*)lua_touserdata(L, -1);
     level->~Level();
-    printf("Level: destroy\n");
+    //printf("Level: destroy\n");
     return 0;
 }
 
@@ -159,27 +159,27 @@ int LuaObjectParser::_indexLevel(lua_State* L) {
     const char* index = lua_tostring(L, -1);
 
     if (strcmp(index, "name") == 0) {
-        printf("(GET)Level->name\n");
+        //printf("(GET)Level->name\n");
         lua_pushstring(L, level->name.c_str());
         return 1;
     }
     else if (strcmp(index, "width") == 0) {
-        printf("(GET)Level->width\n");
+        //printf("(GET)Level->width\n");
         lua_pushnumber(L, level->width);
         return 1;
     }
     else if (strcmp(index, "height") == 0) {
-        printf("(GET)Level->height\n");
+        //printf("(GET)Level->height\n");
         lua_pushnumber(L, level->height);
         return 1;
     }
     else if (strcmp(index, "background") == 0) {
-        printf("(GET)Level->background\n");
+        //printf("(GET)Level->background\n");
         lua_pushstring(L, level->background.c_str());
         return 1;
     }
     else if (strcmp(index, "foreground") == 0) {
-        printf("(GET)Level->foreground\n");
+        //printf("(GET)Level->foreground\n");
         lua_pushstring(L, level->foreground.c_str());
         return 1;
     }
@@ -202,27 +202,27 @@ int LuaObjectParser::_newindexLevel(lua_State* L) {
 
     if (strcmp(index, "name") == 0) {
         const char* name = lua_tostring(L, -1);
-        printf("Level: set 'name' to %s\n", name);
+        //printf("Level: set 'name' to %s\n", name);
         level->name = name;
     }
     else if (strcmp(index, "width") == 0) {
         lua_Number width = lua_tonumber(L, -1);
-        printf("Level: set 'width' to %i\n", (int)width);
-        level->width = width;
+        //printf("Level: set 'width' to %i\n", (int)width);
+        level->width = (uint32_t)width;
     }
     else if (strcmp(index, "height") == 0) {
         lua_Number height = lua_tonumber(L, -1);
-        printf("Level: set 'height' to %i\n", (int)height);
-        level->height = height;
+        //printf("Level: set 'height' to %i\n", (int)height);
+        level->height = (uint32_t)height;
     }
     else if (strcmp(index, "background") == 0) {
         const char* background = lua_tostring(L, -1);
-        printf("Level: set 'background' to %s\n", background);
+        //printf("Level: set 'background' to %s\n", background);
         level->background = background;
     }
     else if (strcmp(index, "foreground") == 0) {
         const char* foreground = lua_tostring(L, -1);
-        printf("Level: set 'foreground' to %s\n", foreground);
+        //printf("Level: set 'foreground' to %s\n", foreground);
         level->foreground = foreground;
     }
     else {
@@ -297,7 +297,7 @@ void LuaObjectParser::RegisterGameObject(lua_State* L) {
 int LuaObjectParser::_newGame(lua_State* L) {
     using namespace LuaGen;
 
-    printf("Game: new\n");
+    //printf("Game: new\n");
 
     void* pointerToAGame = lua_newuserdata(L, sizeof(Game));
     Game* game = new (pointerToAGame) Game("default_game");
@@ -306,7 +306,7 @@ int LuaObjectParser::_newGame(lua_State* L) {
     // string parameter
     if (lua_isstring(L, -2)) {
         const char* gameName = lua_tostring(L, -2);
-        printf("Game: parameter 'name' set to '%s'\n", gameName);
+        //printf("Game: parameter 'name' set to '%s'\n", gameName);
         game->name = gameName;
     }
 
@@ -315,7 +315,7 @@ int LuaObjectParser::_newGame(lua_State* L) {
     assert(lua_istable(L, -1));
     lua_setmetatable(L, 3);
 
-    TestStack(L);
+    //TestStack(L);
 
     // Stack:
     // 1 - table - metatable GameMetaTable
@@ -331,7 +331,7 @@ int LuaObjectParser::_destroyGame(lua_State* L) {
     using namespace LuaGen;
     Game* game = (Game*)lua_touserdata(L, -1);
     game->~Game();
-    printf("Game: destroy\n");
+    //printf("Game: destroy\n");
     return 0;
 };
 
@@ -347,32 +347,24 @@ int LuaObjectParser::_indexGame(lua_State* L) {
     const char* index = lua_tostring(L, 2);
 
     if (strcmp(index, "name") == 0) {
-        printf("(GET)Game->name\n");
+        //printf("(GET)Game->name\n");
         lua_pushstring(L, game->name.c_str());
         return 1;
     }
     else if (strcmp(index, "level") == 0) {
-        printf("(GET)Game->level\n");
+        //printf("(GET)Game->level\n");
 
-        //lua_newtable(L);
+        void* levelPointer = lua_newuserdata(L, sizeof(Level));
+        Level* tl = new(levelPointer) Level( *game->level );
 
-        //luaL_getmetatable(L, "GameMetaTable"); // table - 3 (game metatable)
-        //assert(lua_istable(L, -1));
-        //lua_setmetatable(L, -2);
+        //printf("TempLevel %s\n", tl->name.c_str());
 
-        //luaL_getmetatable(L, "GameMetaTable");
-        //lua_getfield(L, 1, "level");
+        assert(levelPointer);
 
-        //lua_newtable(L);
-        //lua_pushstring(L, "level");
-        //lua_settable(L, 3);
-        //lua_gettable(L, -1);
-        //lua_getfield(L, 3, "level");
+        luaL_getmetatable(L, "LevelMetaTable");
+        lua_setmetatable(L, -2);
 
-        //lua_getfield(L, 1, "level");
-        //lua_remove(L, 1);
-
-        TestStack(L);
+        //TestStack(L);
 
         return 1;
     } else {
@@ -396,14 +388,14 @@ int LuaObjectParser::_newindexGame(lua_State* L) {
 
     if (strcmp(index, "name") == 0) {
         const char* name = lua_tostring(L, -1);
-        printf("Game: set 'name' to %s\n", name);
+        //printf("Game: set 'name' to %s\n", name);
         game->name = name;
     }
     else if (strcmp(index, "level") == 0) {
         if (lua_isuserdata(L, -1)) {
             Level* level = (Level*)lua_touserdata(L, -1);
             game->level = level;
-            printf("Game: set 'level' with name '%s' to game object\n", game->level->name.c_str());
+            //printf("Game: set 'level' with name '%s' to game object\n", game->level->name.c_str());
         }
     } else {
         printf("Game: user trying to add unknown field '%s' to the object\n", index);
@@ -461,7 +453,7 @@ LuaGen::Game* LuaObjectParser::GetGame(lua_State* L, const char* objectName) {
     lua_getglobal(L, objectName);
     if (lua_isuserdata(L, -1)) {
         LuaGen::Game* game = (LuaGen::Game*)lua_touserdata(L, -1);
-        //printf("Returning game : %s\n", game->name.c_str());
+        //printf("Returning game : %s, level name=%s\n", game->name.c_str(), game->level->name.c_str());
         return game;
     }
     printf("Object %s (Game) not found !!!\n", objectName);

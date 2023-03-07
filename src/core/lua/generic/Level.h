@@ -29,6 +29,19 @@ namespace LuaGen {
 			this->foreground = _level.foreground;
 		}
 
+		Level& operator=(const Level& _level) {
+			//printf("Level - assign operator called.\n");
+			if (this == &_level) {
+				return *this;
+			}
+			this->name = _level.name;
+			this->width = _level.width;
+			this->height = _level.height;
+			this->foreground = _level.foreground;
+			this->background = _level.background;
+			return *this;
+		}
+
 		~Level() {
 			name = "";
 			height = 0;
@@ -40,8 +53,8 @@ namespace LuaGen {
 		std::string name;
 		std::string background;
 		std::string foreground;
-		int width;
-		int height;
+		unsigned int width;
+		unsigned int height;
 
 	};
 

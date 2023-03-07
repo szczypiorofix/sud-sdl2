@@ -11,28 +11,29 @@ namespace LuaGen {
 	public:
 
 		Game( const char* _name ) {
-			level = new Level();
 			this->name = _name;
+			this->level = new Level();
 		};
 
 		Game( const Game& _game ) {
-			printf("Game - copy constructor called.\n");
+			//printf("Game - copy constructor called.\n");
 			this->name = _game.name;
 			this->level = new Level( *(_game.level) );
 		}
 
 		~Game() {
-			printf("Game - destructor called.\n");
-			delete level;
+			//printf("Game - destructor called.\n");
+			//delete level;
 		}
 
 
 		Game& operator=(const Game& _game) {
-			printf("Game - assign operator called.\n");
+			//printf("Game - assign operator called.\n");
 			if ( this == &_game ) {
 				return *this;
 			}
 			this->name = _game.name;
+			this->level = _game.level;
 			return *this;
 		}
 

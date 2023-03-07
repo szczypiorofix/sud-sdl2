@@ -7,7 +7,6 @@
 LuaHandler::LuaHandler() {
     L = nullptr;
     game = nullptr;
-    level = nullptr;
 }
 
 
@@ -42,13 +41,6 @@ LuaGen::Game* LuaHandler::GetGame() {
     return game;
 }
 
-LuaGen::Level* LuaHandler::GetLevel() {
-    if (level == nullptr) {
-        printf("WARNING! Level object is null!\n");
-    }
-    return level;
-}
-
 
 void LuaHandler::BeforeRunningScript() {
     // before proceeding Lua script
@@ -60,8 +52,10 @@ void LuaHandler::BeforeRunningScript() {
 void LuaHandler::AfterRunningScript() {
     // after proceeding Lua script
 
-    LuaGen::Level tempLevel = *LuaObjectParser::GetLevel(L, "level");
-    level = new LuaGen::Level(tempLevel);
+    LuaGen::Game tempGame = *LuaObjectParser::GetGame(L, "game");
+    game = new LuaGen::Game(tempGame);
+
+    //printf("LuaHandler: game name=%s, game->level name=%s\n", tempGame.name.c_str(), tempGame.level->name.c_str());
 
     printf( "LUA: Memory used: %ikb\n", lua_gc(L, LUA_GCCOUNT, 0) );
 

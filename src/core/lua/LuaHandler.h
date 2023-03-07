@@ -43,6 +43,5 @@ private:
 	void AfterRunningScript();
 
 	LuaGen::Game* game;
-	LuaGen::Level* level;
 
 };
