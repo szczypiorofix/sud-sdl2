@@ -70,7 +70,7 @@ void LuaObjectParser::RegisterLevelObject(lua_State* L) {
 int LuaObjectParser::_newLevel(lua_State* L) {
     using namespace LuaGen;
 
-    printf("Level: new\n");
+    printf("Level: constructor\n");
 
     void* pointerToLevel = lua_newuserdata(L, sizeof(Level));
     Level* level = new (pointerToLevel) Level();
@@ -96,29 +96,35 @@ int LuaObjectParser::_newLevel(lua_State* L) {
 
     // Get contructor parameters ...
     if (tableId > 0 && lua_istable(L, tableId)) {
-        printf("Level: constructor - parameter is a table!\n");
+        //printf("Level: constructor - parameter is a table!\n");
         lua_getfield(L, tableId, "name");
         const char* pName = lua_tostring(L, -1);
-        printf("Level: constructor - set parameter 'name' to %s\n", pName);
+        //printf("Level: constructor - set parameter 'name' to %s\n", pName);
         level->name = pName;
         lua_remove(L, -1); // remove from stack after assign
 
         lua_getfield(L, tableId, "width");
         lua_Number pWidth = lua_tonumber(L, -1);
-        printf("Level: constructor - set parameter 'width' to %i\n", (int)pWidth);
+        //printf("Level: constructor - set parameter 'width' to %i\n", (int)pWidth);
         level->width = pWidth;
         lua_remove(L, -1); // remove from stack after assign
 
         lua_getfield(L, tableId, "height");
         lua_Number pHeight = lua_tonumber(L, -1);
-        printf("Level: constructor - set parameter 'height' to %i\n", (int)pHeight);
+        //printf("Level: constructor - set parameter 'height' to %i\n", (int)pHeight);
         level->height = pHeight;
         lua_remove(L, -1); // remove from stack after assign
 
-        lua_getfield(L, tableId, "content");
-        const char* pContent = lua_tostring(L, -1);
-        printf("Level: constructor - set parameter 'content' to %s\n", pContent);
-        level->content = pContent;
+        lua_getfield(L, tableId, "background");
+        const char* pBackground = lua_tostring(L, -1);
+        printf("Level: constructor - set parameter 'background' to %s\n", pBackground);
+        level->background = pBackground;
+        lua_remove(L, -1); // remove from stack after assign
+
+        lua_getfield(L, tableId, "foreground");
+        const char* pForeground = lua_tostring(L, -1);
+        printf("Level: constructor - set parameter 'foreground' to %s\n", pForeground);
+        level->foreground = pForeground;
         lua_remove(L, -1); // remove from stack after assign
     }
 
@@ -138,7 +144,7 @@ int LuaObjectParser::_tostringLevel(lua_State* L) {
     using namespace LuaGen;
     Level* level = (Level*)lua_touserdata(L, -1);
     std::stringstream ss;
-    ss << "Level.__tostring memaddr=" << (void const*)level << ", name=" << level->name << ", width=" << level->width << ", height=" << level->height << ", content=" << level->content;
+    ss << "Level.__tostring memaddr=" << (void const*)level << ", name=" << level->name << ", width=" << level->width << ", height=" << level->height << ", background=" << level->background << ", foreground=" << level->foreground;
     std::string s = ss.str();
     lua_pushstring(L, s.c_str());
     return 1;
@@ -167,9 +173,14 @@ int LuaObjectParser::_indexLevel(lua_State* L) {
         lua_pushnumber(L, level->height);
         return 1;
     }
-    else if (strcmp(index, "content") == 0) {
-        printf("(GET)Level->content\n");
-        lua_pushstring(L, level->content.c_str());
+    else if (strcmp(index, "background") == 0) {
+        printf("(GET)Level->background\n");
+        lua_pushstring(L, level->background.c_str());
+        return 1;
+    }
+    else if (strcmp(index, "foreground") == 0) {
+        printf("(GET)Level->foreground\n");
+        lua_pushstring(L, level->foreground.c_str());
         return 1;
     }
     else {
@@ -204,10 +215,15 @@ int LuaObjectParser::_newindexLevel(lua_State* L) {
         printf("Level: set 'height' to %i\n", (int)height);
         level->height = height;
     }
-    else if (strcmp(index, "content") == 0) {
-        const char* content = lua_tostring(L, -1);
-        printf("Level: set 'content' to %s\n", content);
-        level->content = content;
+    else if (strcmp(index, "background") == 0) {
+        const char* background = lua_tostring(L, -1);
+        printf("Level: set 'background' to %s\n", background);
+        level->background = background;
+    }
+    else if (strcmp(index, "foreground") == 0) {
+        const char* foreground = lua_tostring(L, -1);
+        printf("Level: set 'foreground' to %s\n", foreground);
+        level->foreground = foreground;
     }
     else {
         printf("Level: user trying to add unknown field '%s' to the object\n", index);
@@ -226,7 +242,7 @@ LuaGen::Level* LuaObjectParser::GetLevel(lua_State* L, const char* objectName) {
     lua_getglobal(L, objectName);
     if (lua_isuserdata(L, -1)) {
         LuaGen::Level* level = (LuaGen::Level*)lua_touserdata(L, -1);
-        printf("Returning level : %s\n", level->name.c_str());
+        //printf("Returning level : %s\n", level->name.c_str());
         return level;
     }
     printf("Object %s (Level) not found !!!\n", objectName);
@@ -353,7 +369,8 @@ int LuaObjectParser::_indexGame(lua_State* L) {
         //lua_gettable(L, -1);
         //lua_getfield(L, 3, "level");
 
-
+        //lua_getfield(L, 1, "level");
+        //lua_remove(L, 1);
 
         TestStack(L);
 

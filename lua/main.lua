@@ -4,6 +4,7 @@ package.path = package.path .. ";../lua/?.lua"
 -- #######################################
 
 
+
 -- ################ SCRIPT CODE ################
 
 print( "Lua version: ".._VERSION )
@@ -13,52 +14,70 @@ print( "Lua version: ".._VERSION )
 
 
 
-
 -- ############ LEVEL ################
+-- first level
 level = Level:new(
     {
         name = "level_01",
         width = 12,
-        height = 6,
-        content = "############"
-               .. "#..........#"
-               .. "#..........#"
-               .. "#..........#"
-               .. "#..........#"
-               .. "############"
+        height = 8,
+        background = "############"
+                  .. "#..........#"
+                  .. "#..........#"
+                  .. "###...#....#"
+                  .. "#..........#"
+                  .. "#..........#"
+                  .. "#..........#"
+                  .. "############",
+        foreground = "            "
+                  .. "            "
+                  .. "    T       "
+                  .. "            "
+                  .. "    tT T    "
+                  .. "   Tt       "
+                  .. "            "
+                  .. "            "
     }
 )
 
--- level.name = "Nowa gra 01"
+-- another level
+local level2 = Level:new(
+    {
+        name = "level_02",
+        width = 30,
+        height = 10,
+        background = "##############################"
+                   .."#............................#"
+                   .."#............................#"
+                   .."#............................#"
+                   .."#............................#"
+                   .."#.......................###..#"
+                   .."#.......................#.#..#"
+                   .."#.......................###..#"
+                   .."#............................#"
+                   .."##############################",
+        foreground = "                              "
+                   .."                              "
+                   .."       tT                     "
+                   .."         Tt  tT TTTT          "
+                   .."          tT                  "
+                   .."             tt               "
+                   .."                              "
+                   .."                              "
+                   .."                              "
+                   .."                              "
+    }
+)
 
-
-
-
--- level.name = "level_001"
--- level.width = 12
--- level.height = 6
--- level.content = "############"
--- .. "#..........#"
--- .. "#..........#"
--- .. "#..........#"
--- .. "#..........#"
--- .. "############"
+-- assign level2 to global level
+level = level2
 
 
 -- ############ GAME ################
-game = Game:new("new game")
-game.level = level
-print(game.level)
-
-
--- print("LUA GAME->LEVEL")
--- print(game.level.width)
-
-
--- game.level = level
+-- game = Game:new("new game")
 -- game.name = "new game+"
 
--- print(level.content)
+
 
 
 -- EOF

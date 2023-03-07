@@ -3,6 +3,10 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <conio.h>
+#include <string>
+#include <codecvt>
+#include <locale>
 
 #include "Defines.h"
 #include "input/Inputs.h"
@@ -121,6 +125,8 @@ namespace SUD {
 
 		LuaGen::Game* game;
 		LuaGen::Level* level;
+
+		std::wstring levelDetails;
 
 	};
 

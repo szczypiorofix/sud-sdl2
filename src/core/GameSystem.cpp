@@ -1,8 +1,12 @@
 #include "GameSystem.h"
-#include <conio.h>
-#include <iostream>
+
+
 
 using namespace Events;
+
+
+using convert_t = std::codecvt_utf8<wchar_t>;
+std::wstring_convert<convert_t, wchar_t> strconverter;
 
 
 namespace SUD {
@@ -52,6 +56,8 @@ namespace SUD {
 		fpsSum = 0.0f;
 		FPS = 0;
 
+		levelDetails = L"";
+
 		reloadLuaScripts = false;
 
 		// Run only Lua scripts, without SDL window
@@ -92,7 +98,6 @@ namespace SUD {
 		if ( runLuaScriptsOnly ) {
 			InitLuaHandler();
 			ReloadLuaScripts();
-			luaHandler->Close();
 			exit(0);
 		}
 
@@ -240,7 +245,7 @@ namespace SUD {
 		scene = new Scene("loading_scene", renderer);
 
 		// UI ELEMENTS
-		mm_gui_button = new UI(new Properties("", 360, 340, 98, 32, true, "RELOAD", notoFont, COLOR_WHITE, COLOR_BLUE, COLOR_RED));
+		mm_gui_button = new UI(new Properties("", 20, 720, 98, 32, true, "RELOAD", notoFont, COLOR_WHITE, COLOR_BLUE, COLOR_RED));
 
 		scene->AddUIObject("mm_gui_button", mm_gui_button);
 
@@ -259,18 +264,21 @@ namespace SUD {
 
 		luaHandler->RunScript("main.lua");		
 		
-		//level = luaHandler->GetLevel();
-		game = luaHandler->GetGame();
+		level = luaHandler->GetLevel();
 
-		LuaGen::Level* l = game->level;
+		printf("GameSystem: level object, name=%s, width=%i, height=%i\n", level->name.c_str(), level->width, level->height);
 
 		luaHandler->Close();
 
-		
+		//printf("GameSystem: after GB - level name=%s\n", level->name.c_str());
 
-		//printf("GameSystem game name=%s\n", game->name.c_str());
-		//printf("GameSystem gane level name=%s\n", game->level->name.c_str());
-	
+
+		std::stringstream ss;
+		ss << "Level: name=" << level->name << ", width=" << level->width << ", height=" << level->height;
+		std::string ld = ss.str();
+
+		levelDetails = strconverter.from_bytes(ld);
+		
 	}
 
 
@@ -349,6 +357,9 @@ namespace SUD {
 		//notoFont->Draw( L"1234567890-=!@#$%^&*()_+{}:;',\"./?<>", 10, 130, 10.0f, COLOR_GREEN );
 
 
+			
+		notoFont->Draw( levelDetails, 10, 30, 16.0f, COLOR_YELLOW);
+
 
 
 		//notoFont->Draw( L"A¥CÆEÊL£NÑOÓSŒZ¯a¹cæeêl³nñoósœzŸ¿", 10, 100, 2.0f, COLOR_GREEN );
@@ -363,16 +374,33 @@ namespace SUD {
 		//TextureManager::GetInstance()->Draw( "main_spritesheet", 10, 10, 256, 256, SDL_FLIP_NONE );
 
 
-		//if (game != nullptr) {
-		//	for (int y = 0; y < game->level->height; y++) {
+		if (level != nullptr) {
+			for (int y = 0; y < level->height; y++) {
+				for (int x = 0; x < level->width; x++) {
+					int charIndex = (y * level->width) + x;
+					
+					if ( charIndex < level->foreground.size() && charIndex < level->background.size() ) {
+						// background
+						if (level->background.at(charIndex) == '#') {
+							TextureManager::GetInstance()->DrawSprite("main_spritesheet", 32 + (x * 32), 128 + (y * 32), 32, 32, 384, 128, 32, 32, SDL_FLIP_NONE);
+						}
+						if (level->background.at(charIndex) == '.') {
+							TextureManager::GetInstance()->DrawSprite("main_spritesheet", 32 + (x * 32), 128 + (y * 32), 32, 32, 384, 288, 32, 32, SDL_FLIP_NONE);
+						}
 
-		//		for (int x = 0; x < game->level->width; x++) {
-		//			//int charIndex = x * game->level->width + y;
-		//			//printf("ID: %i\n", charIndex);
-		//		}
 
-		//	}
-		//}
+						// foreground
+						if (level->foreground.at(charIndex) == 'T') {
+							TextureManager::GetInstance()->DrawSprite("main_spritesheet", 32 + (x * 32), 128 + (y * 32), 32, 32, 416, 416, 32, 32, SDL_FLIP_NONE);
+						}
+						if (level->foreground.at(charIndex) == 't') {
+							TextureManager::GetInstance()->DrawSprite("main_spritesheet", 32 + (x * 32), 128 + (y * 32), 32, 32, 448, 416, 32, 32, SDL_FLIP_NONE);
+						}
+					}
+
+				}
+			}
+		}
 
 	}
 
