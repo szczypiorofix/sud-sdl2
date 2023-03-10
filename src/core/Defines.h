@@ -9,6 +9,7 @@ const std::string DIR_RES = "../res/";
 const std::string DIR_RES_FONTS = "../res/fonts/";
 const std::string DIR_RES_SCRIPTS = "../lua/";
 
+const std::string APP_NAME = "Single User Dungeon";
 
 const SDL_Color COLOR_RED = { 255, 0, 0, 255 };
 const SDL_Color COLOR_GREEN = { 0, 255, 0, 255 };

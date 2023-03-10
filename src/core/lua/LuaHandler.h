@@ -29,10 +29,7 @@ public:
 
 	void Close(void);
 
-	void RegisterObject();
-
 	LuaGen::Game* GetGame();
-	LuaGen::Level* GetLevel();
 
 private:
 	lua_State* L;

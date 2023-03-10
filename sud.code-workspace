@@ -14,5 +14,18 @@
 		"editor.showUnused": true,
 		"editor.tabSize": 4,
 		"editor.cursorBlinking": "phase"
+	},
+	"extensions": {
+		"recommendations": [
+			"riussi.code-stats-vscode",
+			"yinfei.luahelper",
+			"wayou.vscode-todo-highlight",
+			"equinusocio.vsc-community-material-theme",
+			"shd101wyy.markdown-preview-enhanced",
+			"pkief.material-icon-theme",
+			"equinusocio.vsc-material-theme",
+			"equinusocio.vsc-material-theme-icons",
+			"guillaumeisabelle.gixdeko-comments"
+		]
 	}
 }

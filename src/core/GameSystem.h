@@ -1,25 +1,18 @@
 #pragma once
 
-#include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <conio.h>
+#include <iostream>
 #include <string>
-#include <codecvt>
-#include <locale>
+
 
 #include "Defines.h"
 #include "input/Inputs.h"
-#include "graphics/Texture.h"
 #include "scene/Scene.h"
 #include "graphics/Font.h"
 #include "graphics/TextureManager.h"
-#include "graphics/Vector2D.h"
-#include "graphics/Transform.h"
 #include "lua/LuaHandler.h"
 #include "audio/Music.h"
-#include "lua/generic/Game.h"
-#include "scene/UIEvents.h"
 
 
 
@@ -27,8 +20,6 @@ namespace SUD {
 
 	const int SCREEN_WIDTH = 1360;
 	const int SCREEN_HEIGHT = 768;
-
-	const std::string APP_NAME = "Single User Dungeon";
 
 
 	class GameSystem {
@@ -124,7 +115,6 @@ namespace SUD {
 		//
 
 		LuaGen::Game* game;
-		LuaGen::Level* level;
 
 		std::wstring levelDetails;
 

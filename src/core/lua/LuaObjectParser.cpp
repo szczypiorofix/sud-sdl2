@@ -1,7 +1,10 @@
 #include "LuaObjectParser.h"
+
 #include <stdio.h>
+#include <assert.h>
 #include <iostream>
 #include "generic/Level.h"
+
 
 
 void LuaObjectParser::TestStack(lua_State* L) {
@@ -32,6 +35,69 @@ void LuaObjectParser::TestStack(lua_State* L) {
 
 
 
+// ============== PLAYER ====================
+
+void LuaObjectParser::RegisterPlayerObject(lua_State* L) {
+
+    // New table
+    lua_newtable(L);
+    // Game table index on Lua stack 
+    int gameTableIdx = lua_gettop(L);
+    lua_pushvalue(L, gameTableIdx);
+    lua_setglobal(L, "Player");
+
+    // Game contructor
+    lua_pushcfunction(L, LuaObjectParser::_newPlayer);
+    lua_setfield(L, -2, "new");
+
+    // Creating new metatable
+    luaL_newmetatable(L, "PlayerMetaTable");
+
+    lua_pushstring(L, "__gc"); // Garbage Collector metamethod - runs Player destructor
+    lua_pushcfunction(L, LuaObjectParser::_destroyPlayer);
+    lua_settable(L, -3);
+
+    //lua_pushstring(L, "__tostring"); // tostring metamethod override
+    //lua_pushcfunction(L, LuaObjectParser::_tostringPlayer);
+    //lua_settable(L, -3);
+
+    lua_pushstring(L, "__index"); // seting the proper index for PlayerMetaTable
+    lua_pushcfunction(L, LuaObjectParser::_indexPlayer);
+    lua_settable(L, -3);
+
+    lua_pushstring(L, "__newindex"); // seting the proper new index for PlayerMetaTable
+    lua_pushcfunction(L, LuaObjectParser::_newindexPlayer);
+    lua_settable(L, -3);
+}
+
+int LuaObjectParser::_newPlayer(lua_State* L) {
+    return 1;
+}
+
+int LuaObjectParser::_destroyPlayer(lua_State* L) {
+    using namespace LuaGen;
+    Player* player = (Player*)lua_touserdata(L, -1);
+    player->~Player();
+    //printf("Player: destroy\n");
+    return 0;
+}
+
+int LuaObjectParser::_indexPlayer(lua_State* L) {
+    return 0;
+}
+
+int LuaObjectParser::_newindexPlayer(lua_State* L) {
+    return 0;
+}
+
+LuaGen::Player* LuaObjectParser::GetPlayer(lua_State* L, const char* playerName) {
+    return new LuaGen::Player();
+}
+
+// =========================================
+
+
+
 // ============== LEVEL ====================
 
 void LuaObjectParser::RegisterLevelObject(lua_State* L) {
@@ -50,7 +116,7 @@ void LuaObjectParser::RegisterLevelObject(lua_State* L) {
     // Creating new metatable
     luaL_newmetatable(L, "LevelMetaTable");
 
-    lua_pushstring(L, "__gc"); // Garbage Collector metamethod - runs Game destructor
+    lua_pushstring(L, "__gc"); // Garbage Collector metamethod - runs Level destructor
     lua_pushcfunction(L, LuaObjectParser::_destroyLevel);
     lua_settable(L, -3);
 
@@ -58,11 +124,11 @@ void LuaObjectParser::RegisterLevelObject(lua_State* L) {
     lua_pushcfunction(L, LuaObjectParser::_tostringLevel);
     lua_settable(L, -3);
 
-    lua_pushstring(L, "__index"); // seting the proper index for GameMetaTable
+    lua_pushstring(L, "__index"); // seting the proper index for LevelMetaTable
     lua_pushcfunction(L, LuaObjectParser::_indexLevel);
     lua_settable(L, -3);
 
-    lua_pushstring(L, "__newindex"); // seting the proper new index for GameMetaTable
+    lua_pushstring(L, "__newindex"); // seting the proper new index for LevelMetaTable
     lua_pushcfunction(L, LuaObjectParser::_newindexLevel);
     lua_settable(L, -3);
 }
@@ -201,29 +267,56 @@ int LuaObjectParser::_newindexLevel(lua_State* L) {
     const char* index = lua_tostring(L, -2);
 
     if (strcmp(index, "name") == 0) {
-        const char* name = lua_tostring(L, -1);
-        //printf("Level: set 'name' to %s\n", name);
-        level->name = name;
+        if (lua_isstring(L, -1)) {
+            const char* name = lua_tostring(L, -1);
+            //printf("Level: set 'name' to %s\n", name);
+            level->name = name;
+        }
+        else {
+            printf("Level: trying set 'name' to wrong data type! Got %s, string required.\n", lua_typename(L, lua_type(L, -1)));
+        }
     }
     else if (strcmp(index, "width") == 0) {
-        lua_Number width = lua_tonumber(L, -1);
-        //printf("Level: set 'width' to %i\n", (int)width);
-        level->width = (uint32_t)width;
+        if (lua_isnumber(L, -1)) {
+            lua_Number width = lua_tonumber(L, -1);
+            //printf("Level: set 'width' to %i\n", (int)width);
+            level->width = (uint32_t)width;
+        }
+        else {
+            printf("Level: trying set 'width' to wrong data type! Got %s, number required.\n", lua_typename(L, lua_type(L, -1)));
+        }
     }
     else if (strcmp(index, "height") == 0) {
-        lua_Number height = lua_tonumber(L, -1);
-        //printf("Level: set 'height' to %i\n", (int)height);
-        level->height = (uint32_t)height;
+        if (lua_isnumber(L, -1)) {
+            lua_Number height = lua_tonumber(L, -1);
+            //printf("Level: set 'height' to %i\n", (int)height);
+            level->height = (uint32_t)height;
+        }
+        else {
+            printf("Level: trying set 'height' to wrong data type! Got %s, number required.\n", lua_typename(L, lua_type(L, -1)));
+        }
+        
     }
     else if (strcmp(index, "background") == 0) {
-        const char* background = lua_tostring(L, -1);
-        //printf("Level: set 'background' to %s\n", background);
-        level->background = background;
+        if (lua_isstring(L, -1)) {
+            const char* background = lua_tostring(L, -1);
+            //printf("Level: set 'background' to %s\n", background);
+            level->background = background;
+        }
+        else {
+            printf("Level: trying set 'background' to wrong data type! Got %s, string required.\n", lua_typename(L, lua_type(L, -1)));
+        }
+        
     }
     else if (strcmp(index, "foreground") == 0) {
-        const char* foreground = lua_tostring(L, -1);
-        //printf("Level: set 'foreground' to %s\n", foreground);
-        level->foreground = foreground;
+        if (lua_isstring(L, -1)) {
+            const char* foreground = lua_tostring(L, -1);
+            //printf("Level: set 'foreground' to %s\n", foreground);
+            level->foreground = foreground;
+        }
+        else {
+            printf("Level: trying set 'foreground' to wrong data type! Got %s, string required.\n", lua_typename(L, lua_type(L, -1)));
+        }
     }
     else {
         printf("Level: user trying to add unknown field '%s' to the object\n", index);
@@ -355,13 +448,14 @@ int LuaObjectParser::_indexGame(lua_State* L) {
         //printf("(GET)Game->level\n");
 
         void* levelPointer = lua_newuserdata(L, sizeof(Level));
+
         Level* tl = new(levelPointer) Level( *game->level );
 
         //printf("TempLevel %s\n", tl->name.c_str());
 
-        assert(levelPointer);
 
         luaL_getmetatable(L, "LevelMetaTable");
+        assert(lua_istable(L, -1));
         lua_setmetatable(L, -2);
 
         //TestStack(L);
@@ -387,15 +481,27 @@ int LuaObjectParser::_newindexGame(lua_State* L) {
     const char* index = lua_tostring(L, -2);
 
     if (strcmp(index, "name") == 0) {
-        const char* name = lua_tostring(L, -1);
-        //printf("Game: set 'name' to %s\n", name);
-        game->name = name;
+        if (lua_isstring(L, -1)) {
+            const char* name = lua_tostring(L, -1);
+            //printf("Game: set 'name' to %s\n", name);
+            game->name = name;
+        }
+        else {
+            printf("Game: trying set 'level' to wrong data type! Got %s, string required.\n", lua_typename(L, lua_type(L, -1)));
+        }
+        
     }
     else if (strcmp(index, "level") == 0) {
         if (lua_isuserdata(L, -1)) {
             Level* level = (Level*)lua_touserdata(L, -1);
             game->level = level;
             //printf("Game: set 'level' with name '%s' to game object\n", game->level->name.c_str());
+        }
+        else {
+            printf("Game: trying set 'level' to wrong data type! Got %s, userdata (LevelMetaTable) required.\n", lua_typename(L, lua_type(L, -1)));
+            if (lua_isnil(L, -1)) {
+                game->level = nullptr;
+            }
         }
     } else {
         printf("Game: user trying to add unknown field '%s' to the object\n", index);

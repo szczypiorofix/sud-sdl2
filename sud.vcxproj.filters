@@ -114,6 +114,9 @@
     <ClCompile Include="src\core\lua\LuaObjectParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\lua\generic\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\GameSystem.h">
@@ -180,6 +183,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\core\lua\generic\Level.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\lua\generic\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

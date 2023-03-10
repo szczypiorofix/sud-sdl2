@@ -4,7 +4,6 @@
 
 namespace LuaGen {
 
-
 	class Level {
 
 	public:
@@ -22,6 +21,7 @@ namespace LuaGen {
 
 		//Level - copy constructor
 		Level( const Level& _level) {
+			//printf("Level - copy constructor called.\n");
 			this->name = _level.name;
 			this->width = _level.width;
 			this->height = _level.height;

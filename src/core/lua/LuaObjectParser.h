@@ -3,10 +3,8 @@
 extern "C" {
 	#include <lua542/lua.hpp>
 }
-
 #include <sstream>
-#include <assert.h>
-
+#include "generic/Player.h"
 #include "generic/Game.h"
 
 
@@ -16,6 +14,13 @@ public:
 
 	static void TestStack( lua_State* L );
 
+	// Generic Lua - Player
+	static void RegisterPlayerObject(lua_State* L);
+	static int _newPlayer(lua_State* L);
+	static int _destroyPlayer(lua_State* L);
+	static int _indexPlayer(lua_State* L);
+	static int _newindexPlayer(lua_State* L);
+	static LuaGen::Player* GetPlayer(lua_State* L, const char* playerName);
 
 	// Generic Lua - Game
 	static void RegisterGameObject(lua_State* L);

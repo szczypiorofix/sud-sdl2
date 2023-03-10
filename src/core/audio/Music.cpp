@@ -15,8 +15,6 @@ Music::Music() {
 }
 
 
-
-
 bool Music::LoadFile( const std::string fileName, bool _loop ) {
 	this->loop = _loop;
 

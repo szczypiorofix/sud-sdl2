@@ -276,7 +276,7 @@ void Font::ParseXML( const std::string xmlFileName ) {
 }
 
 
-void Font::Draw( const std::wstring text, int x, int y, float size, SDL_Color color ) {
+void Font::Draw( const std::wstring text, int x, int y, float _size, SDL_Color color ) {
 	int textWidth = 0;
 	for ( size_t i = 0; i < text.length(); i++ ) {
 		for ( size_t j = 0; j < fontChars.size(); j++ ) {

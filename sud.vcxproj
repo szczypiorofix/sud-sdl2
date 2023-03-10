@@ -149,6 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\lua\generic\Player.cpp" />
     <ClCompile Include="src\core\lua\LuaObjectParser.cpp" />
     <ClCompile Include="src\objects\Character.cpp" />
     <ClCompile Include="src\core\audio\Music.cpp" />
@@ -167,6 +168,7 @@
   <ItemGroup>
     <ClInclude Include="src\core\lua\generic\Game.h" />
     <ClInclude Include="src\core\lua\generic\Level.h" />
+    <ClInclude Include="src\core\lua\generic\Player.h" />
     <ClInclude Include="src\core\lua\LuaObjectParser.h" />
     <ClInclude Include="src\objects\Character.h" />
     <ClInclude Include="src\core\audio\Music.h" />
