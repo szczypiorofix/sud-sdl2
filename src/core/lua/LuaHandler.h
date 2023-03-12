@@ -2,43 +2,49 @@
 
 #include <iostream>
 #include <vector>
-#include "LuaObjectParser.h"
-#include "generic/Game.h"
+#include "parsers/Parser.h"
+#include "objects/Game.h"
 
 
 
-class LuaHandler {
+namespace LUA {
 
-public:
-	LuaHandler();
+	class LuaHandler {
 
-	~LuaHandler( void );
+	public:
+		LuaHandler();
 
-	bool RunScript( const std::string fileName );
+		~LuaHandler(void);
 
-	bool ProcessText(const char* content);
+		bool RunScript(const std::string fileName);
+
+		bool ProcessText(const char* content);
 
 
-	bool GetGlobal( const char* name );
+		bool GetGlobal(const char* name);
 
-	bool GetInt( const char* variableName, int& value );
+		bool GetInt(const char* variableName, int& value);
 
-	bool GetFunctionStringTuple( const char* functionName, std::vector<std::string>& returnValues, const int returnValuesCounter );
+		bool GetFunctionStringTuple(const char* functionName, std::vector<std::string>& returnValues, const int returnValuesCounter);
 
-	bool GetFunctionIntValue( const char* functionName, int& value );
+		bool GetFunctionIntValue(const char* functionName, int& value);
 
-	void Close(void);
+		void Close(void);
 
-	LuaGen::Game* GetGame();
+		LUA::Object::Game* GetGame();
 
-private:
-	lua_State* L;
+	private:
+		lua_State* L;
 
-	void Open(void);
+		void Open(void);
 
-	void BeforeRunningScript();
-	void AfterRunningScript();
+		void BeforeRunningScript();
+		void AfterRunningScript();
 
-	LuaGen::Game* game;
+		LUA::Object::Game* game;
 
-};
+		LUA::Object::Player* player;
+
+	};
+
+}

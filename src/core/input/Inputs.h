@@ -20,21 +20,6 @@ namespace SUD {
 
 	};
 
-
-	//class Mouse {
-
-	//public:
-
-	//	static int X;
-	//	static int Y;
-
-	//	static void Pos(SDL_Event* event) {
-	//		if ((*event).type == SDL_MOUSEMOTION) {
-	//			SDL_GetMouseState(&X, &X);
-	//		}
-	//	}
-
-	//};
 }
 
 

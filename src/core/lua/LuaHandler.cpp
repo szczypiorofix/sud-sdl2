@@ -1,12 +1,17 @@
 #include "LuaHandler.h"
 #include "../Defines.h"
+#include "parsers/PlayerParser.h"
+#include "parsers/LevelParser.h"
+#include "parsers/GameParser.h"
 
 
 
+using namespace LUA;
 
 LuaHandler::LuaHandler() {
     L = nullptr;
     game = nullptr;
+    player = nullptr;
 }
 
 
@@ -25,16 +30,16 @@ void LuaHandler::Open( void ) {
 
 
 void LuaHandler::Close() {
-    printf("LUA: Shutting down Lua State\n");
     if (!L) {
         return;
     }
+    printf("LUA: Shutting down Lua State\n");
     lua_close( L );
     L = nullptr;
 }
 
 
-LuaGen::Game* LuaHandler::GetGame() {
+LUA::Object::Game* LuaHandler::GetGame() {
     if ( game == nullptr ) {
         printf("WARNING! Game object is null!\n");
     }
@@ -45,17 +50,26 @@ LuaGen::Game* LuaHandler::GetGame() {
 void LuaHandler::BeforeRunningScript() {
     // before proceeding Lua script
 
-    LuaObjectParser::RegisterGameObject( L );
+    LUA::Parser::PlayerParser::RegisterObject(L);
+    LUA::Parser::LevelParser::RegisterObject(L);
+    LUA::Parser::GameParser::RegisterObject(L);
 }
 
 
 void LuaHandler::AfterRunningScript() {
     // after proceeding Lua script
 
-    LuaGen::Game tempGame = *LuaObjectParser::GetGame(L, "game");
-    game = new LuaGen::Game(tempGame);
+    LUA::Object::Game tempGame = *LUA::Parser::GameParser::GetGame(L, "game");
+    game = new LUA::Object::Game(tempGame);
 
-    //printf("LuaHandler: game name=%s, game->level name=%s\n", tempGame.name.c_str(), tempGame.level->name.c_str());
+    LUA::Object::Player tempPlayer = *LUA::Parser::PlayerParser::GetPlayer(L, "player");
+    player = new LUA::Object::Player(tempPlayer);
+
+    //printf("LUA: Player name=%s\n", player->name.c_str());
+
+    int podx = 0; // player->OnDraw(L);
+
+    printf("LuaHandler: game name=%s, game->level name=%s, podx=%i\n", tempGame.name.c_str(), tempGame.level->name.c_str(), podx);
 
     printf( "LUA: Memory used: %ikb\n", lua_gc(L, LUA_GCCOUNT, 0) );
 

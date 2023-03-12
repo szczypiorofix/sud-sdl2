@@ -22,7 +22,7 @@ void Scene::AddUIObject( std::string id, UI* uiObject ) {
 	gameObjectsUI[id] = uiObject;
 }
 
-void Scene::SetLevel(LuaGen::Level* _level) {
+void Scene::SetLevel(LUA::Object::Level* _level) {
 	this->level = _level;
 }
 

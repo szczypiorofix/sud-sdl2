@@ -1,10 +1,8 @@
 #include "Player.h"
 
 
-using namespace LuaGen;
 
-
-Player::Player() {
+LUA::Object::Player::Player() {
 	name = "...";
 	x = 0;
 	y = 0;
@@ -12,11 +10,11 @@ Player::Player() {
 	height = 0;
 }
 
-Player::Player(std::string _name, int _x, int _y, unsigned int _width, unsigned int _height) : name(_name), x(_x), y(_y), width(_width), height(_height) {
+LUA::Object::Player::Player(std::string _name, int _x, int _y, unsigned int _width, unsigned int _height) : name(_name), x(_x), y(_y), width(_width), height(_height) {
 
 }
 
-Player::Player(const Player& _player) {
+LUA::Object::Player::Player(const Player& _player) {
 	this->name = _player.name;
 	this->x = _player.x;
 	this->y = _player.y;
@@ -24,7 +22,7 @@ Player::Player(const Player& _player) {
 	this->height = _player.height;
 }
 
-Player::~Player() {
+LUA::Object::Player::~Player() {
 	name = "";
 	x = 0;
 	y = 0;
@@ -32,7 +30,7 @@ Player::~Player() {
 	height = 0;
 }
 
-Player& Player::operator=(const Player& _player) {
+LUA::Object::Player& LUA::Object::Player::operator=(const Player& _player) {
 	//printf("Player - assign operator called.\n");
 	if (this == &_player) {
 		return *this;
@@ -43,4 +41,8 @@ Player& Player::operator=(const Player& _player) {
 	this->width = _player.width;
 	this->height = _player.height;
 	return *this;
+}
+
+int LUA::Object::Player::OnDraw(lua_State* L) {
+	return 0;
 }

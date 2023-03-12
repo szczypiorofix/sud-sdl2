@@ -1,9 +1,7 @@
 #include "GameSystem.h"
 #include <codecvt>
 #include <locale>
-
-
-using namespace Events;
+#include <sstream>
 
 
 using convert_t = std::codecvt_utf8<wchar_t>;
@@ -67,6 +65,9 @@ namespace SUD {
 
 
 	void GameSystem::Close( void ) {
+
+		luaHandler->Close();
+
 		scene->Unload();
 
 		delete notoFont;
@@ -172,7 +173,7 @@ namespace SUD {
 
 	void GameSystem::InitLuaHandler(void) {
 		SDL_Log("Initializing Lua State");
-		luaHandler = new LuaHandler();
+		luaHandler = new LUA::LuaHandler();
 	}
 
 	void GameSystem::InitMouse( void ) {
@@ -260,6 +261,8 @@ namespace SUD {
 	void GameSystem::ReloadLuaScripts() {
 		// LUA SCRIPT
 
+		luaHandler->Close();
+
 		luaHandler->RunScript("main.lua");		
 		
 		game = luaHandler->GetGame();
@@ -267,7 +270,6 @@ namespace SUD {
 		//printf("GameSystem: game object, name=%s, game->level name=%s\n", game->name.c_str(), game->level->name.c_str() );
 		/*printf("GameSystem: level object, name=%s, width=%i, height=%i\n", level->name.c_str(), level->width, level->height);*/
 
-		luaHandler->Close();
 
 		//printf("GameSystem: after GB - level name=%s\n", level->name.c_str());
 

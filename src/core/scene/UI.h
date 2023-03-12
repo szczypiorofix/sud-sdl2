@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../objects/GameObject.h"
+#include "../../entities/GameObject.h"
 #include "UIEvents.h"
 
 

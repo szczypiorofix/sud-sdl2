@@ -49,7 +49,7 @@ namespace SUD {
 		SDL_Renderer* renderer;
 		SDL_Cursor* cursor;
 		Scene* scene;
-		LuaHandler* luaHandler;
+		LUA::LuaHandler* luaHandler;
 
 		Music* music;
 
@@ -114,7 +114,7 @@ namespace SUD {
 		bool runLuaScriptsOnly;
 		//
 
-		LuaGen::Game* game;
+		LUA::Object::Game* game;
 
 		std::wstring levelDetails;
 

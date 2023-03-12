@@ -5,7 +5,7 @@
 #include <string>
 #include "../scene/UI.h"
 #include "../graphics/Spritesheet.h"
-#include "../lua/generic/Level.h"
+#include "../lua/objects/Level.h"
 
 
 class Scene {
@@ -23,7 +23,7 @@ public:
 
 	void AddUIObject( std::string id, UI* uiObject );
 
-	void SetLevel(LuaGen::Level* level);
+	void SetLevel(LUA::Object::Level* level);
 
 	void Input( SDL_Event* event );
 	void Update( double dt );
@@ -40,7 +40,7 @@ private:
 
 	std::map<std::string, UI*> gameObjectsUI;
 
-	LuaGen::Level* level;
+	LUA::Object::Level* level;
 
 };
 

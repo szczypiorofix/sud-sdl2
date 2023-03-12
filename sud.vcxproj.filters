@@ -102,7 +102,7 @@
     <ClCompile Include="src\core\graphics\TextureManager.cpp">
       <Filter>Source Files\System\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\objects\Character.cpp">
+    <ClCompile Include="src\entities\Character.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\core\audio\Music.cpp">
@@ -111,10 +111,22 @@
     <ClCompile Include="src\core\scene\UIEvents.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\lua\LuaObjectParser.cpp">
+    <ClCompile Include="src\core\lua\objects\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\lua\generic\Player.cpp">
+    <ClCompile Include="src\core\lua\parsers\PlayerParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\lua\objects\Level.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\lua\objects\Game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\lua\parsers\GameParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\lua\parsers\LevelParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -140,10 +152,10 @@
     <ClInclude Include="src\core\Defines.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\objects\GameObject.h">
+    <ClInclude Include="src\entities\GameObject.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="src\objects\IObject.h">
+    <ClInclude Include="src\entities\IObject.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
     <ClInclude Include="src\core\graphics\Texture.h">
@@ -173,19 +185,28 @@
     <ClInclude Include="src\core\scene\UIEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\objects\Character.h">
+    <ClInclude Include="src\entities\Character.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\lua\LuaObjectParser.h">
+    <ClInclude Include="src\core\lua\objects\Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\lua\generic\Game.h">
+    <ClInclude Include="src\core\lua\objects\Level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\lua\generic\Level.h">
+    <ClInclude Include="src\core\lua\objects\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\lua\generic\Player.h">
+    <ClInclude Include="src\core\lua\parsers\PlayerParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\lua\parsers\GameParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\lua\parsers\Parser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\lua\parsers\LevelParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
