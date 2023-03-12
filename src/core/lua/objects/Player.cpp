@@ -44,5 +44,6 @@ LUA::Object::Player& LUA::Object::Player::operator=(const Player& _player) {
 }
 
 int LUA::Object::Player::OnDraw(lua_State* L) {
+	printf("PLAYER:OnDraw call\n");
 	return 0;
 }

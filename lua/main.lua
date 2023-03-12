@@ -28,20 +28,24 @@ player = Player:new({
     y = 12,
     width = 160,
     height = 200,
-    OnDraw = function(self)
-        print("Calling OnDraw function")
-        print( self.name )
-    end
+    -- OnDraw = function()
+    --     print("Calling OnDraw function")
+    --     -- print( self.name )
+    -- end
 })
 
 -- print(player.OnDraw)
 
+
+
 -- player.OnDraw = pod
 
--- player.OnDraw = function( self )
---     print( self.name )
--- end
+player.OnDraw = function( )
+    print("Calling OnDraw function")
+end
 
+
+player.OnDraw()
 
 -- print(player)
 

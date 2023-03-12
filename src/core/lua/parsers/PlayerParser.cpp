@@ -16,6 +16,9 @@ void LUA::Parser::PlayerParser::RegisterObject(lua_State* L) {
     lua_pushcfunction(L, PlayerParser::_new);
     lua_setfield(L, -2, "new");
 
+    lua_pushcfunction(L, PlayerParser::_OnDraw);
+    lua_setfield(L, -2, "OnDraw");
+
     // ============== metamethods =====================
     // Creating new metatable
     luaL_newmetatable(L, "PlayerMetaTable");
@@ -91,7 +94,7 @@ int LUA::Parser::PlayerParser::_new(lua_State* L) {
 
         lua_getfield(L, tableId, "OnDraw");
         if (lua_isfunction(L, -1)) {
-            printf("OnDraw is function!\n");
+            printf("Player: OnDraw _new!\n");
 
             LUA::Parser::Parser::TestStack(L);
             // table
@@ -103,11 +106,15 @@ int LUA::Parser::PlayerParser::_new(lua_State* L) {
             // number 160
             // number 200
             // function
+
+            //player->OnDraw = (int*)PlayerParser::_OnDraw;
+
         }
         
         //LUA::Parser::Parser::TestStack(L);
 
         lua_settop(L, 3);
+
 
     }
     else {
@@ -167,8 +174,22 @@ int LUA::Parser::PlayerParser::_index(lua_State* L) {
         lua_pushstring(L, player->name.c_str());
     }
     else if (strcmp(index, "OnDraw") == 0) {
-        lua_pushcclosure(L, PlayerParser::_OnDraw, 1 );
+        printf("Player: OnDraw _index!\n");
+        
+        //lua_pushcclosure(L, PlayerParser::_OnDraw, 1 );
+        
+        //lua_pushcfunction(L, PlayerParser::_OnDraw);
+
+        //lua_settop(L, -2);
+
+
+        //lua_remove(L, -1);
+
+        lua_pushcclosure(L, PlayerParser::_OnDraw, 1);
+
         LUA::Parser::Parser::TestStack(L);
+
+        //lua_pcall(L, 0, 0, 0);
     }
     else {
         lua_getglobal(L, "Player");
@@ -207,25 +228,23 @@ int LUA::Parser::PlayerParser::_newindex(lua_State* L) {
     }
     else if (strcmp(index, "OnDraw") == 0) {
         if (lua_isfunction(L, -1)) {
-            printf("Player: calling OnDraw function!\n");
+            printf("Player: OnDraw _nexindex!\n");
             
-            void* playerPointer = lua_newuserdata(L, sizeof(Player));
-            Player* pl = new(playerPointer) Player(*player);
-            luaL_getmetatable(L, "PlayerMetaTable");
-            assert(lua_istable(L, -1));
-            lua_setmetatable(L, -2);
+            
+            //LUA::Parser::Parser::TestStack(L);
 
-            if (lua_isuserdata(L, -1)) {
-                LUA::Parser::Parser::TestStack(L);
-                // 1 userdata
-                // 2 string
-                // 3 function
-                // 4 userdata
-                lua_pcall(L, 1, 0, 0);
-            }
-            else {
-                printf("Player: trying to set OnDraw method but got wrong data on top of the stack! Got %s, userdata required.\n", lua_typename(L, lua_type(L, -1)));
-            }
+            // 1 userdata
+            // 2 string OnDraw
+            // 3 function
+
+            //lua_pcall(L, 0, 0, 0);
+
+            //lua_CFunction cf = lua_tocfunction(L, -1);
+            //lua_pushcclosure(L, cf, 1);
+
+            //lua_pushcclosure(L, PlayerParser::_OnDraw, 1);
+
+
         }
         else {
             printf("Player: trying set 'OnDraw' to wrong data type! Got %s, function required.\n", lua_typename(L, lua_type(L, -1)));
@@ -252,5 +271,7 @@ int LUA::Parser::PlayerParser::_OnDraw(lua_State* L) {
     using namespace LUA::Object;
     Player* player = static_cast<Player*>(lua_touserdata(L, lua_upvalueindex(1)));
     return player->OnDraw(L);
+    //player->OnDraw(L);
+    //return 0;
 }
 
