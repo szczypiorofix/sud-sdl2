@@ -92,10 +92,17 @@ int LUA::Parser::PlayerParser::_new(lua_State* L) {
         lua_getfield(L, tableId, "OnDraw");
         if (lua_isfunction(L, -1)) {
             printf("OnDraw is function!\n");
-            
-            
-            //LUA::Parser::Parser::TestStack(L);
 
+            LUA::Parser::Parser::TestStack(L);
+            // table
+            // table
+            // userdata
+            // number 3
+            // number 12
+            // string Gracz 1
+            // number 160
+            // number 200
+            // function
         }
         
         //LUA::Parser::Parser::TestStack(L);
@@ -161,6 +168,7 @@ int LUA::Parser::PlayerParser::_index(lua_State* L) {
     }
     else if (strcmp(index, "OnDraw") == 0) {
         lua_pushcclosure(L, PlayerParser::_OnDraw, 1 );
+        LUA::Parser::Parser::TestStack(L);
     }
     else {
         lua_getglobal(L, "Player");
@@ -208,7 +216,11 @@ int LUA::Parser::PlayerParser::_newindex(lua_State* L) {
             lua_setmetatable(L, -2);
 
             if (lua_isuserdata(L, -1)) {
-                //LUA::Parser::Parser::TestStack(L);
+                LUA::Parser::Parser::TestStack(L);
+                // 1 userdata
+                // 2 string
+                // 3 function
+                // 4 userdata
                 lua_pcall(L, 1, 0, 0);
             }
             else {
