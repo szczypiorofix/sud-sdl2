@@ -18,17 +18,6 @@ namespace LUA {
 
 		bool RunScript(const std::string fileName);
 
-		bool ProcessText(const char* content);
-
-
-		bool GetGlobal(const char* name);
-
-		bool GetInt(const char* variableName, int& value);
-
-		bool GetFunctionStringTuple(const char* functionName, std::vector<std::string>& returnValues, const int returnValuesCounter);
-
-		bool GetFunctionIntValue(const char* functionName, int& value);
-
 		void Close(void);
 
 		LUA::Object::Game* GetGame();
@@ -38,8 +27,8 @@ namespace LUA {
 
 		void Open(void);
 
-		void BeforeRunningScript();
-		void AfterRunningScript();
+		void InitializeObjects();
+		void RetrieveObjects();
 
 		LUA::Object::Game* game;
 

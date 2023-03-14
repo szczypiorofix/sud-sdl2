@@ -12,6 +12,9 @@ namespace LUA {
 
 		public:
 
+			int const static DEFAULT_WINDOW_WIDTH = 800;
+			int const static DEFAULT_WINDOW_HEIGHT = 600;
+
 			Game(const char* _name);
 
 			Game(const Game& _game);
@@ -22,7 +25,12 @@ namespace LUA {
 
 			std::string name;
 
+			int windowWidth;
+			int windowHeight;
+
 			Level* level;
+
+			int Init( int windowWidth, int windowHeight );
 
 		};
 

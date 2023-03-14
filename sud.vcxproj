@@ -149,12 +149,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\input\Inputs.cpp" />
     <ClCompile Include="src\core\lua\parsers\LevelParser.cpp" />
     <ClCompile Include="src\core\lua\objects\Game.cpp" />
     <ClCompile Include="src\core\lua\objects\Level.cpp" />
     <ClCompile Include="src\core\lua\parsers\GameParser.cpp" />
     <ClCompile Include="src\core\lua\parsers\PlayerParser.cpp" />
     <ClCompile Include="src\core\lua\objects\Player.cpp" />
+    <ClCompile Include="src\core\Window.cpp" />
     <ClCompile Include="src\entities\Character.cpp" />
     <ClCompile Include="src\core\audio\Music.cpp" />
     <ClCompile Include="src\core\scene\UIEvents.cpp" />
@@ -177,6 +179,7 @@
     <ClInclude Include="src\core\lua\objects\Game.h" />
     <ClInclude Include="src\core\lua\objects\Level.h" />
     <ClInclude Include="src\core\lua\objects\Player.h" />
+    <ClInclude Include="src\core\Window.h" />
     <ClInclude Include="src\entities\Character.h" />
     <ClInclude Include="src\core\audio\Music.h" />
     <ClInclude Include="src\core\scene\UIEvents.h" />
@@ -216,6 +219,14 @@
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="LICENSE" />
+    <None Include="lua\core\Core.lua" />
+    <None Include="lua\Game.lua" />
+    <None Include="lua\GameObject.lua" />
+    <None Include="lua\level.lua" />
+    <None Include="lua\main.lua" />
+    <None Include="lua\Player.lua" />
+    <None Include="lua\script1.lua" />
+    <None Include="lua\Vector2.lua" />
     <None Include="README.md" />
     <None Include="res\fonts\noto.fnt" />
     <None Include="res\images\mm-gui-button.pyxel" />

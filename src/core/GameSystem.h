@@ -7,6 +7,7 @@
 
 
 #include "Defines.h"
+#include "Window.h"
 #include "input/Inputs.h"
 #include "scene/Scene.h"
 #include "graphics/Font.h"
@@ -17,10 +18,6 @@
 
 
 namespace SUD {
-
-	const int SCREEN_WIDTH = 1360;
-	const int SCREEN_HEIGHT = 768;
-
 
 	class GameSystem {
 
@@ -45,9 +42,9 @@ namespace SUD {
 		GameSystem(void);
 
 		SUD::Inputs* inputs;
-		SDL_Window* window;
+		Window* window;
 		SDL_Renderer* renderer;
-		SDL_Cursor* cursor;
+		
 		Scene* scene;
 		LUA::LuaHandler* luaHandler;
 
@@ -60,7 +57,16 @@ namespace SUD {
 
 		bool quitGame;
 
-		void Close( void );
+		
+		
+		
+		void CloseWindow( void );
+
+		void InitGame( void );
+
+
+
+
 
 		void InitMainSDLModule( void );
 		void InitSDLSettings( void );
@@ -69,7 +75,7 @@ namespace SUD {
 		void InitGraphics( void );
 		void InitLuaHandler( void );
 
-		void InitMouse( void );
+		void InitInputs( void );
 
 		void InitSFX( void );
 

@@ -1,17 +1,21 @@
 #include "Game.h"
+#include "../parsers/Parser.h"
+
+using namespace LUA::Object;
 
 
-
-LUA::Object::Game::Game(const char* _name) {
+Game::Game(const char* _name) {
 	this->name = _name;
-	//this->level = new Level();
 	this->level = nullptr;
+	this->windowWidth = DEFAULT_WINDOW_WIDTH;
+	this->windowHeight = DEFAULT_WINDOW_HEIGHT;
 }
 
 
-LUA::Object::Game::Game(const Game& _game) {
-	//printf("Game - copy constructor called.\n");
+Game::Game(const Game& _game) {
 	this->name = _game.name;
+	this->windowWidth = _game.windowWidth;
+	this->windowHeight = _game.windowHeight;
 	if (_game.level != nullptr) {
 		this->level = new Level(*(_game.level));
 	}
@@ -22,19 +26,31 @@ LUA::Object::Game::Game(const Game& _game) {
 }
 
 
-LUA::Object::Game::~Game() {
+Game::~Game() {
 	//printf("Game - destructor called.\n");
 	//delete level;
 }
 
 
-LUA::Object::Game& LUA::Object::Game::operator=(const Game& _game) {
-	//printf("Game - assign operator called.\n");
+Game& Game::operator=(const Game& _game) {
 	if (this == &_game) {
 		return *this;
 	}
 	this->name = _game.name;
+	this->windowWidth = _game.windowWidth;
+	this->windowHeight = _game.windowHeight;
 	this->level = _game.level;
 	return *this;
 }
+
+int Game::Init( int windowWidth, int windowHeight) {
+	printf("Game:Init() called. Window size, width=%i, height=%i\n", windowWidth, windowHeight);
+
+	this->windowWidth = windowWidth;
+	this->windowHeight = windowHeight;
+
+	return 1;
+}
+
+
 

@@ -47,7 +47,7 @@ LUA::Object::Game* LuaHandler::GetGame() {
 }
 
 
-void LuaHandler::BeforeRunningScript() {
+void LuaHandler::InitializeObjects() {
     // before proceeding Lua script
 
     LUA::Parser::PlayerParser::RegisterObject(L);
@@ -56,7 +56,7 @@ void LuaHandler::BeforeRunningScript() {
 }
 
 
-void LuaHandler::AfterRunningScript() {
+void LuaHandler::RetrieveObjects() {
     // after proceeding Lua script
 
     LUA::Object::Game tempGame = *LUA::Parser::GameParser::GetGame(L, "game");
@@ -67,14 +67,20 @@ void LuaHandler::AfterRunningScript() {
 
     //printf("LUA: Player name=%s\n", player->name.c_str());
 
-    int podx = 0; // player->OnDraw(L);
+    //player->Move( L );
 
-    printf("LuaHandler: game name=%s, game->level name=%s, podx=%i\n", tempGame.name.c_str(), tempGame.level->name.c_str(), podx);
+    //int result = LUA::Parser::PlayerParser::MovePlayer(L);
+    //printf("LuaHandler result = %i\n", result);
+
+    //player->Draw();
+
+    //int (LUA::Object::Player:: * pt2Member)(float, char, char) = NULL;
+    //(player->*Move)();
+
+    //printf("LuaHandler: game name=%s, game->level name=%s, windowWidth=%i, windowHeight=%i\n", game->name.c_str(), game->level->name.c_str(), game->windowWidth, game->windowHeight);
 
     printf( "LUA: Memory used: %ikb\n", lua_gc(L, LUA_GCCOUNT, 0) );
-
 }
-
 
 
 bool LuaHandler::RunScript(const std::string fileName) {
@@ -84,69 +90,15 @@ bool LuaHandler::RunScript(const std::string fileName) {
     std::string fn = DIR_RES_SCRIPTS + fileName;
     printf("LUA: Running script: '%s'\n", fileName.c_str());
     if (fn.length() > 0) {
-        BeforeRunningScript();
+        InitializeObjects();
         if ( luaL_dofile( L, fn.c_str()) != LUA_OK ) {
             printf("LUA: Error while luaL_dofile script file ('%s'): %s\n", fileName.c_str(), lua_tostring( L, -1));
             return false;
         }
-        AfterRunningScript();
+        RetrieveObjects();
         return true;
     }
     printf("LUA: Error while reading script file ('%s'): %s\n", fileName.c_str(), lua_tostring(L, -1));
     return false;
 }
 
-
-bool LuaHandler::ProcessText(const char* content) {
-    if (L == nullptr) {
-        Open();
-    }
-    return luaL_dostring(L, content) == 0;
-}
-
-
-bool LuaHandler::GetGlobal(const char* name) {
-    return lua_getglobal(this->L, name) != 0;
-}
-
-
-bool LuaHandler::GetInt(const char*variableName, int& value) {    
-    if (!GetGlobal(variableName)) {
-        printf("LUA: Cannot find variable: %s\n", variableName);
-        return false;
-    }
-
-    if (lua_isnumber(L, -1) == false) {
-        lua_pop(L, 1);
-        return false;
-    }
-    value = (int)(lua_tointeger(L, -1));
-    lua_pop(L, 1);
-
-    return true;
-}
-
-bool LuaHandler::GetFunctionStringTuple( const char* functionName, std::vector<std::string>& returnValues, const int returnValuesCounter ) {
-    Open();
-    lua_getglobal( L, functionName );
-    if ( lua_isfunction( L, -1 ) ) {
-        lua_pcall( L, 0, returnValuesCounter, 0); // Lua Statem, 0 function parameters, 1 parameter in return, 0 - error handling
-        for ( int i = 0; i < returnValuesCounter; i++ ) {
-            returnValues.push_back( lua_tostring( L, (i + 1) * -1) );
-            std::reverse( returnValues.begin(), returnValues.end());
-        }
-    }
-    return false;
-}
-
-
-bool LuaHandler::GetFunctionIntValue( const char* functionName, int& value ) {
-    Open();
-    lua_getglobal( L, functionName );
-    if ( lua_isfunction( L, -1 ) ) {
-        lua_pcall( L, 0, 1, 0 ); // Lua Statem, 0 function parameters, 1 parameter in return, 0 - error handling
-        lua_Number luaValue = lua_tonumber( L, -1 );
-        value = ( int ) luaValue;
-    }
-    return false;
-}

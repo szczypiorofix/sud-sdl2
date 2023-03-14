@@ -129,6 +129,12 @@
     <ClCompile Include="src\core\lua\parsers\LevelParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\input\Inputs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\GameSystem.h">
@@ -209,6 +215,9 @@
     <ClInclude Include="src\core\lua\parsers\LevelParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="res\sud.rc">
@@ -286,6 +295,14 @@
     <None Include="res\images\mm-gui-button.pyxel">
       <Filter>Resource Files\Images</Filter>
     </None>
+    <None Include="lua\Vector2.lua" />
+    <None Include="lua\Game.lua" />
+    <None Include="lua\GameObject.lua" />
+    <None Include="lua\level.lua" />
+    <None Include="lua\main.lua" />
+    <None Include="lua\Player.lua" />
+    <None Include="lua\script1.lua" />
+    <None Include="lua\core\Core.lua" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="res\fonts\noto_mono.xml">

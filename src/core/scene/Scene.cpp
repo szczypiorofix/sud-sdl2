@@ -56,6 +56,9 @@ void Scene::Draw( void ) {
 	std::map<std::string, UI*>::iterator it;
 
 	// draw level
+	if ( level == nullptr ) {
+		return;
+	}
 	for (unsigned int y = 0; y < level->height; y++) {
 		for (unsigned int x = 0; x < level->width; x++) {
 			unsigned int charIndex = (y * level->width) + x;

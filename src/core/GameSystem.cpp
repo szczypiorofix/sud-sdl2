@@ -13,24 +13,18 @@ namespace SUD {
 	GameSystem::GameSystem( void ) {
 		window = nullptr;
 		renderer = nullptr;
-		inputs = new SUD::Inputs();
-
-		cursor = nullptr;
-
+		inputs = nullptr;
+		window = nullptr;
+		luaHandler = nullptr;
 		notoFontTexture = nullptr;
 		vingueFontTexture = nullptr;
 		notoFont = nullptr;
 		vingueFont = nullptr;
-
 		music = nullptr;
-
-		scene = nullptr;
-
-		luaHandler = nullptr;
-		
-		mm_gui_button = nullptr;
-
 		game = nullptr;
+		scene = nullptr;
+		mm_gui_button = nullptr;
+		
 
 		vsyncOn = true;
 		lockFPS = false;
@@ -64,7 +58,7 @@ namespace SUD {
 	}
 
 
-	void GameSystem::Close( void ) {
+	void GameSystem::CloseWindow( void ) {
 
 		luaHandler->Close();
 
@@ -80,27 +74,16 @@ namespace SUD {
 		TextureManager::GetInstance()->Clean();
 
 		SDL_DestroyRenderer( renderer );
-		SDL_DestroyWindow( window );
-
-		window = NULL;
 		renderer = NULL;
+
+		window->Destroy();
 
 		IMG_Quit();
 		SDL_Quit();
 	}
 
-	void GameSystem::Launch( int argc, char* args[] ) {
 
-		if ( argc > 1 ) {
-			SDL_Log("Game app arguments count: %i\n", argc);
-			SDL_Log( "Args[0]: %s\n", args[0]);
-		}
-
-		if ( runLuaScriptsOnly ) {
-			InitLuaHandler();
-			ReloadLuaScripts();
-			exit(0);
-		}
+	void GameSystem::InitGame() {
 
 		// Initialize main SDL modules
 		InitMainSDLModule();
@@ -108,13 +91,11 @@ namespace SUD {
 		InitWindow();
 		InitRenderer();
 		InitGraphics();
-		InitMouse();
+
+		InitInputs();
 
 		// SFXs
 		InitSFX();
-
-		// Initialize Lua scripts handler
-		InitLuaHandler();
 
 		// Load assets
 		LoadAssets();
@@ -124,6 +105,23 @@ namespace SUD {
 
 		// Start game loop
 		GameLoop();
+
+	}
+
+
+	void GameSystem::Launch( int argc, char* args[] ) {
+
+		if ( argc > 1 ) {
+			SDL_Log("Game app arguments count: %i\n", argc);
+			SDL_Log( "Args[0]: %s\n", args[0]);
+		}
+
+		// Initialize Lua scripts handler
+		InitLuaHandler();
+
+		ReloadLuaScripts();
+
+		InitGame();
 	}
 
 	void GameSystem::InitMainSDLModule( void ) {
@@ -142,18 +140,14 @@ namespace SUD {
 	}
 
 	void GameSystem::InitWindow( void ) {
-		SDL_Log( "Initializing window" );
-		window = SDL_CreateWindow( APP_NAME.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-		if ( window == NULL ) {
-			SDL_LogError( SDL_LogCategory::SDL_LOG_CATEGORY_SYSTEM, "Window could not be created! SDL Error: %s\n", SDL_GetError() );
-			exit( 1 );
-		}
+		window = new Window();
+		window->Init( game->windowWidth, game->windowHeight, APP_NAME.c_str() );
 	}
 
 	void GameSystem::InitRenderer( void ) {
 		SDL_Log( "Initializing renderer" );
 		// keep v-sync on
-		renderer = SDL_CreateRenderer( window, -1, vsyncOn ? ( SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC ) : ( SDL_RENDERER_ACCELERATED ) );
+		renderer = SDL_CreateRenderer( window->GetWindow(), -1, vsyncOn ? (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC) : (SDL_RENDERER_ACCELERATED));
 		if ( renderer == NULL ) {
 			SDL_LogError( SDL_LogCategory::SDL_LOG_CATEGORY_RENDER, "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
 			exit( 1 );
@@ -176,23 +170,9 @@ namespace SUD {
 		luaHandler = new LUA::LuaHandler();
 	}
 
-	void GameSystem::InitMouse( void ) {
-		SDL_Log( "Initializing mouse cursor" );
-
-		SDL_ShowCursor( SDL_ENABLE );
-		SDL_WarpMouseInWindow( window, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 );
-
-		SDL_Surface* cursorIcon = IMG_Load( std::string( DIR_RES_IMAGES + "mouse_cursor.png" ).c_str() );
-		if ( cursorIcon == nullptr ) {
-			printf("Cannot initialize mouse cursor surface!\n");
-			exit( 1 );
-		}
-		cursor = SDL_CreateColorCursor( cursorIcon, 0, 0 );
-		if ( cursor == nullptr ) {
-			printf( "Cannot attach mouse icon to cursor!\n" );
-			exit( 1 );
-		}
-		SDL_SetCursor( cursor );
+	void GameSystem::InitInputs( void ) {
+		inputs = new SUD::Inputs();
+		inputs->Init( window->GetWindow(), game->windowWidth / 2, game->windowHeight / 2, "mouse_cursor.png");
 	}
 
 
@@ -250,7 +230,9 @@ namespace SUD {
 
 		scene->Load();
 
-		reloadLuaScripts = true;
+		scene->SetLevel(game->level);
+
+		//reloadLuaScripts = true;
 
 	}
 
@@ -261,39 +243,61 @@ namespace SUD {
 	void GameSystem::ReloadLuaScripts() {
 		// LUA SCRIPT
 
+		//CloseWindow();
+
 		luaHandler->Close();
 
-		luaHandler->RunScript("main.lua");		
+
+
+		// ===============================================================================
+		// 
+		// IDEAS:
+		// - run lua scripts before initializing of SDL
+		// - create SLD window calling lua functions
+		// - initialize all game functions using Lua scripts? Look soooo coooool! iksde
+		// 
+		// ===============================================================================
+
+
+
+
+
+
+		luaHandler->RunScript("main.lua");
 		
 		game = luaHandler->GetGame();
+
+		if (game == nullptr) {
+			printf("Game object is null. Set game object to default object\n");
+			game = new LUA::Object::Game("default_game");
+		}
 
 		//printf("GameSystem: game object, name=%s, game->level name=%s\n", game->name.c_str(), game->level->name.c_str() );
 		/*printf("GameSystem: level object, name=%s, width=%i, height=%i\n", level->name.c_str(), level->width, level->height);*/
 
 
-		//printf("GameSystem: after GB - level name=%s\n", level->name.c_str());
+		if ( game != nullptr && game->level != nullptr ) {
+			std::stringstream ss;
+			ss << "Game level: name=" << game->level->name << ", width=" << game->level->width << ", height=" << game->level->height;
+			std::string ld = ss.str();
+			levelDetails = strconverter.from_bytes(ld);
 
+			//std::cout << ld.c_str() << std::endl;
 
-		std::stringstream ss;
-		ss << "Game level: name=" << game->level->name << ", width=" << game->level->width << ", height=" << game->level->height;
-		std::string ld = ss.str();
-
-		levelDetails = strconverter.from_bytes(ld);
-		
-		if (game != nullptr && game->level != nullptr) {
-			scene->SetLevel(game->level);
+			//scene->SetLevel(game->level);
 		}
+
 
 	}
 
 
 	void GameSystem::Input( void ) {
-		while ( SDL_PollEvent( inputs->eventHandler ) != 0 ) {
-			if ( ( *inputs->eventHandler ).type == SDL_QUIT ) {
+		while ( SDL_PollEvent( inputs->event ) != 0 ) {
+			if ( ( *inputs->event).type == SDL_QUIT ) {
 				quitGame = true;
 			} else {
-				if ( ( *inputs->eventHandler ).type == SDL_KEYDOWN ) {
-					switch ( ( *inputs->eventHandler ).key.keysym.sym ) {
+				if ( ( *inputs->event).type == SDL_KEYDOWN ) {
+					switch ( ( *inputs->event).key.keysym.sym ) {
 						case SDLK_ESCAPE:
 							quitGame = true;
 							break;
@@ -302,8 +306,8 @@ namespace SUD {
 							break;
 					}
 				}
-				if ( ( *inputs->eventHandler ).type == SDL_KEYUP ) {
-					switch ( ( *inputs->eventHandler ).key.keysym.sym ) {
+				if ( ( *inputs->event).type == SDL_KEYUP ) {
+					switch ( ( *inputs->event).key.keysym.sym ) {
 						case SDLK_F1:
 							if ( !lockedRefreshSettings ) {
 								vsyncOn = !vsyncOn;
@@ -320,7 +324,7 @@ namespace SUD {
 							break;
 					}
 				}
-				scene->Input( inputs->eventHandler );
+				scene->Input( inputs->event);
 			}
 		}
 	}
@@ -402,7 +406,7 @@ namespace SUD {
 			elapsedMS = ( endPerf - startPerf ) / ( float ) SDL_GetPerformanceFrequency() * 1000.0f;
 			if ( lockFPS ) {
 				delayMS = floor( ( 1000.0f / targetFPS ) - elapsedMS );
-				SDL_Delay( delayMS );
+				SDL_Delay( (int)delayMS );
 			}
 
 			endTicks = SDL_GetTicks();
@@ -424,7 +428,7 @@ namespace SUD {
 
 		}
 
-		Close();
+		CloseWindow();
 	}
 
 }

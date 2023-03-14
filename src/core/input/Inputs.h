@@ -1,6 +1,9 @@
 #pragma once
 
+#include <stdio.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+
 
 
 namespace SUD {
@@ -8,16 +11,16 @@ namespace SUD {
 	class Inputs {
 
 	public:
-		Inputs() {
-			eventHandler = new SDL_Event();
-		}
+		Inputs();
 
-		~Inputs() {
-			eventHandler = nullptr;
-		}
+		~Inputs();
 
-		SDL_Event* eventHandler;
+		void Init( SDL_Window* window, int setMousePositionX, int setMousePositionY, const char* mouseIconImage );
 
+		SDL_Event* event;
+
+	private:
+		SDL_Cursor* cursor;
 	};
 
 }

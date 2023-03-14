@@ -15,38 +15,11 @@ Game = require("Game")
 game = Game
 
 
-
-pod = function( self )
-    print("Calling OnDraw function")
-    print( self.name )
-end
-
-
 player = Player:new({
     name = "Gracz 1",
     x = 3,
     y = 12,
     width = 160,
-    height = 200,
-    -- OnDraw = function()
-    --     print("Calling OnDraw function")
-    --     -- print( self.name )
-    -- end
+    height = 200
 })
 
--- print(player.OnDraw)
-
-
-
--- player.OnDraw = pod
-
-player.OnDraw = function( )
-    print("Calling OnDraw function")
-end
-
-
-player.OnDraw()
-
--- print(player)
-
--- print(player.OnDraw)

@@ -3,7 +3,11 @@
 #include <assert.h>
 
 
-void LUA::Parser::GameParser::RegisterObject(lua_State* L) {
+using namespace LUA::Parser;
+using namespace LUA::Object;
+
+
+void GameParser::RegisterObject(lua_State* L) {
 
     //GameParser::RegisterLevelObject(L);
 
@@ -17,6 +21,11 @@ void LUA::Parser::GameParser::RegisterObject(lua_State* L) {
     // Game contructor
     lua_pushcfunction(L, GameParser::_new);
     lua_setfield(L, -2, "new");
+
+    // Init method
+    lua_pushcfunction(L, GameParser::Init);
+    lua_setfield(L, -2, "init");
+
 
     // ============== metamethods =====================
     // Creating new metatable
@@ -44,9 +53,7 @@ void LUA::Parser::GameParser::RegisterObject(lua_State* L) {
 }
 
 
-int LUA::Parser::GameParser::_new(lua_State* L) {
-    using namespace LUA::Object;
-
+int GameParser::_new(lua_State* L) {
     //printf("Game: new\n");
 
     void* pointerToAGame = lua_newuserdata(L, sizeof(Game));
@@ -77,8 +84,7 @@ int LUA::Parser::GameParser::_new(lua_State* L) {
 };
 
 
-int LUA::Parser::GameParser::_destroy(lua_State* L) {
-    using namespace LUA::Object;
+int GameParser::_destroy(lua_State* L) {
     Game* game = (Game*)lua_touserdata(L, -1);
     game->~Game();
     //printf("Game: destroy\n");
@@ -86,30 +92,26 @@ int LUA::Parser::GameParser::_destroy(lua_State* L) {
 };
 
 // Getter
-int LUA::Parser::GameParser::_index(lua_State* L) {
-    using namespace LUA::Object;
-
+int GameParser::_index(lua_State* L) {
     assert(lua_isuserdata(L, 1)); // userdata - 1 (game)
     assert(lua_isstring(L, 2));   // string   - 2 (parameter)
-
 
     Game* game = (Game*)lua_touserdata(L, 1);
     const char* index = lua_tostring(L, 2);
 
     if (strcmp(index, "name") == 0) {
-        //printf("(GET)Game->name\n");
         lua_pushstring(L, game->name.c_str());
         return 1;
-    }
-    else if (strcmp(index, "level") == 0) {
-        //printf("(GET)Game->level\n");
-
+    } else if (strcmp(index, "windowWidth") == 0) {
+        lua_pushnumber(L, game->windowWidth);
+        return 1;
+    } else if (strcmp(index, "windowHeight") == 0) {
+        lua_pushnumber(L, game->windowHeight);
+        return 1;
+    } else if (strcmp(index, "level") == 0) {
         void* levelPointer = lua_newuserdata(L, sizeof(Level));
-
         Level* tl = new(levelPointer) Level(*game->level);
-
         //printf("TempLevel %s\n", tl->name.c_str());
-
 
         luaL_getmetatable(L, "LevelMetaTable");
         assert(lua_istable(L, -1));
@@ -119,7 +121,25 @@ int LUA::Parser::GameParser::_index(lua_State* L) {
 
         return 1;
     }
-    else {
+        /*else if (strcmp(index, "init") == 0) {
+        printf("Calling game:init()\n");
+        
+        int (Game:: * pt2Member)(lua_State *LL) = NULL;
+        pt2Member = &Game::Init;
+
+        int result4 = (game->*pt2Member)(L);
+
+        lua_pushstring(L, "init");
+        lua_rawget(L, -2);
+
+        printf("Pointer from game->init = %i\n", result4);
+        
+        
+        Parser::TestStack(L);
+
+        return 1;
+    }*/
+        else {
         lua_getglobal(L, "Game");
         lua_pushstring(L, index);
         lua_rawget(L, -2);
@@ -128,9 +148,7 @@ int LUA::Parser::GameParser::_index(lua_State* L) {
 }
 
 //Setter
-int LUA::Parser::GameParser::_newindex(lua_State* L) {
-    using namespace LUA::Object;
-
+int GameParser::_newindex(lua_State* L) {
     assert(lua_isuserdata(L, 1));
     assert(lua_isstring(L, 2));
 
@@ -140,13 +158,27 @@ int LUA::Parser::GameParser::_newindex(lua_State* L) {
     if (strcmp(index, "name") == 0) {
         if (lua_isstring(L, -1)) {
             const char* name = lua_tostring(L, -1);
-            //printf("Game: set 'name' to %s\n", name);
             game->name = name;
         }
         else {
-            printf("Game: trying set 'level' to wrong data type! Got %s, string required.\n", lua_typename(L, lua_type(L, -1)));
+            printf("Game: trying set 'name' to wrong data type! Got %s, string required.\n", lua_typename(L, lua_type(L, -1)));
         }
-
+    } else if (strcmp(index, "windowWidth") == 0) {
+        if (lua_isnumber(L, -1)) {
+            lua_Number windowWidth = lua_tonumber(L, -1);
+            game->windowWidth = (int)windowWidth;
+        }
+        else {
+            printf("Game: trying set 'windowWidth' to wrong data type! Got %s, number required.\n", lua_typename(L, lua_type(L, -1)));
+        }
+    } else if (strcmp(index, "windowHeight") == 0) {
+        if (lua_isnumber(L, -1)) {
+            lua_Number windowHeight = lua_tonumber(L, -1);
+            game->windowHeight = (int)windowHeight;
+        }
+        else {
+            printf("Game: trying set 'windowHeight' to wrong data type! Got %s, number required.\n", lua_typename(L, lua_type(L, -1)));
+        }
     }
     else if (strcmp(index, "level") == 0) {
         if (lua_isuserdata(L, -1)) {
@@ -167,8 +199,7 @@ int LUA::Parser::GameParser::_newindex(lua_State* L) {
 }
 
 
-int LUA::Parser::GameParser::_tostring(lua_State* L) {
-    using namespace LUA::Object;
+int GameParser::_tostring(lua_State* L) {
     Game* game = (Game*)lua_touserdata(L, -1);
     std::stringstream ss;
     ss << "Game object memaddr=" << (void const*)game << ", name=" << game->name << ", level=" << (game->level == nullptr ? 0 : game->level->width);
@@ -177,9 +208,7 @@ int LUA::Parser::GameParser::_tostring(lua_State* L) {
     return 1;
 }
 
-int LUA::Parser::GameParser::_concatstring(lua_State* L) {
-    using namespace LUA::Object;
-
+int GameParser::_concatstring(lua_State* L) {
     std::string leftString = "";
     std::string rightString = "";
 
@@ -212,8 +241,7 @@ int LUA::Parser::GameParser::_concatstring(lua_State* L) {
     return 1;
 }
 
-LUA::Object::Game* LUA::Parser::GameParser::GetGame(lua_State* L, const char* gameName) {
-    using namespace LUA::Object;
+LUA::Object::Game* GameParser::GetGame(lua_State* L, const char* gameName) {
     lua_getglobal(L, gameName);
     if (lua_isuserdata(L, -1)) {
         Game* game = (Game*)lua_touserdata(L, -1);
@@ -222,6 +250,29 @@ LUA::Object::Game* LUA::Parser::GameParser::GetGame(lua_State* L, const char* ga
     }
     printf("Object %s (Game) not found !!!\n", gameName);
     return nullptr;
+}
+
+int GameParser::Init(lua_State* L) {
+    int windowWidth = Game::DEFAULT_WINDOW_WIDTH;
+    int windowHeight = Game::DEFAULT_WINDOW_HEIGHT;
+
+    // Checking if seond element on stack is table (first parameter)
+    if (lua_istable(L, -1)) {       
+        lua_getfield(L, -1, "windowWidth");
+        lua_Integer wW = lua_tointeger(L, -1);
+        windowWidth = wW;
+        
+        lua_getfield(L, -2, "windowHeight");
+        lua_Integer wH = lua_tointeger(L, -1);
+        windowHeight = wH;
+    }
+
+    // Second parameter is userdata
+    Game* game = (Game*)lua_touserdata(L, 1);
+    if (game != nullptr) {
+        return game->Init( windowWidth, windowHeight );
+    }
+    return 0;
 }
 
 

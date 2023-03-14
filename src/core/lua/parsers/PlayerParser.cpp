@@ -3,7 +3,11 @@
 #include <assert.h>
 
 
-void LUA::Parser::PlayerParser::RegisterObject(lua_State* L) {
+using namespace LUA::Parser;
+using namespace LUA::Object;
+
+
+void PlayerParser::RegisterObject(lua_State* L) {
 
     // New table
     lua_newtable(L);
@@ -16,8 +20,9 @@ void LUA::Parser::PlayerParser::RegisterObject(lua_State* L) {
     lua_pushcfunction(L, PlayerParser::_new);
     lua_setfield(L, -2, "new");
 
-    lua_pushcfunction(L, PlayerParser::_OnDraw);
-    lua_setfield(L, -2, "OnDraw");
+    // Player Move method
+    lua_pushcfunction(L, PlayerParser::Move);
+    lua_setfield(L, -2, "Move");
 
     // ============== metamethods =====================
     // Creating new metatable
@@ -38,12 +43,16 @@ void LUA::Parser::PlayerParser::RegisterObject(lua_State* L) {
     lua_pushstring(L, "__newindex"); // seting the proper new index for PlayerMetaTable
     lua_pushcfunction(L, PlayerParser::_newindex);
     lua_settable(L, -3);
+
+   
+    // SET GLOBAL FUNCTION FOR PLAYER
+    lua_pushcfunction(L, PlayerParser::MovePlayer);
+    lua_setglobal(L, "MovePlayer");
+
 }
 
 
-int LUA::Parser::PlayerParser::_new(lua_State* L) {
-    using namespace LUA::Object;
-
+int PlayerParser::_new(lua_State* L) {
     //printf("Player: constructor\n");
 
     void* pointerToPlayer = lua_newuserdata(L, sizeof(Player));
@@ -91,31 +100,8 @@ int LUA::Parser::PlayerParser::_new(lua_State* L) {
             lua_Number height = lua_tonumber(L, -1);
             player->height = (int)height;
         }
-
-        lua_getfield(L, tableId, "OnDraw");
-        if (lua_isfunction(L, -1)) {
-            printf("Player: OnDraw _new!\n");
-
-            LUA::Parser::Parser::TestStack(L);
-            // table
-            // table
-            // userdata
-            // number 3
-            // number 12
-            // string Gracz 1
-            // number 160
-            // number 200
-            // function
-
-            //player->OnDraw = (int*)PlayerParser::_OnDraw;
-
-        }
         
-        //LUA::Parser::Parser::TestStack(L);
-
         lua_settop(L, 3);
-
-
     }
     else {
         lua_setmetatable(L, 2); // assign metatable (PlayerMetaTable) to userdata
@@ -126,21 +112,22 @@ int LUA::Parser::PlayerParser::_new(lua_State* L) {
         // userdata is on top of the stack
     }
 
-    //LUA::Parser::Parser::TestStack(L);
+    lua_newtable(L);
+    lua_setuservalue(L, 3);
+
+    //Parser::TestStack(L);
 
     return 1;
 }
 
-int LUA::Parser::PlayerParser::_destroy(lua_State* L) {
-    using namespace LUA::Object;
+int PlayerParser::_destroy(lua_State* L) {
     Player* player = (Player*)lua_touserdata(L, -1);
     player->~Player();
     //printf("Player: destroy\n");
     return 0;
 }
 
-int LUA::Parser::PlayerParser::_tostring(lua_State* L) {
-    using namespace LUA::Object;
+int PlayerParser::_tostring(lua_State* L) {
     Player* player = (Player*)lua_touserdata(L, -1);
     std::stringstream ss;
     ss << "Player.__tostring memaddr=" << (void const*)player << ", name=" << player->name << ", x=" << player->y << ", y=" << player->x;
@@ -149,11 +136,9 @@ int LUA::Parser::PlayerParser::_tostring(lua_State* L) {
     return 1;
 }
 
-int LUA::Parser::PlayerParser::_index(lua_State* L) {
-    using namespace LUA::Object;
-
-    assert( lua_isuserdata(L, 1) );
-    assert( lua_isstring(L, 2) );
+int PlayerParser::_index(lua_State* L) {
+    assert( lua_isuserdata(L, 1) ); // 1
+    assert( lua_isstring(L, 2) );   // 2
 
     Player* player = (Player*)lua_touserdata(L, 1);
     const char* index = lua_tostring(L, 2);
@@ -173,37 +158,37 @@ int LUA::Parser::PlayerParser::_index(lua_State* L) {
     else if (strcmp(index, "name") == 0) {
         lua_pushstring(L, player->name.c_str());
     }
-    else if (strcmp(index, "OnDraw") == 0) {
-        printf("Player: OnDraw _index!\n");
-        
-        //lua_pushcclosure(L, PlayerParser::_OnDraw, 1 );
-        
-        //lua_pushcfunction(L, PlayerParser::_OnDraw);
+    else if (strcmp(index, "Move") == 0) {
+        printf("Calling LUA Move function?\n");
 
-        //lua_settop(L, -2);
+        lua_getuservalue(L, 1);
+        lua_pushvalue(L, 2);
+        lua_gettable(L, -2);
 
-
-        //lua_remove(L, -1);
-
-        lua_pushcclosure(L, PlayerParser::_OnDraw, 1);
-
-        LUA::Parser::Parser::TestStack(L);
-
-        //lua_pcall(L, 0, 0, 0);
+        //LUA::Parser::Parser::TestStack(L);
     }
     else {
-        lua_getglobal(L, "Player");
-        lua_pushstring(L, index);
-        lua_rawget(L, -2);
+        
+        lua_getuservalue(L, 1);
+        lua_pushvalue(L, 2);
+        lua_gettable(L, -2);
+
+        if (lua_isnil(L, -1)) {
+            lua_getglobal(L, "Player");
+            lua_pushstring(L, index);
+            lua_rawget(L, -2);
+        }
+
+        //Parser::TestStack(L);
+
     }
     return 1;
 }
 
-int LUA::Parser::PlayerParser::_newindex(lua_State* L) {
-    using namespace LUA::Object;
-
-    assert(lua_isuserdata(L, 1));
-    assert(lua_isstring(L, 2));
+int PlayerParser::_newindex(lua_State* L) {
+    assert(lua_isuserdata(L, 1)); // 1
+    assert(lua_isstring(L, 2));   // 2
+    // key -                      // 3
 
     Player* player = (Player*)lua_touserdata(L, 1);
     const char* index = lua_tostring(L, 2);
@@ -226,38 +211,63 @@ int LUA::Parser::PlayerParser::_newindex(lua_State* L) {
             printf("Player: trying set 'y' to wrong data type! Got %s, int required.\n", lua_typename(L, lua_type(L, -1)));
         }
     }
-    else if (strcmp(index, "OnDraw") == 0) {
+    else if (strcmp(index, "width") == 0) {
+        if (lua_isnumber(L, -1)) {
+            lua_Number width = lua_tonumber(L, -1);
+            player->width = (int)width;
+        }
+        else {
+            printf("Player: trying set 'width' to wrong data type! Got %s, int required.\n", lua_typename(L, lua_type(L, -1)));
+        }
+    }
+    else if (strcmp(index, "height") == 0) {
+        if (lua_isnumber(L, -1)) {
+            lua_Number height = lua_tonumber(L, -1);
+            player->height = (int)height;
+        }
+        else {
+            printf("Player: trying set 'height' to wrong data type! Got %s, int required.\n", lua_typename(L, lua_type(L, -1)));
+        }
+    }
+    else if (strcmp(index, "Draw") == 0) {
         if (lua_isfunction(L, -1)) {
-            printf("Player: OnDraw _nexindex!\n");
-            
-            
-            //LUA::Parser::Parser::TestStack(L);
+            printf("Set new value to player:Draw() method\n");
 
-            // 1 userdata
-            // 2 string OnDraw
-            // 3 function
 
-            //lua_pcall(L, 0, 0, 0);
 
-            //lua_CFunction cf = lua_tocfunction(L, -1);
-            //lua_pushcclosure(L, cf, 1);
 
-            //lua_pushcclosure(L, PlayerParser::_OnDraw, 1);
+            //int (Player:: * DrawPointer)(void) = NULL;
+            //DrawPointer = &Player::Draw;
+            //int result = (*player.*DrawPointer)();
+            //printf("Calling object method pointer? No problema! Result=%i\n", result);
+
+
+
+            //Parser::TestStack(L);
 
 
         }
         else {
-            printf("Player: trying set 'OnDraw' to wrong data type! Got %s, function required.\n", lua_typename(L, lua_type(L, -1)));
+            printf("Player: trying set 'Move' to wrong data type! Got %s, int required.\n", lua_typename(L, lua_type(L, -1)));
         }
     }
     else {
-        printf("Player: user trying to add an object of type '%s' to an unknown field '%s'\n", lua_typename(L, lua_type(L, -1)), index);
+
+        //printf("Player: user trying to add an object of type '%s' to an unknown field '%s'\n", lua_typename(L, lua_type(L, -1)), index);
+
+        printf("Player: assign unknown data of type %s to player as '%s' field\n", lua_typename(L, lua_type(L, -1)), index);
+
+        //Parser::TestStack(L);
+
+        lua_getuservalue(L, 1); // 1 - player table
+        lua_pushvalue(L, 2);    // 2 - index
+        lua_pushvalue(L, 3);    // 3 - value
+        lua_settable(L, -3);    // 1[2] = 3
     }
     return 0;
 }
 
-LUA::Object::Player* LUA::Parser::PlayerParser::GetPlayer(lua_State* L, const char* playerName) {
-    using namespace LUA::Object;
+Player* PlayerParser::GetPlayer(lua_State* L, const char* playerName) {
     lua_getglobal(L, playerName);
     if (lua_isuserdata(L, -1)) {
         Player* player = (Player*)lua_touserdata(L, -1);
@@ -267,11 +277,26 @@ LUA::Object::Player* LUA::Parser::PlayerParser::GetPlayer(lua_State* L, const ch
     return nullptr;
 }
 
-int LUA::Parser::PlayerParser::_OnDraw(lua_State* L) {
-    using namespace LUA::Object;
-    Player* player = static_cast<Player*>(lua_touserdata(L, lua_upvalueindex(1)));
-    return player->OnDraw(L);
-    //player->OnDraw(L);
-    //return 0;
+
+int PlayerParser::Move(lua_State* L) {
+    Player* player = (Player*)lua_touserdata(L, lua_upvalueindex(1));
+    return player->Move(L);
+}
+
+
+int PlayerParser::MovePlayer(lua_State* L) {
+    printf("PlayerParser::MovePlayer call\n");
+
+    /*Player* player = (Player*)lua_touserdata(L, lua_upvalueindex(1));
+    return player->Move(L);*/
+
+    if (lua_isuserdata(L, -1)) {
+        // ok first parameter is userdata
+        printf("PlayerParser::MovePlayer first parameter is userdata\n");
+    }
+
+    Parser::TestStack(L);
+
+    return 0;
 }
 

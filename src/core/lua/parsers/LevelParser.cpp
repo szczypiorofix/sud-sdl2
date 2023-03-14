@@ -3,7 +3,11 @@
 #include <assert.h>
 
 
-void LUA::Parser::LevelParser::RegisterObject(lua_State* L) {
+using namespace LUA::Parser;
+using namespace LUA::Object;
+
+
+void LevelParser::RegisterObject(lua_State* L) {
 
     // New table
     lua_newtable(L);
@@ -37,8 +41,7 @@ void LUA::Parser::LevelParser::RegisterObject(lua_State* L) {
     lua_settable(L, -3);
 }
 
-int LUA::Parser::LevelParser::_new(lua_State* L) {
-    using namespace LUA::Object;
+int LevelParser::_new(lua_State* L) {
 
     //printf("Level: constructor\n");
 
@@ -98,16 +101,14 @@ int LUA::Parser::LevelParser::_new(lua_State* L) {
     return 1;
 }
 
-int LUA::Parser::LevelParser::_destroy(lua_State* L) {
-    using namespace LUA::Object;
+int LevelParser::_destroy(lua_State* L) {
     Level* level = (Level*)lua_touserdata(L, -1);
     level->~Level();
     //printf("Level: destroy\n");
     return 0;
 }
 
-int LUA::Parser::LevelParser::_tostring(lua_State* L) {
-    using namespace LUA::Object;
+int LevelParser::_tostring(lua_State* L) {
     Level* level = (Level*)lua_touserdata(L, -1);
     std::stringstream ss;
     ss << "Level.__tostring memaddr=" << (void const*)level << ", name=" << level->name << ", width=" << level->width << ", height=" << level->height << ", background=" << level->background << ", foreground=" << level->foreground;
@@ -116,8 +117,7 @@ int LUA::Parser::LevelParser::_tostring(lua_State* L) {
     return 1;
 }
 
-int LUA::Parser::LevelParser::_index(lua_State* L) {
-    using namespace LUA::Object;
+int LevelParser::_index(lua_State* L) {
     assert(lua_isuserdata(L, -2));
     assert(lua_isstring(L, -1));
 
@@ -157,8 +157,7 @@ int LUA::Parser::LevelParser::_index(lua_State* L) {
     }
 }
 
-int LUA::Parser::LevelParser::_newindex(lua_State* L) {
-    using namespace LUA::Object;
+int LevelParser::_newindex(lua_State* L) {
     assert(lua_isuserdata(L, -3)); // 1
     assert(lua_isstring(L, -2));   // 2
     // -1 a value we want to set   // 3
@@ -230,8 +229,7 @@ int LUA::Parser::LevelParser::_newindex(lua_State* L) {
     return 0;
 }
 
-LUA::Object::Level* LUA::Parser::LevelParser::GetLevel(lua_State* L, const char* objectName) {
-    using namespace LUA::Object;
+Level* LevelParser::GetLevel(lua_State* L, const char* objectName) {
     lua_getglobal(L, objectName);
     if (lua_isuserdata(L, -1)) {
         Level* level = (Level*)lua_touserdata(L, -1);

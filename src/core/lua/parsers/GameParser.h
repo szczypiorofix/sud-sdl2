@@ -19,6 +19,8 @@ namespace LUA {
 			static int _newindex(lua_State* L);
 			static LUA::Object::Game* GetGame(lua_State* L, const char* gameName);
 
+			static int Init(lua_State* L);
+
 		};
 
 

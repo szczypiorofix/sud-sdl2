@@ -21,7 +21,10 @@ namespace LUA {
 			static int _newindex(lua_State* L);
 			static LUA::Object::Player* GetPlayer(lua_State* L, const char* playerName);
 			
-			static int _OnDraw(lua_State* L);
+			static int Move(lua_State* L);
+
+			static int MovePlayer(lua_State* L);
+
 		};
 
 	}

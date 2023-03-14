@@ -43,7 +43,13 @@ LUA::Object::Player& LUA::Object::Player::operator=(const Player& _player) {
 	return *this;
 }
 
-int LUA::Object::Player::OnDraw(lua_State* L) {
-	printf("PLAYER:OnDraw call\n");
+int LUA::Object::Player::Move(lua_State* L) {
+	printf("Player (C++) Move method\n");
 	return 0;
+}
+
+
+int LUA::Object::Player::Draw() {
+	printf("Player (C++) Draw method\n");
+	return 12;
 }

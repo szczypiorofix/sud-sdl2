@@ -31,7 +31,12 @@ namespace LUA {
 
 			std::string name;
 
-			int OnDraw(lua_State* L);
+			int Move(lua_State* L);
+
+			int Draw();
+
+
+			//int (Player::* Move)(float, char, char) = NULL;
 
 		};
 	}
