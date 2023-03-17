@@ -90,9 +90,6 @@
     <ClCompile Include="src\core\graphics\Texture.cpp">
       <Filter>Source Files\System\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\graphics\Spritesheet.cpp">
-      <Filter>Source Files\System\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="src\core\graphics\Font.cpp">
       <Filter>Source Files\System\Graphics</Filter>
     </ClCompile>
@@ -167,9 +164,6 @@
     <ClInclude Include="src\core\graphics\Texture.h">
       <Filter>Header Files\System\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\graphics\Spritesheet.h">
-      <Filter>Header Files\System\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="src\core\graphics\Font.h">
       <Filter>Header Files\System\Graphics</Filter>
     </ClInclude>
@@ -216,6 +210,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\core\Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\graphics\Sprites.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

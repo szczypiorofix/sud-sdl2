@@ -41,7 +41,7 @@ namespace SUD {
 		startTicks = 0;
 		frameTime = 0.0f;
 		endTicks = 0;
-		_fps = 0.0f;
+		fps = 0.0f;
 		delayMS = 0.0f;
 		delayMSCounter = 0;
 		delayFrameCounter = 0;
@@ -54,12 +54,10 @@ namespace SUD {
 
 		// Run only Lua scripts, without SDL window
 		runLuaScriptsOnly = false;
-
 	}
 
 
 	void GameSystem::CloseWindow( void ) {
-
 		luaHandler->Close();
 
 		scene->Unload();
@@ -83,8 +81,7 @@ namespace SUD {
 	}
 
 
-	void GameSystem::InitGame() {
-
+	void GameSystem::InitSubsystems() {
 		// Initialize main SDL modules
 		InitMainSDLModule();
 		InitSDLSettings();
@@ -104,12 +101,11 @@ namespace SUD {
 		InitScenes();
 
 		// Start game loop
-		GameLoop();
-
+		StartGameLoop();
 	}
 
 
-	void GameSystem::Launch( int argc, char* args[] ) {
+	void GameSystem::Start( int argc, char* args[] ) {
 
 		if ( argc > 1 ) {
 			SDL_Log("Game app arguments count: %i\n", argc);
@@ -119,9 +115,9 @@ namespace SUD {
 		// Initialize Lua scripts handler
 		InitLuaHandler();
 
-		ReloadLuaScripts();
+		LoadLuaScripts();
 
-		InitGame();
+		InitSubsystems();
 	}
 
 	void GameSystem::InitMainSDLModule( void ) {
@@ -191,14 +187,14 @@ namespace SUD {
 		// TEXTURES
 		SDL_Log("Loading images");
 		TextureManager::GetInstance()->Load("mm_gui_button", DIR_RES_IMAGES + "mm-gui-button.png");
-		TextureManager::GetInstance()->Load("main_spritesheet", DIR_RES_IMAGES + "spritesheet.png");
+		TextureManager::GetInstance()->LoadSprite("main_spritesheet", DIR_RES_IMAGES + "spritesheet.png", 32, 32);
 		TextureManager::GetInstance()->Load("noto_0", DIR_RES_FONTS + "noto_0.png");
 		TextureManager::GetInstance()->Load("vingue_0", DIR_RES_FONTS + "vingue_0.png");
 
 		// FONTS
 		SDL_Log("Loading fonts");
-		notoFont = new Font("noto", TextureManager::GetInstance()->GetTexture("noto_0"));
-		vingueFont = new Font("vingue", TextureManager::GetInstance()->GetTexture("vingue_0"));
+		notoFont = new Font("noto", TextureManager::GetInstance()->GetSpriteSheet("noto_0")->texture);
+		vingueFont = new Font("vingue", TextureManager::GetInstance()->GetSpriteSheet("vingue_0")->texture);
 
 
 
@@ -240,7 +236,7 @@ namespace SUD {
 		return renderer;
 	}
 
-	void GameSystem::ReloadLuaScripts() {
+	void GameSystem::LoadLuaScripts() {
 		// LUA SCRIPT
 
 		//CloseWindow();
@@ -286,6 +282,9 @@ namespace SUD {
 
 			//scene->SetLevel(game->level);
 		}
+
+
+		luaHandler->LoadLuaMap("main_map.lua");
 
 
 	}
@@ -340,7 +339,7 @@ namespace SUD {
 		if ( reloadLuaScripts ) {
 			reloadLuaScripts = false;
 			//system( "cls" );
-			ReloadLuaScripts();
+			LoadLuaScripts();
 		}
 
 	}
@@ -378,7 +377,7 @@ namespace SUD {
 
 	}
 
-	void GameSystem::GameLoop( void ) {
+	void GameSystem::StartGameLoop( void ) {
 		
 		while ( !quitGame ) {
 
@@ -411,16 +410,15 @@ namespace SUD {
 
 			endTicks = SDL_GetTicks();
 			frameTime = ( endTicks - startTicks ) / 1000.0f;
-			_fps = 1.0f / frameTime;
+			fps = 1.0f / frameTime;
 
-			fpsSum += _fps;
+			fpsSum += fps;
 			delayFrameCounter++;
 
 			delayMSCounter += (endTicks - startTicks);
 
 			if ( delayMSCounter >= 100 ) {
 				FPS = ( int ) ( fpsSum / delayFrameCounter );
-				//printf("FPS: %i\n", FPS);
 				delayMSCounter = 0;
 				delayFrameCounter = 0;
 				fpsSum = 0.0f;

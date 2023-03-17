@@ -260,11 +260,11 @@ int GameParser::Init(lua_State* L) {
     if (lua_istable(L, -1)) {       
         lua_getfield(L, -1, "windowWidth");
         lua_Integer wW = lua_tointeger(L, -1);
-        windowWidth = wW;
+        windowWidth = (int)wW;
         
         lua_getfield(L, -2, "windowHeight");
         lua_Integer wH = lua_tointeger(L, -1);
-        windowHeight = wH;
+        windowHeight = (int)wH;
     }
 
     // Second parameter is userdata

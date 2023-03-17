@@ -2,7 +2,6 @@
 
 
 
-
 Window::Window() {
 	window = nullptr;
 	width = 0;
@@ -26,7 +25,6 @@ void Window::Init(int _width, int _height, const char* name) {
 		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_SYSTEM, "Window could not be created! SDL Error: %s\n", SDL_GetError());
 		exit(1);
 	}
-
 }
 
 
@@ -38,5 +36,3 @@ void Window::Destroy() {
 SDL_Window* Window::GetWindow() {
 	return window;
 }
-
-

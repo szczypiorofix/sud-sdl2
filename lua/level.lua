@@ -61,6 +61,4 @@ local level2 = Level:new({
 })
 
 
-level = level2
-
-return level
+return level2

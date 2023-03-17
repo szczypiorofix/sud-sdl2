@@ -4,6 +4,6 @@
 
 int main( int argc, char* args[] ) {
 	setlocale( LC_ALL, "" );
-	SUD::GameSystem::GetInstance()->Launch( argc, args );
+	SUD::GameSystem::GetInstance()->Start( argc, args );
 	return 0;
 }

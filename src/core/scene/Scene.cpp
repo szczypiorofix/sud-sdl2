@@ -1,12 +1,13 @@
 #include <iostream>
 #include "Scene.h"
 #include "../graphics/TextureManager.h"
+#include "../graphics/Sprites.h"
+
 
 
 Scene::Scene( std::string name, SDL_Renderer * renderer) {
 	this->renderer = renderer;
 	this->name = name;
-	spriteSheet = nullptr;
 	level = nullptr;
 	this->gameObjectsUI = {};
 }
@@ -14,9 +15,6 @@ Scene::Scene( std::string name, SDL_Renderer * renderer) {
 
 Scene::~Scene( void ) { }
 
-void Scene::AddSpriteSheet(std::string spriteSheetName, int tileWidth, int tileHeight) {
-	spriteSheet = new Spritesheet(spriteSheetName, renderer, tileWidth, tileHeight);
-}
 
 void Scene::AddUIObject( std::string id, UI* uiObject ) {
 	gameObjectsUI[id] = uiObject;
@@ -28,7 +26,6 @@ void Scene::SetLevel(LUA::Object::Level* _level) {
 
 
 void Scene::Load( void ) {
-	//spriteSheet->Load();
 	std::map<std::string, UI*>::iterator it;
 	for ( it = gameObjectsUI.begin(); it != gameObjectsUI.end(); it++ ) {
 		// doing nothing for now
@@ -65,20 +62,20 @@ void Scene::Draw( void ) {
 			if (charIndex < level->foreground.size() && charIndex < level->background.size()) {
 				// background
 				if (level->background.at(charIndex) == '#') { // wall
-					TextureManager::GetInstance()->DrawSprite("main_spritesheet", 32 + (x * 32), 128 + (y * 32), 32, 32, 384, 128, 32, 32, SDL_FLIP_NONE);
+					TextureManager::GetInstance()->DrawSpriteIndex("main_spritesheet", 32 + (x * 32), 128 + (y * 32), 32, 32, Sprites::WALL_STONE_LIGHT2 );
 				}
 				if (level->background.at(charIndex) == '.') { // open space
-					TextureManager::GetInstance()->DrawSprite("main_spritesheet", 32 + (x * 32), 128 + (y * 32), 32, 32, 384, 288, 32, 32, SDL_FLIP_NONE);
+					TextureManager::GetInstance()->DrawSpriteIndex("main_spritesheet", 32 + (x * 32), 128 + (y * 32), 32, 32, Sprites::GRASS_LIGHT1 );
 				}
 				// foreground
 				if (level->foreground.at(charIndex) == 'T') { // big tree
-					TextureManager::GetInstance()->DrawSprite("main_spritesheet", 32 + (x * 32), 128 + (y * 32), 32, 32, 416, 416, 32, 32, SDL_FLIP_NONE);
+					TextureManager::GetInstance()->DrawSpriteIndex("main_spritesheet", 32 + (x * 32), 128 + (y * 32), 32, 32, Sprites::TREE3 );
 				}
 				if (level->foreground.at(charIndex) == 't') { // small tree
-					TextureManager::GetInstance()->DrawSprite("main_spritesheet", 32 + (x * 32), 128 + (y * 32), 32, 32, 448, 416, 32, 32, SDL_FLIP_NONE);
+					TextureManager::GetInstance()->DrawSpriteIndex("main_spritesheet", 32 + (x * 32), 128 + (y * 32), 32, 32, Sprites::TREE_OLD2 );
 				}
 				if (level->foreground.at(charIndex) == 'P') { // player
-					TextureManager::GetInstance()->DrawSprite("main_spritesheet", 32 + (x * 32), 128 + (y * 32), 32, 32, 832, 1888, 32, 32, SDL_FLIP_NONE);
+					TextureManager::GetInstance()->DrawSpriteIndex("main_spritesheet", 32 + (x * 32), 128 + (y * 32), 32, 32, Sprites::NPC_RAT_WARRIOR );
 				}
 			}
 		}

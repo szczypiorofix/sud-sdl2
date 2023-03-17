@@ -31,11 +31,11 @@ namespace SUD {
 			return gameSystem;
 		}
 
-		void Launch( int argc, char* args[] );
+		void Start( int argc, char* args[] );
 
 		SDL_Renderer* GetRenderer();
 
-		void ReloadLuaScripts();
+		void LoadLuaScripts();
 
 	private:
 
@@ -62,7 +62,7 @@ namespace SUD {
 		
 		void CloseWindow( void );
 
-		void InitGame( void );
+		void InitSubsystems( void );
 
 
 
@@ -83,7 +83,7 @@ namespace SUD {
 
 		void LoadAssets( void );
 
-		void GameLoop( void );
+		void StartGameLoop( void );
 
 		void Update( double dt );
 		void Input( void );
@@ -101,7 +101,7 @@ namespace SUD {
 		Uint32 endTicks;
 		Uint32 startTicks;
 
-		float _fps;
+		float fps;
 		float frameTime;
 
 		int FPS;

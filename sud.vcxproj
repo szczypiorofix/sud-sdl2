@@ -162,7 +162,6 @@
     <ClCompile Include="src\core\scene\UIEvents.cpp" />
     <ClCompile Include="src\core\graphics\Font.cpp" />
     <ClCompile Include="src\core\lua\LuaHandler.cpp" />
-    <ClCompile Include="src\core\graphics\Spritesheet.cpp" />
     <ClCompile Include="src\core\scene\Scene.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\core\GameSystem.cpp" />
@@ -172,6 +171,7 @@
     <ClCompile Include="src\core\graphics\TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\core\graphics\Sprites.h" />
     <ClInclude Include="src\core\lua\parsers\GameParser.h" />
     <ClInclude Include="src\core\lua\parsers\LevelParser.h" />
     <ClInclude Include="src\core\lua\parsers\Parser.h" />
@@ -188,7 +188,6 @@
     <ClInclude Include="src\core\Defines.h" />
     <ClInclude Include="src\core\graphics\Font.h" />
     <ClInclude Include="src\core\lua\LuaHandler.h" />
-    <ClInclude Include="src\core\graphics\Spritesheet.h" />
     <ClInclude Include="src\core\scene\Scene.h" />
     <ClInclude Include="src\core\input\Inputs.h" />
     <ClInclude Include="res\resource.h" />

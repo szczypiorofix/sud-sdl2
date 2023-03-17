@@ -1,0 +1,38 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "main_map.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "main_map.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 1006,
+                "y": 488
+            }
+        },
+        "main_spritesheet.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "C:/workshop/cpp/sud/res/images",
+    "last.imagePath": "C:/workshop/cpp/sud/res/images",
+    "map.lastUsedExportFilter": "Pliki Lua (*.lua)",
+    "map.lastUsedFormat": "tmx",
+    "openFiles": [
+        "main_spritesheet.tsx",
+        "main_map.tmx"
+    ],
+    "project": "sud.tiled-project",
+    "recentFiles": [
+        "main_spritesheet.tsx",
+        "main_map.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx"
+}

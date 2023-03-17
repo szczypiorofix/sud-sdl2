@@ -13,10 +13,11 @@ namespace LUA {
 
 	public:
 		LuaHandler();
-
 		~LuaHandler(void);
 
 		bool RunScript(const std::string fileName);
+
+		bool LoadLuaMap( const std::string fileName );
 
 		void Close(void);
 
@@ -27,11 +28,17 @@ namespace LUA {
 
 		void Open(void);
 
-		void InitializeObjects();
+		void RegisterObjects();
 		void RetrieveObjects();
 
-		LUA::Object::Game* game;
+		void RegisterMapObject();
+		void RetrieveMapObject();
 
+
+		std::string TableGetString( lua_State* _L, int _topStack, const char* _fieldName );
+		int TableGetInt( lua_State* _L, int _topStack, const char* _fieldName );
+
+		LUA::Object::Game* game;
 		LUA::Object::Player* player;
 
 	};

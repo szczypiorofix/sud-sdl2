@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 #include "../scene/UI.h"
-#include "../graphics/Spritesheet.h"
+//#include "../graphics/Spritesheet.h"
 #include "../lua/objects/Level.h"
 
 
@@ -18,8 +18,6 @@ public:
 
 
 	void Load();
-
-	void AddSpriteSheet(std::string spriteSheetName, int tileWidth, int tileHeight);
 
 	void AddUIObject( std::string id, UI* uiObject );
 
@@ -35,8 +33,6 @@ private:
 	std::string name;
 
 	SDL_Renderer* renderer;
-
-	Spritesheet* spriteSheet;
 
 	std::map<std::string, UI*> gameObjectsUI;
 

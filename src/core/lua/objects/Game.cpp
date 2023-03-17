@@ -11,7 +11,6 @@ Game::Game(const char* _name) {
 	this->windowHeight = DEFAULT_WINDOW_HEIGHT;
 }
 
-
 Game::Game(const Game& _game) {
 	this->name = _game.name;
 	this->windowWidth = _game.windowWidth;
@@ -25,12 +24,10 @@ Game::Game(const Game& _game) {
 	}
 }
 
-
 Game::~Game() {
 	//printf("Game - destructor called.\n");
 	//delete level;
 }
-
 
 Game& Game::operator=(const Game& _game) {
 	if (this == &_game) {
@@ -43,14 +40,9 @@ Game& Game::operator=(const Game& _game) {
 	return *this;
 }
 
-int Game::Init( int windowWidth, int windowHeight) {
-	printf("Game:Init() called. Window size, width=%i, height=%i\n", windowWidth, windowHeight);
-
-	this->windowWidth = windowWidth;
-	this->windowHeight = windowHeight;
-
+int Game::Init( int _windowWidth, int _windowHeight) {
+	this->windowWidth = _windowWidth;
+	this->windowHeight = _windowHeight;
+	//printf("Game:Init() called. Window size, width=%i, height=%i\n", this->windowWidth, this->windowHeight);
 	return 1;
 }
-
-
-

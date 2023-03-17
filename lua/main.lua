@@ -15,6 +15,7 @@ Game = require("Game")
 game = Game
 
 
+
 player = Player:new({
     name = "Gracz 1",
     x = 3,

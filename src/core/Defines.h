@@ -3,6 +3,9 @@
 #include <SDL2/SDL_pixels.h>
 
 
+typedef const unsigned short cu16;
+
+
 const std::string DIR_RES_IMAGES = "../res/images/";
 const std::string DIR_RES_MUSIC = "../res/music/";
 const std::string DIR_RES = "../res/";
