@@ -24,3 +24,10 @@ player = Player:new({
     height = 200
 })
 
+-- player.Move( function( self ) 
+--         print("player:Move call from Lua!")
+--         print(self)
+--     end
+-- )
+
+

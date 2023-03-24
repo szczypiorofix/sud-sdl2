@@ -19,12 +19,6 @@
     <Filter Include="Header Files\System">
       <UniqueIdentifier>{381551df-c52f-48ec-a4bb-01cc85328c87}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Libs">
-      <UniqueIdentifier>{7dc9d11d-bd31-472d-ac3d-4220ee39b085}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Libs">
-      <UniqueIdentifier>{1f9d4199-5307-4bf4-a76d-0629c8a61b95}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\System\Core">
       <UniqueIdentifier>{c7139fe2-8659-437d-8d6d-132e7e228e73}</UniqueIdentifier>
     </Filter>
@@ -70,66 +64,93 @@
     <Filter Include="Resource Files\Fonts">
       <UniqueIdentifier>{368e6ebd-bed7-4c31-b469-d716f8d7f6ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Lua">
+      <UniqueIdentifier>{28d72a6d-3a03-4e5f-b4d6-8d97dbbbce01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Map">
+      <UniqueIdentifier>{2419bbe6-a0f1-4581-83d2-e38486d87dee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\GameSystem.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\scene\Scene.cpp">
+    <ClCompile Include="src\scene\Scene.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\helpers\XMLHelper.cpp">
+    <ClCompile Include="src\helpers\XMLHelper.cpp">
       <Filter>Source Files\System\Subsystems</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\lua\LuaHandler.cpp">
+    <ClCompile Include="src\lua\LuaHandler.cpp">
       <Filter>Source Files\System\Subsystems</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\graphics\Texture.cpp">
+    <ClCompile Include="src\graphics\Texture.cpp">
       <Filter>Source Files\System\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\graphics\Font.cpp">
+    <ClCompile Include="src\graphics\Font.cpp">
       <Filter>Source Files\System\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\scene\UI.cpp">
+    <ClCompile Include="src\scene\UI.cpp">
       <Filter>Source Files\Entity</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\graphics\TextureManager.cpp">
+    <ClCompile Include="src\graphics\TextureManager.cpp">
       <Filter>Source Files\System\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\entities\Character.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\audio\Music.cpp">
+    <ClCompile Include="src\audio\Music.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\scene\UIEvents.cpp">
+    <ClCompile Include="src\lua\objects\LuaPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\lua\objects\Player.cpp">
+    <ClCompile Include="src\lua\parsers\PlayerParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\lua\parsers\PlayerParser.cpp">
+    <ClCompile Include="src\lua\objects\LuaLevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\lua\objects\Level.cpp">
+    <ClCompile Include="src\lua\objects\LuaGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\lua\objects\Game.cpp">
+    <ClCompile Include="src\lua\parsers\GameParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\lua\parsers\GameParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\lua\parsers\LevelParser.cpp">
+    <ClCompile Include="src\lua\parsers\LevelParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\core\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\input\Inputs.cpp">
+    <ClCompile Include="src\input\Inputs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lua\tiled\TiledMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lua\tiled\TiledSpriteSheet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lua\LuaHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\Level.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\Layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\Tile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\SpriteAtlas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lua\parsers\TestParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -140,16 +161,16 @@
     <ClInclude Include="res\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\input\Inputs.h">
+    <ClInclude Include="src\input\Inputs.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\scene\Scene.h">
+    <ClInclude Include="src\scene\Scene.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\helpers\XMLHelper.h">
+    <ClInclude Include="src\helpers\XMLHelper.h">
       <Filter>Header Files\System\Subsystems</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\lua\LuaHandler.h">
+    <ClInclude Include="src\lua\LuaHandler.h">
       <Filter>Header Files\System\Subsystems</Filter>
     </ClInclude>
     <ClInclude Include="src\core\Defines.h">
@@ -161,58 +182,79 @@
     <ClInclude Include="src\entities\IObject.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\graphics\Texture.h">
+    <ClInclude Include="src\graphics\Texture.h">
       <Filter>Header Files\System\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\graphics\Font.h">
+    <ClInclude Include="src\graphics\Font.h">
       <Filter>Header Files\System\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\scene\UI.h">
+    <ClInclude Include="src\scene\UI.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\graphics\TextureManager.h">
+    <ClInclude Include="src\graphics\TextureManager.h">
       <Filter>Header Files\System\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\graphics\Vector2D.h">
+    <ClInclude Include="src\graphics\Vector2D.h">
       <Filter>Header Files\System\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\graphics\Transform.h">
+    <ClInclude Include="src\graphics\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\audio\Music.h">
+    <ClInclude Include="src\audio\Music.h">
       <Filter>Header Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\scene\UIEvents.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\entities\Character.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\lua\objects\Game.h">
+    <ClInclude Include="src\lua\objects\LuaGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\lua\objects\Level.h">
+    <ClInclude Include="src\lua\objects\LuaLevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\lua\objects\Player.h">
+    <ClInclude Include="src\lua\objects\LuaPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\lua\parsers\PlayerParser.h">
+    <ClInclude Include="src\lua\parsers\PlayerParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\lua\parsers\GameParser.h">
+    <ClInclude Include="src\lua\parsers\GameParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\lua\parsers\Parser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\lua\parsers\LevelParser.h">
+    <ClInclude Include="src\lua\parsers\LevelParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\core\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\graphics\Sprites.h">
+    <ClInclude Include="src\graphics\Sprites.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lua\tiled\TiledMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lua\tiled\TiledSpriteSheet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lua\LuaHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\Level.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\Spritesheet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\Layer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\Tile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\SpriteAtlas.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lua\parsers\TestParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -255,6 +297,9 @@
     <Image Include="res\images\icon.png">
       <Filter>Resource Files\Images</Filter>
     </Image>
+    <Image Include="res\fonts\vingue_0.png">
+      <Filter>Resource Files\Fonts</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -262,18 +307,6 @@
     <None Include="README.md" />
     <None Include="res\sud.aps" />
     <None Include="sud.code-workspace" />
-    <None Include="res\scripts\Player.lua">
-      <Filter>Resource Files\Scripts</Filter>
-    </None>
-    <None Include="res\scripts\script1.lua">
-      <Filter>Resource Files\Scripts</Filter>
-    </None>
-    <None Include="res\scripts\GameObject.lua">
-      <Filter>Resource Files\Scripts</Filter>
-    </None>
-    <None Include="res\scripts\Vector2.lua">
-      <Filter>Resource Files\Scripts</Filter>
-    </None>
     <None Include="res\music\1fineday.xm">
       <Filter>Resource Files\Music</Filter>
     </None>
@@ -292,14 +325,66 @@
     <None Include="res\images\mm-gui-button.pyxel">
       <Filter>Resource Files\Images</Filter>
     </None>
-    <None Include="lua\Vector2.lua" />
-    <None Include="lua\Game.lua" />
-    <None Include="lua\GameObject.lua" />
-    <None Include="lua\level.lua" />
-    <None Include="lua\main.lua" />
-    <None Include="lua\Player.lua" />
-    <None Include="lua\script1.lua" />
-    <None Include="lua\core\Core.lua" />
+    <None Include="lua\level.lua">
+      <Filter>Resource Files\Lua</Filter>
+    </None>
+    <None Include="lua\main.lua">
+      <Filter>Resource Files\Lua</Filter>
+    </None>
+    <None Include="lua\Game.lua">
+      <Filter>Resource Files\Lua</Filter>
+    </None>
+    <None Include="lua\old\script1.lua">
+      <Filter>Resource Files\Lua</Filter>
+    </None>
+    <None Include="lua\old\Player.lua">
+      <Filter>Resource Files\Lua</Filter>
+    </None>
+    <None Include="lua\main_spritesheet.lua">
+      <Filter>Resource Files\Lua</Filter>
+    </None>
+    <None Include="lua\main_map.lua">
+      <Filter>Resource Files\Lua</Filter>
+    </None>
+    <None Include="res\images\main_map.tmx">
+      <Filter>Resource Files\Map</Filter>
+    </None>
+    <None Include="res\images\main_spritesheet.tsx">
+      <Filter>Resource Files\Map</Filter>
+    </None>
+    <None Include="lua\old\core\Core.lua">
+      <Filter>Resource Files\Lua</Filter>
+    </None>
+    <None Include="res\music\ascent.s3m">
+      <Filter>Resource Files\Music</Filter>
+    </None>
+    <None Include="res\music\a_world_of_dreams_5.mod">
+      <Filter>Resource Files\Music</Filter>
+    </None>
+    <None Include="lua\old\GameObject.lua">
+      <Filter>Resource Files\Lua</Filter>
+    </None>
+    <None Include="lua\old\Vector2.lua">
+      <Filter>Resource Files\Lua</Filter>
+    </None>
+    <None Include="res\fonts\vingue.bmfc">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="res\fonts\vingue.fnt">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="res\images\sud.tiled-project">
+      <Filter>Resource Files\Map</Filter>
+    </None>
+    <None Include="res\images\sud.tiled-session">
+      <Filter>Resource Files\Map</Filter>
+    </None>
+    <None Include="res\fonts\noto.bmfc">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="res\music\icefront.s3m">
+      <Filter>Resource Files\Music</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="res\fonts\noto_mono.xml">

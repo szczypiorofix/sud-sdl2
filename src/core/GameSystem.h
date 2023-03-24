@@ -5,15 +5,15 @@
 #include <iostream>
 #include <string>
 
-
 #include "Defines.h"
 #include "Window.h"
-#include "input/Inputs.h"
-#include "scene/Scene.h"
-#include "graphics/Font.h"
-#include "graphics/TextureManager.h"
-#include "lua/LuaHandler.h"
-#include "audio/Music.h"
+#include "../input/Inputs.h"
+#include "../scene/Scene.h"
+#include "../graphics/Font.h"
+#include "../graphics/TextureManager.h"
+#include "../lua/LuaHandler.h"
+#include "../audio/Music.h"
+#include "../scene/Level.h"
 
 
 
@@ -46,7 +46,7 @@ namespace SUD {
 		SDL_Renderer* renderer;
 		
 		Scene* scene;
-		LUA::LuaHandler* luaHandler;
+		LuaHandler* luaHandler;
 
 		Music* music;
 
@@ -56,17 +56,9 @@ namespace SUD {
 		Font* vingueFont;
 
 		bool quitGame;
-
-		
-		
 		
 		void CloseWindow( void );
-
 		void InitSubsystems( void );
-
-
-
-
 
 		void InitMainSDLModule( void );
 		void InitSDLSettings( void );
@@ -120,9 +112,13 @@ namespace SUD {
 		bool runLuaScriptsOnly;
 		//
 
-		LUA::Object::Game* game;
+		LuaGame* game;
 
 		std::wstring levelDetails;
+
+		//TiledMap* tiledMap;
+
+		Level* level;
 
 	};
 

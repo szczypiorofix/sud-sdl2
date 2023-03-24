@@ -33,6 +33,7 @@ void Window::Destroy() {
 	window = nullptr;
 }
 
+
 SDL_Window* Window::GetWindow() {
 	return window;
 }

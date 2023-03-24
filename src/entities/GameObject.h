@@ -1,11 +1,10 @@
 #pragma once
 
 #include <SDL2/SDL.h>
-//#include <lua535/lua.hpp>
 #include "IObject.h"
-#include "../core/graphics/Transform.h"
-#include "../core//Defines.h"
-#include "../core/graphics/Font.h"
+#include "../graphics/Transform.h"
+#include "../core/Defines.h"
+#include "../graphics/Font.h"
 
 
 struct Properties {

@@ -24,7 +24,7 @@ namespace SUD {
 		game = nullptr;
 		scene = nullptr;
 		mm_gui_button = nullptr;
-		
+		level = new Level();
 
 		vsyncOn = true;
 		lockFPS = false;
@@ -68,6 +68,8 @@ namespace SUD {
 		delete music;
 
 		delete mm_gui_button;
+
+		delete level;
 
 		TextureManager::GetInstance()->Clean();
 
@@ -117,6 +119,11 @@ namespace SUD {
 
 		LoadLuaScripts();
 
+		if ( runLuaScriptsOnly ) {
+			luaHandler->Close();
+			exit(0);
+		}
+
 		InitSubsystems();
 	}
 
@@ -163,7 +170,7 @@ namespace SUD {
 
 	void GameSystem::InitLuaHandler(void) {
 		SDL_Log("Initializing Lua State");
-		luaHandler = new LUA::LuaHandler();
+		luaHandler = new LuaHandler();
 	}
 
 	void GameSystem::InitInputs( void ) {
@@ -187,16 +194,15 @@ namespace SUD {
 		// TEXTURES
 		SDL_Log("Loading images");
 		TextureManager::GetInstance()->Load("mm_gui_button", DIR_RES_IMAGES + "mm-gui-button.png");
-		TextureManager::GetInstance()->LoadSprite("main_spritesheet", DIR_RES_IMAGES + "spritesheet.png", 32, 32);
+		//TextureManager::GetInstance()->Load("main_spritesheet", DIR_RES_IMAGES + "spritesheet.png", 32, 32);
 		TextureManager::GetInstance()->Load("noto_0", DIR_RES_FONTS + "noto_0.png");
 		TextureManager::GetInstance()->Load("vingue_0", DIR_RES_FONTS + "vingue_0.png");
+
 
 		// FONTS
 		SDL_Log("Loading fonts");
 		notoFont = new Font("noto", TextureManager::GetInstance()->GetSpriteSheet("noto_0")->texture);
 		vingueFont = new Font("vingue", TextureManager::GetInstance()->GetSpriteSheet("vingue_0")->texture);
-
-
 
 
 
@@ -208,6 +214,7 @@ namespace SUD {
 		//music->SetVolume( 0.25f );
 		//music->PlayMusic();
 
+
 		if (!lockedRefreshSettings) {
 			printf("F1 - vsync ON/OFF\n");
 			printf("F2 - FPS lock to %f ON/OFF\n", targetFPS);
@@ -217,18 +224,27 @@ namespace SUD {
 
 
 	void GameSystem::InitScenes( void ) {
+		
 		scene = new Scene("loading_scene", renderer);
 
 		// UI ELEMENTS
 		mm_gui_button = new UI(new Properties("", 20, 720, 98, 32, true, "RELOAD", notoFont, COLOR_WHITE, COLOR_BLUE, COLOR_RED));
 
 		scene->AddUIObject("mm_gui_button", mm_gui_button);
-
 		scene->Load();
 
-		scene->SetLevel(game->level);
 
-		//reloadLuaScripts = true;
+		/*std::stringstream ss;
+		ss << "Game level: " << "width=" << levelMap->width << ", height=" << levelMap->height;
+		std::string ld = ss.str();
+		levelDetails = strconverter.from_bytes(ld);*/
+
+		TiledMap* tiledMap = luaHandler->GetTiledMap();
+
+		if (tiledMap != nullptr && scene != nullptr) {
+			level->Reload(tiledMap);
+			scene->SetLevel(level);
+		}
 
 	}
 
@@ -239,11 +255,7 @@ namespace SUD {
 	void GameSystem::LoadLuaScripts() {
 		// LUA SCRIPT
 
-		//CloseWindow();
-
 		luaHandler->Close();
-
-
 
 		// ===============================================================================
 		// 
@@ -254,38 +266,36 @@ namespace SUD {
 		// 
 		// ===============================================================================
 
-
-
-
-
-
 		luaHandler->RunScript("main.lua");
 		
 		game = luaHandler->GetGame();
 
 		if (game == nullptr) {
 			printf("Game object is null. Set game object to default object\n");
-			game = new LUA::Object::Game("default_game");
+			game = new LuaGame("default_game");
 		}
 
 		//printf("GameSystem: game object, name=%s, game->level name=%s\n", game->name.c_str(), game->level->name.c_str() );
 		/*printf("GameSystem: level object, name=%s, width=%i, height=%i\n", level->name.c_str(), level->width, level->height);*/
-
-
-		if ( game != nullptr && game->level != nullptr ) {
-			std::stringstream ss;
-			ss << "Game level: name=" << game->level->name << ", width=" << game->level->width << ", height=" << game->level->height;
-			std::string ld = ss.str();
-			levelDetails = strconverter.from_bytes(ld);
-
-			//std::cout << ld.c_str() << std::endl;
-
-			//scene->SetLevel(game->level);
-		}
+		//if ( game != nullptr && game->level != nullptr ) {
+		//	std::stringstream ss;
+		//	ss << "Game level: name=" << game->level->name << ", width=" << game->level->width << ", height=" << game->level->height;
+		//	std::string ld = ss.str();
+		//	levelDetails = strconverter.from_bytes(ld);
+		//	//std::cout << ld.c_str() << std::endl;
+		//	//scene->SetLevel(game->level);
+		//}
 
 
 		luaHandler->LoadLuaMap("main_map.lua");
+		
+		if (level != nullptr && scene != nullptr) {
+			level->Reload(luaHandler->GetTiledMap());
+			scene->SetLevel(level);
+		}
 
+
+		luaHandler->RunTestScript("test.lua");
 
 	}
 
@@ -338,7 +348,6 @@ namespace SUD {
 
 		if ( reloadLuaScripts ) {
 			reloadLuaScripts = false;
-			//system( "cls" );
 			LoadLuaScripts();
 		}
 
