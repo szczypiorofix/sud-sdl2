@@ -13,11 +13,11 @@
             "scaleInEditor": 1
         },
         "main_map.tmx": {
-            "scale": 0.75,
-            "selectedLayer": 2,
+            "scale": 3,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 650.6666666666666,
-                "y": 547.9999999999999
+                "x": 303.66666666666663,
+                "y": 219.33333333333331
             }
         },
         "main_spritesheet.tsx": {
@@ -27,6 +27,7 @@
     },
     "last.exportedFilePath": "C:/workshop/cpp/sud/lua",
     "last.imagePath": "C:/workshop/cpp/sud/res/images",
+    "last.objectTemplatePath": "C:/workshop/cpp/sud/res/images",
     "lastUsedTilesetExportFilter": "Pliki Lua (*.lua)",
     "map.lastUsedExportFilter": "Pliki Lua (*.lua)",
     "map.lastUsedFormat": "tmx",

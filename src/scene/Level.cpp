@@ -54,13 +54,14 @@ void Level::Create(TiledMap* _tiledMap) {
 		
 		tempLayer->data = {};
 		for (unsigned int j = 0; j < tempTileLayer.mData.size(); j++) {
+			
 			Tile* tile = new Tile();
-			tile->tileId = tempTileLayer.mData.at(j);	
+			tile->tileId = tempTileLayer.mData.at(j);
 
 			for (unsigned int k = 0; k < _tiledMap->mTileSets.size(); k++) {
 				TiledSpriteSheet* sprite = _tiledMap->mTileSets.at(k).mExportSpriteSheet;
 				if (tile->tileId - _tiledMap->mTileSets.at(k).mFirstGid <= sprite->mTileCount) {
-					
+
 					tile->spriteSheetId = sprite->mName;
 					tile->firstGid = _tiledMap->mTileSets.at(k).mFirstGid;
 
@@ -85,7 +86,8 @@ void Level::Create(TiledMap* _tiledMap) {
 					break;
 				}
 			}
-			tempLayer->data.push_back( tile );
+			tempLayer->data.push_back(tile);
+
 		}
 
 		this->layers.push_back(tempLayer);

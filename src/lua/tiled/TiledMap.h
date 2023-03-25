@@ -33,10 +33,9 @@ public:
 	float mOffsetY;
 	float mParalaxX;
 	float mParalaxY;
-	std::string mEncoding;
 	std::vector<int> mData;
 	TileLayer() : mType(""), mX(0), mY(0), mWidth(0), mHeight(0), mId(0), mName(""), mClass(""), mVisible(false), mOpacity(0.0f)
-		, mOffsetX(0.0f), mOffsetY(0.0f), mParalaxX(0.0f), mParalaxY(0.0f), mEncoding(""), mData({}) {}
+		, mOffsetX(0.0f), mOffsetY(0.0f), mParalaxX(0.0f), mParalaxY(0.0f), mData({}) {}
 };
 
 

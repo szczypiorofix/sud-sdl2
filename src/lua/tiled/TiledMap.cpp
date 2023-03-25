@@ -187,9 +187,6 @@ std::vector<TileLayer> TiledMap::TableGetTileLayers(lua_State* _L, int _topStack
                 float parallaxy = LuaHelper::TableGetFloat(L, "parallaxy");
                 //lua_remove(L, -1);
 
-                std::string encoding = LuaHelper::TableGetString(L, "encoding");
-                //lua_remove(L, -1);
-
                 std::vector<int> data{};
                 lua_getfield(L, -1, "data");
 
@@ -219,7 +216,6 @@ std::vector<TileLayer> TiledMap::TableGetTileLayers(lua_State* _L, int _topStack
                 tempFileLayer.mOffsetY = offsety;
                 tempFileLayer.mParalaxX = parallaxx;
                 tempFileLayer.mParalaxY = parallaxy;
-                tempFileLayer.mEncoding = encoding;
                 tempFileLayer.mData = data;
                 tileLayers.push_back(tempFileLayer);
 
