@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "main_spritesheet.tsx",
+    "activeFile": "main_map.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -14,10 +14,10 @@
         },
         "main_map.tmx": {
             "scale": 0.75,
-            "selectedLayer": 0,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 596.6666666666666,
-                "y": 538
+                "x": 650.6666666666666,
+                "y": 547.9999999999999
             }
         },
         "main_spritesheet.tsx": {
@@ -37,9 +37,9 @@
     ],
     "project": "sud.tiled-project",
     "recentFiles": [
+        "main_spritesheet.tsx",
         "dg_grounds32.tsx",
-        "main_map.tmx",
-        "main_spritesheet.tsx"
+        "main_map.tmx"
     ],
     "tileset.lastUsedFormat": "tsx"
 }

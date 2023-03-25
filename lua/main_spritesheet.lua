@@ -65,6 +65,56 @@ return {
           duration = 100
         }
       }
+    },
+    {
+      id = 1641,
+      animation = {
+        {
+          tileid = 1641,
+          duration = 100
+        },
+        {
+          tileid = 1642,
+          duration = 100
+        },
+        {
+          tileid = 1643,
+          duration = 100
+        },
+        {
+          tileid = 1644,
+          duration = 100
+        },
+        {
+          tileid = 1645,
+          duration = 100
+        },
+        {
+          tileid = 1646,
+          duration = 100
+        }
+      }
+    },
+    {
+      id = 4402,
+      animation = {
+        {
+          tileid = 4402,
+          duration = 100
+        },
+        {
+          tileid = 4403,
+          duration = 100
+        },
+        {
+          tileid = 4404,
+          duration = 100
+        },
+        {
+          tileid = 4405,
+          duration = 100
+        }
+      }
     }
   }
 }

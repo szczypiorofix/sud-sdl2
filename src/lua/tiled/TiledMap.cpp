@@ -19,62 +19,19 @@ TiledMap::TiledMap( std::string _fileName, lua_State* _L ) {
 
 
 TiledMap::~TiledMap( void ) {
-    for (unsigned int i = 0; i < mTileSets.size(); i++) {
-        mTileSets.at(i).mExportFileName.clear();
-        mTileSets.at(i).mFileName.clear();
-        mTileSets.at(i).mFirstGid = 0;
-        mTileSets.at(i).mName.clear();
-        mTileSets.at(i).mExportSpriteSheet->mGrid.height = 0;
-        mTileSets.at(i).mExportSpriteSheet->mGrid.orientation.clear();
-        mTileSets.at(i).mExportSpriteSheet->mGrid.width = 0;
-        mTileSets.at(i).mExportSpriteSheet->mImage.clear();
-        mTileSets.at(i).mExportSpriteSheet->mColumns = 0;
-        mTileSets.at(i).mExportSpriteSheet->mImageHeight = 0;
-        mTileSets.at(i).mExportSpriteSheet->mImageWidth = 0;
-        mTileSets.at(i).mExportSpriteSheet->mMargin = 0;
-        mTileSets.at(i).mExportSpriteSheet->mName.clear();
-        mTileSets.at(i).mExportSpriteSheet->mSpacing = 0;
-        mTileSets.at(i).mExportSpriteSheet->mTileCount = 0;
-        mTileSets.at(i).mExportSpriteSheet->mTileHeight = 0;
-        mTileSets.at(i).mExportSpriteSheet->mTileWidth = 0;
-        mTileSets.at(i).mExportSpriteSheet->mTileOffset.x = 0;
-        mTileSets.at(i).mExportSpriteSheet->mTileOffset.y = 0;
-        
+    for (unsigned int i = 0; i < mTileSets.size(); i++) {        
         for (unsigned int j = 0; j < mTileSets.at(i).mExportSpriteSheet->mTiles.size(); j++) {
-            mTileSets.at(i).mExportSpriteSheet->mTiles.at(j).mId = 0;
-            for (unsigned int k = 0; k < mTileSets.at(i).mExportSpriteSheet->mTiles.at(j).mAnimation.size(); k++) {
-                mTileSets.at(i).mExportSpriteSheet->mTiles.at(j).mAnimation.at(k).mDuration = 0;
-                mTileSets.at(i).mExportSpriteSheet->mTiles.at(j).mAnimation.at(k).mTileId = 0;
-            }
             mTileSets.at(i).mExportSpriteSheet->mTiles.clear();
         }
         mTileSets.at(i).mExportSpriteSheet->mTiles.clear();
-
         delete mTileSets.at(i).mExportSpriteSheet;
     }
 
     for (unsigned int i = 0; i < mTileLayers.size(); i++) {
-        mTileLayers.at(i).mClass.clear();
-        mTileLayers.at(i).mEncoding.clear();
-        mTileLayers.at(i).mWidth = 0;
-        mTileLayers.at(i).mHeight = 0;
-        mTileLayers.at(i).mId = 0;
-        mTileLayers.at(i).mName.clear();
-        mTileLayers.at(i).mOffsetX = 0;
-        mTileLayers.at(i).mOffsetY = 0;
-        mTileLayers.at(i).mOpacity = 0;
-        mTileLayers.at(i).mParalaxX = 0;
-        mTileLayers.at(i).mParalaxY = 0;
-        mTileLayers.at(i).mType.clear();
-        mTileLayers.at(i).mVisible = false;
-        mTileLayers.at(i).mX = 0;
-        mTileLayers.at(i).mY = 0;
-
         for (unsigned int j = 0; j < mTileLayers.at(i).mData.size(); j++) {
             mTileLayers.at(i).mData.clear();
         }
     }
-
     mTileSets.clear();
     mTileLayers.clear();
 }

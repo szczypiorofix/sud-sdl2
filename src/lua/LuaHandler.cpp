@@ -121,9 +121,9 @@ bool LuaHandler::LoadLuaMap(const std::string fileName) {
     std::string fn = DIR_RES_SCRIPTS + fileName;
     printf("LUA: Loading map: '%s'\n", fileName.c_str());
     if (fn.length() > 0) {
-        if (tiledMap != nullptr) {
-            delete tiledMap;
-        }
+        //if (tiledMap != nullptr) {
+        //    delete tiledMap;
+        //}
         tiledMap = new TiledMap(fn, L);
         return true;
     }
