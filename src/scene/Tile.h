@@ -18,6 +18,8 @@ public:
 
 	int tileId;
 	int firstGid;
+	int x;
+	int y;
 	std::string spriteSheetId;
 	bool isAnimated;
 	std::vector<TileAnimation> animation;

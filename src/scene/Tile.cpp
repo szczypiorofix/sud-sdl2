@@ -2,7 +2,7 @@
 
 
 
-Tile::Tile() : tileId(0), firstGid(0), spriteSheetId(""), isAnimated(false), animation({}), animCounter(0), animC(0) {
+Tile::Tile() : tileId(0), x(0), y(0), firstGid(0), spriteSheetId(""), isAnimated(false), animation({}), animCounter(0), animC(0) {
 	
 }
 

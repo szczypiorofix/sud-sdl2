@@ -145,79 +145,97 @@ std::vector<TileLayer> TiledMap::TableGetTileLayers(lua_State* _L, int _topStack
         while (lua_next(L, -2) != 0) { // -2, because we have table at -1
             int tableSetTop = lua_gettop(L);
             if (lua_istable(L, -1)) {
+                
+                
                 std::string type = LuaHelper::TableGetString(L, "type");
-                //lua_re/move(L, -1);
+                TileLayeType::LayerType layerType = TileLayeType::TILE;
 
-                int x = LuaHelper::TableGetInt(L, "x");
-                //lua_remove(L, -1);
-
-                int y = LuaHelper::TableGetInt(L, "y");
-                //lua_remove(L, -1);
-
-                int width = LuaHelper::TableGetInt(L, "width");
-                //lua_remove(L, -1);
-
-                int height = LuaHelper::TableGetInt(L, "height");
-                //lua_remove(L, -1);
-
-                int id = LuaHelper::TableGetInt(L, "id");
-                //lua_remove(L, -1);
-
-                std::string name = LuaHelper::TableGetString(L, "name");
-                //lua_remove(L, -1);
-
-                std::string _class = LuaHelper::TableGetString(L, "class");
-                //lua_remove(L, -1);
-
-                bool visible = LuaHelper::TableGetBool(L, "visible");
-                //lua_remove(L, -1);
-
-                float opacity = LuaHelper::TableGetFloat(L, "opacity");
-                //lua_remove(L, -1);
-
-                float offsetx = LuaHelper::TableGetFloat(L, "offsetx");
-                //lua_remove(L, -1);
-
-                float offsety = LuaHelper::TableGetFloat(L, "offsety");
-                //lua_remove(L, -1);
-
-                float parallaxx = LuaHelper::TableGetFloat(L, "parallaxx");
-                //lua_remove(L, -1);
-
-                float parallaxy = LuaHelper::TableGetFloat(L, "parallaxy");
-                //lua_remove(L, -1);
+                int x = 0;
+                int y = 0;
+                int width = 0;
+                int height = 0;
 
                 std::vector<int> data{};
-                lua_getfield(L, -1, "data");
+                std::vector<ObjectGroupObject> objects;
 
-                if (lua_istable(L, -1)) {
-                    lua_pushnil(L);
-                    int cd = 0;
-                    while (lua_next(L, -2) != 0) {
-                        lua_Number n = lua_tonumber(L, -1);
-                        data.push_back((int)n);
-                        lua_pop(L, 1);
-                        cd++;
+
+                // TILES
+                if (type == "tilelayer") {
+                    layerType = TileLayeType::TILE;
+
+                    x = LuaHelper::TableGetInt(L, "x");
+                    y = LuaHelper::TableGetInt(L, "y");
+                    width = LuaHelper::TableGetInt(L, "width");
+                    height = LuaHelper::TableGetInt(L, "height");
+
+                    // data
+                    lua_getfield(L, -1, "data");
+                    if (lua_istable(L, -1)) {
+                        lua_pushnil(L);
+                        int cd = 0;
+                        while (lua_next(L, -2) != 0) {
+                            lua_Number n = lua_tonumber(L, -1);
+                            data.push_back((int)n);
+                            lua_pop(L, 1);
+                            cd++;
+                        }
                     }
+                    lua_remove(L, -1);
                 }
 
-                TileLayer tempFileLayer{};
-                tempFileLayer.mX = x;
-                tempFileLayer.mY = y;
-                tempFileLayer.mType = type;
-                tempFileLayer.mWidth = width;
-                tempFileLayer.mHeight = height;
-                tempFileLayer.mId = id;
-                tempFileLayer.mName = name;
-                tempFileLayer.mClass = _class;
-                tempFileLayer.mVisible = visible;
-                tempFileLayer.mOpacity = opacity;
-                tempFileLayer.mOffsetX = offsetx;
-                tempFileLayer.mOffsetY = offsety;
-                tempFileLayer.mParalaxX = parallaxx;
-                tempFileLayer.mParalaxY = parallaxy;
-                tempFileLayer.mData = data;
-                tileLayers.push_back(tempFileLayer);
+
+                // OBJECTS
+                else if (type == "objectgroup") {
+                    layerType = TileLayeType::OBJECT;
+
+                    // parse objects ...
+
+                }
+
+
+                // IMAGES
+                else if (type == "imagelayer") {
+                    layerType = TileLayeType::IMAGE;
+                }
+
+
+                // GROUPS
+                else {
+                    // group layer ...
+                }
+
+                //lua_re/move(L, -1);
+
+                int id = LuaHelper::TableGetInt(L, "id");
+                std::string name = LuaHelper::TableGetString(L, "name");
+                std::string _class = LuaHelper::TableGetString(L, "class");
+                bool visible = LuaHelper::TableGetBool(L, "visible");
+                float opacity = LuaHelper::TableGetFloat(L, "opacity");
+                float offsetx = LuaHelper::TableGetFloat(L, "offsetx");
+                float offsety = LuaHelper::TableGetFloat(L, "offsety");
+                float parallaxx = LuaHelper::TableGetFloat(L, "parallaxx");
+                float parallaxy = LuaHelper::TableGetFloat(L, "parallaxy");
+
+
+
+                TileLayer tempTileLayer{};
+                tempTileLayer.mX = x;
+                tempTileLayer.mY = y;
+                tempTileLayer.mType = type;
+                tempTileLayer.mLayerType = layerType;
+                tempTileLayer.mWidth = width;
+                tempTileLayer.mHeight = height;
+                tempTileLayer.mId = id;
+                tempTileLayer.mName = name;
+                tempTileLayer.mClass = _class;
+                tempTileLayer.mVisible = visible;
+                tempTileLayer.mOpacity = opacity;
+                tempTileLayer.mOffsetX = offsetx;
+                tempTileLayer.mOffsetY = offsety;
+                tempTileLayer.mParalaxX = parallaxx;
+                tempTileLayer.mParalaxY = parallaxy;
+                tempTileLayer.mData = data;
+                tileLayers.push_back(tempTileLayer);
 
                 lua_settop(L, tableSetTop);
             }

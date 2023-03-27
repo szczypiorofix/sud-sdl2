@@ -7,6 +7,7 @@ extern "C" {
 #include "TiledSpriteSheet.h"
 
 
+
 struct TileSet {
 public:
 	std::string mName;
@@ -17,9 +18,35 @@ public:
 	TileSet() : mName(""), mFirstGid(0), mFileName(""), mExportFileName(""), mExportSpriteSheet(nullptr) {}
 };
 
+
+namespace TileLayeType {
+	enum LayerType {
+		TILE,
+		OBJECT,
+		IMAGE
+	};
+}
+
+
+struct ObjectGroupObject {
+	int id;
+	std::string name;
+	std::string type;
+	std::string shape;
+	int x;
+	int y;
+	int width;
+	int height;
+	int rotation;
+	int gId;
+	bool visible;
+};
+
+
 struct TileLayer {
 public:
 	std::string mType;
+	TileLayeType::LayerType mLayerType;
 	int mX;
 	int mY;
 	int mWidth;
@@ -34,8 +61,9 @@ public:
 	float mParalaxX;
 	float mParalaxY;
 	std::vector<int> mData;
-	TileLayer() : mType(""), mX(0), mY(0), mWidth(0), mHeight(0), mId(0), mName(""), mClass(""), mVisible(false), mOpacity(0.0f)
-		, mOffsetX(0.0f), mOffsetY(0.0f), mParalaxX(0.0f), mParalaxY(0.0f), mData({}) {}
+	std::vector<ObjectGroupObject> mObjects;
+	TileLayer() : mType(""), mLayerType(TileLayeType::TILE), mX(0), mY(0), mWidth(0), mHeight(0), mId(0), mName(""), mClass(""), mVisible(false), mOpacity(0.0f)
+		, mOffsetX(0.0f), mOffsetY(0.0f), mParalaxX(0.0f), mParalaxY(0.0f), mData({}), mObjects({}) {}
 };
 
 
