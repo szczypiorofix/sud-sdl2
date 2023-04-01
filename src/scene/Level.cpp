@@ -61,21 +61,17 @@ void Level::Create(TiledMap* _tiledMap) {
 			Tile* tile = new Tile();
 			tile->tileId = tempTileLayer.mData.at(j);
 
-			tile->x = j % width;
-			tile->y = j / width;
+			tile->x = ( j % width ) * tileWidth;
+			tile->y = ( j / width ) * tileHeight;
 
 			for (unsigned int k = 0; k < _tiledMap->mTileSets.size(); k++) {
 				TiledSpriteSheet* sprite = _tiledMap->mTileSets.at(k).mExportSpriteSheet;
 				if (tile->tileId - _tiledMap->mTileSets.at(k).mFirstGid <= sprite->mTileCount) {
-
 					tile->spriteSheetId = sprite->mName;
 					tile->firstGid = _tiledMap->mTileSets.at(k).mFirstGid;
-
 					for (unsigned int l = 0; l < sprite->mTiles.size(); l++) {
 						if (tile->tileId - _tiledMap->mTileSets.at(k).mFirstGid == sprite->mTiles.at(l).mId) {
 							TiledTile tiledTile = sprite->mTiles.at(l);
-							//printf("Setting tile animation for %i\n", tile->tileId);
-
 							std::vector<TileAnimation> animations = {};
 							for (unsigned int m = 0; m < tiledTile.mAnimation.size(); m++) {
 								TileAnimation tempAnim = {};
@@ -88,12 +84,26 @@ void Level::Create(TiledMap* _tiledMap) {
 							break;
 						}
 					}
-
 					break;
 				}
 			}
 			tempLayer->data.push_back(tile);
 
+		}
+
+		tempLayer->objects = {};
+		for (unsigned int j = 0; j < tempTileLayer.mObjects.size(); j++) {
+			TileObject* tileObject = new TileObject();
+
+			tileObject->gid = tempTileLayer.mObjects.at(j).gId;
+			tileObject->x = tempTileLayer.mObjects.at(j).x;
+			tileObject->y = tempTileLayer.mObjects.at(j).y - 32;
+			tileObject->width = tempTileLayer.mObjects.at(j).width;
+			tileObject->height = tempTileLayer.mObjects.at(j).height;
+			tileObject->visible = tempTileLayer.mObjects.at(j).visible;
+			tileObject->isPortal = tempTileLayer.mObjects.at(j).properties.isPortal;
+
+			tempLayer->objects.push_back(tileObject);
 		}
 
 		this->layers.push_back(tempLayer);
@@ -150,22 +160,37 @@ void Level::Draw() {
 	//int drawCalls = 0;
 	for (unsigned int l = 0; l < layers.size(); l++) {
 		Layer* layer = layers.at(l);
+		if (!layer->visible) {
+			continue;
+		}
 		for (unsigned int t = 0; t < layer->data.size(); t++) {
-			//int x = t % width;
-			//int y = t / width;
 			Tile* tile = layer->data.at(t);
 			for (unsigned int a = 0; a < spriteAtlas.size(); a++) {
 				SpriteAtlas* atlas = spriteAtlas.at(a);
 				if ( tile->tileId > atlas->firstGid  ) {
 					//drawCalls++;
 					if (tile->isAnimated) {
-						TextureManager::GetInstance()->DrawSpriteIndex(atlas->name, (tile->x * tileWidth), (tile->y * tileHeight), tileWidth, tileHeight, tile->animation.at(tile->animCounter).tileId + 1 - atlas->firstGid);
+						TextureManager::GetInstance()->DrawSpriteIndex(atlas->name, tile->x, tile->y, tileWidth, tileHeight, tile->animation.at(tile->animCounter).tileId + 1 - atlas->firstGid);
 					}
 					else {
-						TextureManager::GetInstance()->DrawSpriteIndex(atlas->name, (tile->x * tileWidth), (tile->y * tileHeight), tileWidth, tileHeight, tile->tileId - atlas->firstGid);
+						TextureManager::GetInstance()->DrawSpriteIndex(atlas->name, tile->x, tile->y, tileWidth, tileHeight, tile->tileId - atlas->firstGid);
 					}
-					
-				}				
+				}
+			}
+		}
+
+		for (unsigned int o = 0; o < layer->objects.size(); o++) {
+			TileObject* tileObject = layer->objects.at(o);
+			if (!tileObject->visible) {
+				continue;
+			}
+
+			for (unsigned int a = 0; a < spriteAtlas.size(); a++) {
+				SpriteAtlas* atlas = spriteAtlas.at(a);
+				if (tileObject->gid > atlas->firstGid) {
+					//drawCalls++;
+					TextureManager::GetInstance()->DrawSpriteIndex(atlas->name, tileObject->x, tileObject->y, tileWidth, tileHeight, tileObject->gid - atlas->firstGid);
+				}
 			}
 		}
 	}

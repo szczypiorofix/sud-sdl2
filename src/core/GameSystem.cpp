@@ -11,7 +11,6 @@ std::wstring_convert<convert_t, wchar_t> strconverter;
 namespace SUD {
 
 	GameSystem::GameSystem( void ) {
-		window = nullptr;
 		renderer = nullptr;
 		inputs = nullptr;
 		window = nullptr;
@@ -26,27 +25,26 @@ namespace SUD {
 		mm_gui_button = nullptr;
 		level = new Level();
 
-		vsyncOn = true;
+		vsyncOn = false;
 		lockFPS = false;
+		fullScreen = false;
 
-		lockedRefreshSettings = true;
+		lockedRefreshSettings = false;
 
 		quitGame = false;
 
-		// timers
-		startPerf = 0;
-		endPerf = 0;
-		elapsedMS = 0.0f;
-		targetFPS = 60.0f;
-		startTicks = 0;
-		frameTime = 0.0f;
-		endTicks = 0;
-		fps = 0.0f;
-		delayMS = 0.0f;
-		delayMSCounter = 0;
-		delayFrameCounter = 0;
-		fpsSum = 0.0f;
-		FPS = 0;
+
+		lastTime = 0L;
+		delta = 0.0f;
+		timer = 0L;
+		updates = 0;
+		frames = 0;
+		now = 0L;
+		amountOfTicks = 40.0f;
+		fps_count = 0;
+		ticks_count = 0;
+		ns = 0.0f;
+		fpsCap = false;
 
 		levelDetails = L"";
 
@@ -143,18 +141,27 @@ namespace SUD {
 	}
 
 	void GameSystem::InitWindow( void ) {
-		window = new Window();
+		window = new Window( this->fullScreen );
 		window->Init( game->windowWidth, game->windowHeight, APP_NAME.c_str() );
 	}
 
 	void GameSystem::InitRenderer( void ) {
 		SDL_Log( "Initializing renderer" );
 		// keep v-sync on
-		renderer = SDL_CreateRenderer( window->GetWindow(), -1, vsyncOn ? (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC) : (SDL_RENDERER_ACCELERATED));
+		renderer = SDL_CreateRenderer( 
+			window->GetWindow(), 
+			-1, 
+			vsyncOn ? (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC) : (SDL_RENDERER_ACCELERATED)
+		);
 		if ( renderer == NULL ) {
 			SDL_LogError( SDL_LogCategory::SDL_LOG_CATEGORY_RENDER, "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
 			exit( 1 );
 		}
+
+		SDL_RendererInfo rendererInfo;
+		SDL_GetRendererInfo(renderer, &rendererInfo);
+
+		SDL_Log("Renderer: %s", rendererInfo.name);
 
 		SDL_SetRenderDrawColor( renderer, 0x00, 0x00, 0x00, 0xFF );
 	}
@@ -216,8 +223,8 @@ namespace SUD {
 
 
 		if (!lockedRefreshSettings) {
-			printf("F1 - vsync ON/OFF\n");
-			printf("F2 - FPS lock to %f ON/OFF\n", targetFPS);
+			SDL_Log("F1 - vsync ON/OFF\n");
+			SDL_Log("F2 - FPS lock to %f ON/OFF\n", amountOfTicks);
 		}
 
 	}
@@ -275,6 +282,16 @@ namespace SUD {
 			game = new LuaGame("default_game");
 		}
 
+		this->fullScreen = game->fullScreen;
+		this->fpsCap = game->fpsCap;
+		this->amountOfTicks = game->amountOfTicks;
+		this->vsyncOn = game->vSync;
+		
+		if (renderer != nullptr) {
+			SDL_RenderSetVSync(renderer, this->vsyncOn);
+		}
+		
+
 		//printf("GameSystem: game object, name=%s, game->level name=%s\n", game->name.c_str(), game->level->name.c_str() );
 		/*printf("GameSystem: level object, name=%s, width=%i, height=%i\n", level->name.c_str(), level->width, level->height);*/
 		//if ( game != nullptr && game->level != nullptr ) {
@@ -294,17 +311,17 @@ namespace SUD {
 			scene->SetLevel(level);
 		}
 
-
 		luaHandler->RunTestScript("test.lua");
-
 	}
 
 
 	void GameSystem::Input( void ) {
+
 		while ( SDL_PollEvent( inputs->event ) != 0 ) {
 			if ( ( *inputs->event).type == SDL_QUIT ) {
 				quitGame = true;
 			} else {
+
 				if ( ( *inputs->event).type == SDL_KEYDOWN ) {
 					switch ( ( *inputs->event).key.keysym.sym ) {
 						case SDLK_ESCAPE:
@@ -315,11 +332,13 @@ namespace SUD {
 							break;
 					}
 				}
+
 				if ( ( *inputs->event).type == SDL_KEYUP ) {
 					switch ( ( *inputs->event).key.keysym.sym ) {
 						case SDLK_F1:
 							if ( !lockedRefreshSettings ) {
 								vsyncOn = !vsyncOn;
+								SDL_RenderSetVSync(this->renderer, vsyncOn);
 							}
 							break;
 
@@ -329,40 +348,79 @@ namespace SUD {
 							}
 							break;
 
+						case SDLK_F5:
+							//SDL_RenderSetVSync(this->renderer, 1);
+							break;
+
 						default:
 							break;
 					}
 				}
+
+				if ((*inputs->event).type == SDL_WINDOWEVENT ) {
+					switch ((*inputs->event).window.event) {
+					case SDL_WINDOWEVENT_FOCUS_GAINED:
+						//printf("Focus gain\n");
+						inputs->windowFocusGain = true;
+						break;
+
+					case SDL_WINDOWEVENT_FOCUS_LOST:
+						//printf("Focus lost\n");
+						inputs->windowFocusLost = true;
+						break;
+
+					default:
+						break;
+					}
+				}
+
+				inputs->ResolveInputs();
+
+				if (inputs->keys[Key_Left].keyDown) {
+					printf("LEFT\n");
+				}
+
 				scene->Input( inputs->event);
 			}
 		}
 	}
 
 	void GameSystem::Update( double dt ) {
-		
-		scene->Update( dt );
-
-		if ( mm_gui_button->isClicked ) {
-			reloadLuaScripts = true;
-		}
-
-		if ( reloadLuaScripts ) {
+		if (reloadLuaScripts) {
 			reloadLuaScripts = false;
 			LoadLuaScripts();
 		}
+		scene->Update( dt );
+		if ( mm_gui_button->isClicked ) {
+			reloadLuaScripts = true;
+			mm_gui_button->isClicked = false;
+		}
+
+		inputs->windowFocusGain = false;
+		inputs->windowFocusLost = false;
 
 	}
 
 	void GameSystem::Render( void ) {
-		scene->Draw();
+		
+		if (!reloadLuaScripts) {
+			scene->Draw();
+		}
+		
 
 		//font->Draw( "•C∆ £—”åSØèπÊÍ≥ÒÛúøü FPS: " + std::to_string( fps ), 10, 10, 0.60f);
-		
-		//std::wstring vs = vsyncOn ? L"ON" : L"OFF";
+		std::wstring vs = vsyncOn ? L"ON" : L"OFF";
 		//std::wstring fpslk = lockFPS ? L"ON" : L"OFF";
+		
+		std::stringstream ss;
+		ss << "FPS: " << fps_count;
+		std::string ld = ss.str();
+		levelDetails = strconverter.from_bytes(ld);
+		//	//std::cout << ld.c_str() << std::endl;
+		//std::wstring fpsStr = L"FPS:" << L"s";
 
-		//notoFont->Draw( L"AVG FPS ssss 1234567890", 10, 10, 14.0f, COLOR_RED );
-		//notoFont->Draw( L"VSYNC: " + vs, 10, 40, 14.0f, COLOR_CYAN);
+		notoFont->Draw(levelDetails, 10, 10, 14.0f, COLOR_YELLOW );
+		notoFont->Draw( L"VSYNC: " + vs, 10, 40, 14.0f, COLOR_YELLOW);
 		//notoFont->Draw( L"FPS LOCK (60): " + fpslk, 10, 70, 14.0f, COLOR_CYAN );
 
 		//notoFont->Draw( L"A•BC∆DE FGHIJKL£MN—O”PRSåTUWYZØè", 10, 10, 10.0f, COLOR_CYAN );
@@ -370,70 +428,77 @@ namespace SUD {
 		//notoFont->Draw( L"aπbcÊdeÍfghijkl≥mnÒoÛprsútuwyzøü", 10, 90, 10.0f, COLOR_YELLOW );
 		//notoFont->Draw( L"1234567890-=!@#$%^&*()_+{}:;',\"./?<>", 10, 130, 10.0f, COLOR_GREEN );
 
-
-		notoFont->Draw( levelDetails, 10, 30, 16.0f, COLOR_YELLOW);
-
+		//notoFont->Draw( levelDetails, 10, 30, 16.0f, COLOR_YELLOW);
 
 		//notoFont->Draw( L"A•C∆E L£N—O”SåZØèaπcÊeÍl≥nÒoÛsúzüø", 10, 100, 2.0f, COLOR_GREEN );
 		//vingueFont->Draw( L"A•C∆E L£N—O”SåZØèaπcÊeÍl≥nÒoÛsúzüø", 10, 50, 32.0f );
-
 
 		//notoFont->Draw( L"Pewnego razu trzy úwinki posz≥y na spacer w gÛry.", 10, 220, 2.0f, COLOR_CYAN );
 		//notoFont->Draw( L"By≥a przepiÍkna pogoda.", 10, 260, 16.0f, COLOR_YELLOW );
 		//notoFont->Draw( L"Trzy úwinki zgubi≥y siÍ w gÛrach...", 10, 300, 16.0f, COLOR_GRAY );
 
-		//TextureManager::GetInstance()->Draw( "main_spritesheet", 10, 10, 256, 256, SDL_FLIP_NONE );
-
 	}
 
 	void GameSystem::StartGameLoop( void ) {
 		
+		lastTime = SDL_GetTicks();
+		timer = SDL_GetTicks();
+
 		while ( !quitGame ) {
 
-			startTicks = SDL_GetTicks();
-			startPerf = SDL_GetPerformanceCounter();
+			ns = 1000.0f / amountOfTicks;
+			now = SDL_GetTicks();
+			delta += (now - lastTime) / ns;
+			lastTime = now;
 
+			while (delta >= 1) {
+				Input();
 
-			Input();
+				if (inputs->windowFocusGain) {
+					printf("Window focus gain\n");
+				}
 
-			Update( 0 );
+				if (inputs->windowFocusLost) {
+					printf("Window focus lost\n");
+				}
 
-			// Clear renderer
-			SDL_RenderClear( renderer );
+				Update(delta);
 
-			// draw everything
-			Render();
-						
+				// Update screen
+				
 
-			// Update screen
-			SDL_RenderPresent( renderer );
+				if (fpsCap) {
+					SDL_RenderPresent(renderer);
+					SDL_RenderClear(renderer);
+					Render();
+					frames++;
+				}
 
-			// End frame timing
-			endPerf = SDL_GetPerformanceCounter();
-
-			elapsedMS = ( endPerf - startPerf ) / ( float ) SDL_GetPerformanceFrequency() * 1000.0f;
-			if ( lockFPS ) {
-				delayMS = floor( ( 1000.0f / targetFPS ) - elapsedMS );
-				SDL_Delay( (int)delayMS );
+				updates++;
+				delta--;
 			}
 
-			endTicks = SDL_GetTicks();
-			frameTime = ( endTicks - startTicks ) / 1000.0f;
-			fps = 1.0f / frameTime;
-
-			fpsSum += fps;
-			delayFrameCounter++;
-
-			delayMSCounter += (endTicks - startTicks);
-
-			if ( delayMSCounter >= 100 ) {
-				FPS = ( int ) ( fpsSum / delayFrameCounter );
-				delayMSCounter = 0;
-				delayFrameCounter = 0;
-				fpsSum = 0.0f;
+			if (!fpsCap) {
+				SDL_RenderPresent(renderer);
+				SDL_RenderClear(renderer);
+				Render();
+				frames++;
 			}
 
-		}
+			if (SDL_GetTicks() - timer > 1000) {
+				timer += 1000;
+				fps_count = frames;
+				ticks_count = updates;
+				frames = 0;
+				updates = 0;
+				printf("FPS: %i, TICKS: %i, delta: %f\n", fps_count, ticks_count, delta);
+			}
+
+			if (fpsCap) {
+				SDL_Delay(1);
+			}
+
+		} // end while loop
 
 		CloseWindow();
 	}

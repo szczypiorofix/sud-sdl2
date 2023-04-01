@@ -10,7 +10,7 @@ return {
   tilewidth = 32,
   tileheight = 32,
   nextlayerid = 12,
-  nextobjectid = 15,
+  nextobjectid = 17,
   properties = {},
   tilesets = {
     {
@@ -118,6 +118,38 @@ return {
           height = 32,
           rotation = 0,
           gid = 915,
+          visible = true,
+          properties = {
+            ["isPortal"] = true
+          }
+        },
+        {
+          id = 15,
+          name = "portal",
+          type = "",
+          shape = "rectangle",
+          x = 132,
+          y = 156,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 915,
+          visible = true,
+          properties = {
+            ["isPortal"] = true
+          }
+        },
+        {
+          id = 16,
+          name = "player",
+          type = "",
+          shape = "rectangle",
+          x = 33,
+          y = 63,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 3803,
           visible = true,
           properties = {}
         }

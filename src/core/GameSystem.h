@@ -81,27 +81,26 @@ namespace SUD {
 		void Input( void );
 		void Render( void );
 
-		Uint64 startPerf;
-		Uint64 endPerf;
-		float elapsedMS;
-		float delayMS;
-		int delayMSCounter;
-		
-		int delayFrameCounter;
-		float fpsSum;
 
-		Uint32 endTicks;
-		Uint32 startTicks;
 
-		float fps;
-		float frameTime;
+		const short TARGET_FPS = 50;
+		const float OPTIMAL_TIME = 1000.0f / TARGET_FPS;
 
-		int FPS;
+		long lastTime;
+		double delta;
+		long timer;
+		int updates;
+		int frames;
+		long now;
+		float amountOfTicks;
+		int fps_count;
+		int ticks_count;
+		double ns;
+		bool fpsCap;
 
 		bool lockFPS;
 		bool vsyncOn;
-		
-		float targetFPS;
+		bool fullScreen;
 
 		bool lockedRefreshSettings;
 
@@ -115,8 +114,6 @@ namespace SUD {
 		LuaGame* game;
 
 		std::wstring levelDetails;
-
-		//TiledMap* tiledMap;
 
 		Level* level;
 

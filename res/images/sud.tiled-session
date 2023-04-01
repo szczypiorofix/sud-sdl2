@@ -16,8 +16,8 @@
             "scale": 1,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 356,
-                "y": 140
+                "x": 369,
+                "y": 305
             }
         },
         "main_spritesheet.tsx": {
@@ -37,6 +37,7 @@
         "dg_grounds32.tsx"
     ],
     "project": "sud.tiled-project",
+    "property.type": "bool",
     "recentFiles": [
         "main_spritesheet.tsx",
         "dg_grounds32.tsx",

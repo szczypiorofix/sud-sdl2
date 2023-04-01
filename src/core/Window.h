@@ -8,7 +8,7 @@ class Window {
 
 public:
 
-	Window();
+	Window( bool _fullScreen );
 	~Window();
 
 
@@ -21,6 +21,8 @@ public:
 private:
 
 	SDL_Window* window;
+
+	bool fullScreen;
 
 	int width;
 	int height;

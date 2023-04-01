@@ -2,7 +2,7 @@
 
 
 
-Tile::Tile() : tileId(0), x(0), y(0), firstGid(0), spriteSheetId(""), isAnimated(false), animation({}), animCounter(0), animC(0) {
+Tile::Tile() : tileId(0), x(0), y(0), firstGid(0), spriteSheetId(""), isAnimated(false), animation({}), animCounter(0), animC(0.0f) {
 	
 }
 
@@ -18,17 +18,16 @@ void Tile::Draw() {
 }
 
 
-void Tile::Update(float dt) {
+void Tile::Update(double dt) {
 	if (isAnimated) {
 		
-		animC++;
-		if (animC > 5) {
+		animC += dt;
+		if ( animC > 3 ) {
 			animCounter++;
-			animC = 0;
+			animC = 0.0f;
 		}
 
 		if (animCounter > animation.size() - 1) {
-			//printf("Anim tick!\n");
 			animCounter = 0;
 		}
 

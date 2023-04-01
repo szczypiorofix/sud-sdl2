@@ -2,7 +2,7 @@
 #include <sstream>
 #include <assert.h>
 
-
+#include "../LuaHelper.h"
 
 
 void GameParser::RegisterObject(lua_State* L) {
@@ -106,6 +106,18 @@ int GameParser::_index(lua_State* L) {
     } else if (strcmp(index, "windowHeight") == 0) {
         lua_pushnumber(L, game->windowHeight);
         return 1;
+    } else if (strcmp(index, "amountOfTicks") == 0) {
+        lua_pushnumber(L, game->amountOfTicks);
+        return 1;
+    } else if (strcmp(index, "fullScreen") == 0) {
+        lua_pushboolean(L, game->fullScreen);
+        return 1;
+    } else if (strcmp(index, "fpsCap") == 0) {
+        lua_pushboolean(L, game->fpsCap);
+        return 1;
+    } else if (strcmp(index, "vsync") == 0) {
+        lua_pushboolean(L, game->vSync);
+        return 1;
     } else if (strcmp(index, "level") == 0) {
         void* levelPointer = lua_newuserdata(L, sizeof(LuaLevel));
         LuaLevel* tl = new(levelPointer) LuaLevel(*game->level);
@@ -176,6 +188,35 @@ int GameParser::_newindex(lua_State* L) {
         }
         else {
             printf("Game: trying set 'windowHeight' to wrong data type! Got %s, number required.\n", lua_typename(L, lua_type(L, -1)));
+        }
+    } else if (strcmp(index, "amountOfTicks") == 0) {
+        if (lua_isnumber(L, -1)) {
+            lua_Number amountOfTicks = lua_tonumber(L, -1);
+            game->amountOfTicks = (int)amountOfTicks;
+        }
+        else {
+            printf("Game: trying set 'amountOfTicks' to wrong data type! Got %s, number required.\n", lua_typename(L, lua_type(L, -1)));
+        }
+    } else if (strcmp(index, "fullScreen") == 0) {
+        if (lua_isboolean(L, -1)) {
+            game->fullScreen = lua_toboolean(L, -1);
+        }
+        else {
+            printf("Game: trying set 'fullScreen' to wrong data type! Got %s, boolean required.\n", lua_typename(L, lua_type(L, -1)));
+        }
+    } else if (strcmp(index, "fpsCap") == 0) {
+        if (lua_isboolean(L, -1)) {
+            game->fpsCap = lua_toboolean(L, -1);
+        }
+        else {
+            printf("Game: trying set 'fpsCap' to wrong data type! Got %s, boolean required.\n", lua_typename(L, lua_type(L, -1)));
+        }
+    } else if (strcmp(index, "vsync") == 0) {
+        if (lua_isboolean(L, -1)) {
+            game->vSync = lua_toboolean(L, -1);
+        }
+        else {
+            printf("Game: trying set 'vsync' to wrong data type! Got %s, boolean required.\n", lua_typename(L, lua_type(L, -1)));
         }
     }
     else if (strcmp(index, "level") == 0) {
@@ -254,8 +295,14 @@ int GameParser::Init(lua_State* L) {
     int windowWidth = LuaGame::DEFAULT_WINDOW_WIDTH;
     int windowHeight = LuaGame::DEFAULT_WINDOW_HEIGHT;
 
+    float amountOfTicks = 60.0f;
+    bool fullScreen = false;
+    bool fpsCap = false;
+    bool vsync = false;
+
     // Checking if seond element on stack is table (first parameter)
-    if (lua_istable(L, -1)) {       
+    if (lua_istable(L, -1)) {
+
         lua_getfield(L, -1, "windowWidth");
         lua_Integer wW = lua_tointeger(L, -1);
         windowWidth = (int)wW;
@@ -263,12 +310,27 @@ int GameParser::Init(lua_State* L) {
         lua_getfield(L, -2, "windowHeight");
         lua_Integer wH = lua_tointeger(L, -1);
         windowHeight = (int)wH;
+
+        lua_getfield(L, -3, "amountOfTicks");
+        lua_Number aot = lua_tonumber(L, -1);
+        amountOfTicks = (float)aot;
+
+        lua_getfield(L, -4, "fullScreen");
+        fullScreen = lua_toboolean(L, -1);
+
+        lua_getfield(L, -5, "fpsCap");
+        fpsCap = lua_toboolean(L, -1);
+
+        lua_getfield(L, -6, "vsync");
+        vsync = lua_toboolean(L, -1);
+
+        //LuaHelper::TestStack(L);
     }
 
     // Second parameter is userdata
     LuaGame* game = (LuaGame*)lua_touserdata(L, 1);
     if (game != nullptr) {
-        return game->Init( windowWidth, windowHeight );
+        return game->Init( windowWidth, windowHeight, amountOfTicks, fullScreen, fpsCap, vsync );
     }
     return 0;
 }

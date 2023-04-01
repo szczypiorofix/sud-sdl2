@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include "Tile.h"
-
+#include "TileObject.h"
 
 class Layer {
 
@@ -25,6 +25,7 @@ public:
 	float paralaxY;
 	std::string spriteSheetId;
 	std::vector<Tile*> data;
+	std::vector <TileObject*> objects;
 
 };
 

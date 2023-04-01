@@ -2,10 +2,11 @@
 
 
 
-Window::Window() {
+Window::Window( bool _fullScreen ) {
 	window = nullptr;
 	width = 0;
 	height = 0;
+	fullScreen = _fullScreen;
 }
 
 
@@ -20,7 +21,7 @@ void Window::Init(int _width, int _height, const char* name) {
 	this->height = _height;
 
 	SDL_Log("Initializing window");
-	window = SDL_CreateWindow(name, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, this->width, this->height, SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow(name, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, this->width, this->height, this->fullScreen ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_SHOWN);
 	if (window == NULL) {
 		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_SYSTEM, "Window could not be created! SDL Error: %s\n", SDL_GetError());
 		exit(1);

@@ -28,6 +28,11 @@ namespace TileLayeType {
 }
 
 
+struct ObjectGroupObjectProperties {
+	bool isPortal;
+};
+
+
 struct ObjectGroupObject {
 	int id;
 	std::string name;
@@ -40,6 +45,7 @@ struct ObjectGroupObject {
 	int rotation;
 	int gId;
 	bool visible;
+	ObjectGroupObjectProperties properties;
 };
 
 

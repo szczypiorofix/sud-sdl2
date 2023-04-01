@@ -7,7 +7,11 @@ game.level = level
 game:init(
     {
         windowWidth = 1360,
-        windowHeight = 768
+        windowHeight = 768,
+        amountOfTicks = 30,
+        fullScreen = false,
+        fpsCap = false,
+        vsync = true
     }
 )
 

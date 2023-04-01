@@ -24,15 +24,15 @@ public:
 	bool isAnimated;
 	std::vector<TileAnimation> animation;
 
-	void Update(float dt);
+	void Update(double dt);
 
 	void Draw();
 
-	int animCounter;
+	unsigned int animCounter;
 
 private:
 	
-	int animC;
+	double animC;
 
 };
 

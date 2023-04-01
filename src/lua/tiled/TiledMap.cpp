@@ -94,8 +94,6 @@ void TiledMap::Parse( void ) {
 
 
 
-
-
 std::vector<TileSet> TiledMap::TableGetTileSets(lua_State* _L, int _topStack, const char* _fieldName) {
     std::vector<TileSet> tileSets = {};
     lua_getfield(_L, _topStack, _fieldName);
@@ -140,12 +138,9 @@ std::vector<TileLayer> TiledMap::TableGetTileLayers(lua_State* _L, int _topStack
     lua_getfield(_L, _topStack, _fieldName);
     if (lua_istable(L, -1)) {
         lua_pushnil(L);
-        int c = 0;
-
         while (lua_next(L, -2) != 0) { // -2, because we have table at -1
             int tableSetTop = lua_gettop(L);
             if (lua_istable(L, -1)) {
-                
                 
                 std::string type = LuaHelper::TableGetString(L, "type");
                 TileLayeType::LayerType layerType = TileLayeType::TILE;
@@ -172,12 +167,10 @@ std::vector<TileLayer> TiledMap::TableGetTileLayers(lua_State* _L, int _topStack
                     lua_getfield(L, -1, "data");
                     if (lua_istable(L, -1)) {
                         lua_pushnil(L);
-                        int cd = 0;
                         while (lua_next(L, -2) != 0) {
                             lua_Number n = lua_tonumber(L, -1);
                             data.push_back((int)n);
                             lua_pop(L, 1);
-                            cd++;
                         }
                     }
                     lua_remove(L, -1);
@@ -189,6 +182,63 @@ std::vector<TileLayer> TiledMap::TableGetTileLayers(lua_State* _L, int _topStack
                     layerType = TileLayeType::OBJECT;
 
                     // parse objects ...
+
+                    lua_getfield(L, -1, "objects");
+                    if (lua_istable(L, -1)) {
+
+                        lua_pushnil(L);
+                        while (lua_next(L, -2) != 0) {
+                            
+                            if (lua_istable(L, -1)) {
+
+                                ObjectGroupObject obj = {};
+
+                                int _id = LuaHelper::TableGetInt(L, "id");
+                                std::string _name = LuaHelper::TableGetString(L, "name");
+                                std::string _type = LuaHelper::TableGetString(L, "type");
+                                std::string shape = LuaHelper::TableGetString(L, "shape");
+                                int _x = LuaHelper::TableGetInt(L, "x");
+                                int _y = LuaHelper::TableGetInt(L, "y");
+                                int _width = LuaHelper::TableGetInt(L, "width");
+                                int _height = LuaHelper::TableGetInt(L, "height");
+                                int _rotation = LuaHelper::TableGetInt(L, "rotation");
+                                int _gid = LuaHelper::TableGetInt(L, "gid");
+                                bool _visible = LuaHelper::TableGetBool(L, "visible");
+
+                                ObjectGroupObjectProperties properties = {};
+
+                                lua_getfield(L, -1, "properties");
+                                if (lua_istable(L, -1)) {
+                                    lua_pushnil(L);
+                                    while (lua_next(L, -2) != 0) {
+                                        properties.isPortal = lua_toboolean(L, -1);
+                                        lua_pop(L, 1);
+                                    }
+                                }
+
+                                lua_remove(L, -1);
+
+                                obj.id = _id;
+                                obj.name = _name;
+                                obj.type = _type;
+                                obj.shape = shape;
+                                obj.x = _x;
+                                obj.y = _y;
+                                obj.width = _width;
+                                obj.height = _height;
+                                obj.rotation = _rotation;
+                                obj.gId = _gid;
+                                obj.visible = _visible;
+                                obj.properties = properties;
+
+                                objects.push_back(obj);
+                            }
+
+                            lua_pop(L, 1);
+                        }
+                    }
+
+                    lua_remove(L, -1);
 
                 }
 
@@ -216,8 +266,6 @@ std::vector<TileLayer> TiledMap::TableGetTileLayers(lua_State* _L, int _topStack
                 float parallaxx = LuaHelper::TableGetFloat(L, "parallaxx");
                 float parallaxy = LuaHelper::TableGetFloat(L, "parallaxy");
 
-
-
                 TileLayer tempTileLayer{};
                 tempTileLayer.mX = x;
                 tempTileLayer.mY = y;
@@ -235,12 +283,12 @@ std::vector<TileLayer> TiledMap::TableGetTileLayers(lua_State* _L, int _topStack
                 tempTileLayer.mParalaxX = parallaxx;
                 tempTileLayer.mParalaxY = parallaxy;
                 tempTileLayer.mData = data;
+                tempTileLayer.mObjects = objects;
                 tileLayers.push_back(tempTileLayer);
 
                 lua_settop(L, tableSetTop);
             }
             lua_pop(L, 1); // remove value, keep key for lua_next
-            c++;
         }
     }
     return tileLayers;
