@@ -57,22 +57,17 @@ namespace SUD {
 
 		bool quitGame;
 		
-		void CloseWindow( void );
+		void Exit( void );
 		void InitSubsystems( void );
-
 		void InitMainSDLModule( void );
 		void InitSDLSettings( void );
 		void InitWindow( void );
 		void InitRenderer( void );
 		void InitGraphics( void );
 		void InitLuaHandler( void );
-
 		void InitInputs( void );
-
 		void InitSFX( void );
-
 		void InitScenes( void );
-
 		void LoadAssets( void );
 
 		void StartGameLoop( void );

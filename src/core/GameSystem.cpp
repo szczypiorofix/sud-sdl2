@@ -54,10 +54,12 @@ namespace SUD {
 	}
 
 
-	void GameSystem::CloseWindow( void ) {
+	void GameSystem::Exit( void ) {
 		luaHandler->Close();
+		delete luaHandler;
 
 		scene->Unload();
+		delete scene;
 
 		delete notoFont;
 		delete vingueFont;
@@ -71,9 +73,10 @@ namespace SUD {
 		TextureManager::GetInstance()->Clean();
 
 		SDL_DestroyRenderer( renderer );
-		renderer = NULL;
+		renderer = nullptr;
 
 		window->Destroy();
+		delete window;
 
 		IMG_Quit();
 		SDL_Quit();
@@ -221,8 +224,8 @@ namespace SUD {
 
 
 		if (!lockedRefreshSettings) {
-			SDL_Log("F1 - vsync ON/OFF\n");
-			SDL_Log("F2 - FPS lock to %f ON/OFF\n", amountOfTicks);
+			SDL_Log("V - vsync ON/OFF\n");
+			SDL_Log("B - FPS lock to %f ON/OFF\n", amountOfTicks);
 		}
 
 	}
@@ -355,9 +358,9 @@ namespace SUD {
 
 				inputs->ResolveInputs();
 
-				if (inputs->keys[Key_Left].keyDown) {
+				/*if (inputs->keys[Key_Left].keyDown) {
 					printf("LEFT\n");
-				}
+				}*/
 
 				scene->Input( inputs->event );
 			}
@@ -384,24 +387,26 @@ namespace SUD {
 		}
 			
 		
-		std::stringstream ssFps;
-		ssFps << "FPS: " << fps_count;
-		std::string sFPS = ssFps.str();
-		levelDetails = strconverter.from_bytes(sFPS);
+		//std::stringstream ssFps;
+		//ssFps << "FPS: " << fps_count;
+		//std::string sFPS = ssFps.str();
+		//levelDetails = strconverter.from_bytes(sFPS);
 
-		std::stringstream ssVsync;
-		ssVsync << "VSYNC: " << (vsyncOn ? "ON" : "OFF");
-		std::string sVsync = ssVsync.str();
-		std::wstring vSync = strconverter.from_bytes(sVsync);
+		//std::stringstream ssVsync;
+		//ssVsync << "VSYNC: " << (vsyncOn ? "ON" : "OFF");
+		//std::string sVsync = ssVsync.str();
+		//std::wstring vSync = strconverter.from_bytes(sVsync);
 
-		std::stringstream ssFpsCap;
-		ssFpsCap << "FPS CAP: " << (fpsCap ? "ON" : "OFF");
-		std::string sFpsCap = ssFpsCap.str();
-		std::wstring vFpsLock = strconverter.from_bytes(sFpsCap);
+		//std::stringstream ssFpsCap;
+		//ssFpsCap << "FPS CAP: " << (fpsCap ? "ON" : "OFF");
+		//std::string sFpsCap = ssFpsCap.str();
+		//std::wstring vFpsLock = strconverter.from_bytes(sFpsCap);
 
-		notoFont->Draw( levelDetails, 10, 10, 14.0f, COLOR_YELLOW );
-		notoFont->Draw( vSync, 10, 40, 14.0f, COLOR_YELLOW);
-		notoFont->Draw( vFpsLock, 10, 70, 14.0f, COLOR_CYAN );
+		//notoFont->Draw( levelDetails, 10, 10, 14.0f, COLOR_YELLOW );
+		//notoFont->Draw( vSync, 10, 40, 14.0f, COLOR_YELLOW);
+		//notoFont->Draw( vFpsLock, 10, 70, 14.0f, COLOR_CYAN );
+
+
 
 		//notoFont->Draw( L"A•BC∆DE FGHIJKL£MN—O”PRSåTUWYZØè", 10, 10, 10.0f, COLOR_CYAN );
 		//notoFont->Draw( L"A•B C∆D E F GHI JKL £MN —O” PRS åTU WYZ Øè", 10, 50, 10.0f, COLOR_CYAN );
@@ -478,7 +483,7 @@ namespace SUD {
 
 		} // end while loop
 
-		CloseWindow();
+		Exit();
 	}
 
 }

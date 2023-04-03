@@ -16,8 +16,6 @@ public:
 		isClicked = false;
 		isMouseDown = false;
 		isMouseUp = false;
-		moveVecX = 0;
-		moveVecY = 0;
 	}
 
 	SDL_Color foregroundColor{ 255,255,255,255 };
@@ -35,9 +33,6 @@ public:
 	bool isMouseDown;
 	bool isMouseUp;
 
-
-	int moveVecX;
-	int moveVecY;
 
 private:
 	

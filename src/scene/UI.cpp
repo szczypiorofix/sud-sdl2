@@ -7,9 +7,6 @@ void UI::Input( SDL_Event* event ) {
 	int mx = 0;
 	int my = 0;
 
-	moveVecX = 0;
-	moveVecY = 0;
-
 	if ( ( *event ).type == SDL_MOUSEMOTION ) {
 		SDL_GetMouseState( &mx, &my );
 		if (
@@ -52,38 +49,11 @@ void UI::Input( SDL_Event* event ) {
 			break;
 	}
 
-	if ( (*event ).type == SDL_KEYDOWN ) {
-		switch ( (*event ).key.keysym.sym ) {
-			case SDLK_LEFT:
-				moveVecX = -4;
-				break;
-			case SDLK_RIGHT:
-				moveVecX = 4;
-				break;
-			default:
-				break;
-		}
-	}
-	if ((*event).type == SDL_KEYUP ) {
-		switch ((*event).key.keysym.sym) {
-		case SDLK_LEFT:
-			moveVecX = 0;
-			break;
-		case SDLK_RIGHT:
-			moveVecX = 0;
-			break;
-		default:
-			break;
-		}
-	}
-	
-
 }
 
 
 void UI::Update( double dt ) {
 	isMouseUp = false;
-	this->props->X += moveVecX;
 }
 
 
