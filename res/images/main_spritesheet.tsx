@@ -6,9 +6,9 @@
  <image source="spritesheet.png" width="2048" height="3040"/>
  <tile id="79">
   <animation>
-   <frame tileid="79" duration="100"/>
-   <frame tileid="80" duration="100"/>
-   <frame tileid="81" duration="100"/>
+   <frame tileid="79" duration="200"/>
+   <frame tileid="80" duration="200"/>
+   <frame tileid="81" duration="200"/>
   </animation>
  </tile>
  <tile id="1359">

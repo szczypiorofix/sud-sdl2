@@ -26,8 +26,8 @@ namespace SUD {
 		level = new Level();
 
 		vsyncOn = false;
-		lockFPS = false;
 		fullScreen = false;
+		fpsCap = false;
 
 		lockedRefreshSettings = false;
 
@@ -40,11 +40,10 @@ namespace SUD {
 		updates = 0;
 		frames = 0;
 		now = 0L;
-		amountOfTicks = 40.0f;
+		amountOfTicks = 60.0;
 		fps_count = 0;
 		ticks_count = 0;
 		ns = 0.0f;
-		fpsCap = false;
 
 		levelDetails = L"";
 
@@ -201,7 +200,6 @@ namespace SUD {
 		// TEXTURES
 		SDL_Log("Loading images");
 		TextureManager::GetInstance()->Load("mm_gui_button", DIR_RES_IMAGES + "mm-gui-button.png");
-		//TextureManager::GetInstance()->Load("main_spritesheet", DIR_RES_IMAGES + "spritesheet.png", 32, 32);
 		TextureManager::GetInstance()->Load("noto_0", DIR_RES_FONTS + "noto_0.png");
 		TextureManager::GetInstance()->Load("vingue_0", DIR_RES_FONTS + "vingue_0.png");
 
@@ -322,6 +320,8 @@ namespace SUD {
 				quitGame = true;
 			} else {
 
+				window->Input( inputs->event );
+
 				if ( ( *inputs->event).type == SDL_KEYDOWN ) {
 					switch ( ( *inputs->event).key.keysym.sym ) {
 						case SDLK_ESCAPE:
@@ -335,42 +335,21 @@ namespace SUD {
 
 				if ( ( *inputs->event).type == SDL_KEYUP ) {
 					switch ( ( *inputs->event).key.keysym.sym ) {
-						case SDLK_F1:
+						case SDLK_v:
 							if ( !lockedRefreshSettings ) {
 								vsyncOn = !vsyncOn;
 								SDL_RenderSetVSync(this->renderer, vsyncOn);
 							}
 							break;
 
-						case SDLK_F2:
+						case SDLK_b:
 							if (!lockedRefreshSettings) {
-								lockFPS = !lockFPS;
+								fpsCap = !fpsCap;
 							}
-							break;
-
-						case SDLK_F5:
-							//SDL_RenderSetVSync(this->renderer, 1);
 							break;
 
 						default:
 							break;
-					}
-				}
-
-				if ((*inputs->event).type == SDL_WINDOWEVENT ) {
-					switch ((*inputs->event).window.event) {
-					case SDL_WINDOWEVENT_FOCUS_GAINED:
-						//printf("Focus gain\n");
-						inputs->windowFocusGain = true;
-						break;
-
-					case SDL_WINDOWEVENT_FOCUS_LOST:
-						//printf("Focus lost\n");
-						inputs->windowFocusLost = true;
-						break;
-
-					default:
-						break;
 					}
 				}
 
@@ -380,12 +359,13 @@ namespace SUD {
 					printf("LEFT\n");
 				}
 
-				scene->Input( inputs->event);
+				scene->Input( inputs->event );
 			}
 		}
 	}
 
 	void GameSystem::Update( double dt ) {
+		window->Update( dt );
 		if (reloadLuaScripts) {
 			reloadLuaScripts = false;
 			LoadLuaScripts();
@@ -395,10 +375,6 @@ namespace SUD {
 			reloadLuaScripts = true;
 			mm_gui_button->isClicked = false;
 		}
-
-		inputs->windowFocusGain = false;
-		inputs->windowFocusLost = false;
-
 	}
 
 	void GameSystem::Render( void ) {
@@ -406,22 +382,26 @@ namespace SUD {
 		if (!reloadLuaScripts) {
 			scene->Draw();
 		}
+			
 		
+		std::stringstream ssFps;
+		ssFps << "FPS: " << fps_count;
+		std::string sFPS = ssFps.str();
+		levelDetails = strconverter.from_bytes(sFPS);
 
-		//font->Draw( "•C∆ £—”åSØèπÊÍ≥ÒÛúøü FPS: " + std::to_string( fps ), 10, 10, 0.60f);
-		std::wstring vs = vsyncOn ? L"ON" : L"OFF";
-		//std::wstring fpslk = lockFPS ? L"ON" : L"OFF";
-		
-		std::stringstream ss;
-		ss << "FPS: " << fps_count;
-		std::string ld = ss.str();
-		levelDetails = strconverter.from_bytes(ld);
-		//	//std::cout << ld.c_str() << std::endl;
-		//std::wstring fpsStr = L"FPS:" << L"s";
+		std::stringstream ssVsync;
+		ssVsync << "VSYNC: " << (vsyncOn ? "ON" : "OFF");
+		std::string sVsync = ssVsync.str();
+		std::wstring vSync = strconverter.from_bytes(sVsync);
 
-		notoFont->Draw(levelDetails, 10, 10, 14.0f, COLOR_YELLOW );
-		notoFont->Draw( L"VSYNC: " + vs, 10, 40, 14.0f, COLOR_YELLOW);
-		//notoFont->Draw( L"FPS LOCK (60): " + fpslk, 10, 70, 14.0f, COLOR_CYAN );
+		std::stringstream ssFpsCap;
+		ssFpsCap << "FPS CAP: " << (fpsCap ? "ON" : "OFF");
+		std::string sFpsCap = ssFpsCap.str();
+		std::wstring vFpsLock = strconverter.from_bytes(sFpsCap);
+
+		notoFont->Draw( levelDetails, 10, 10, 14.0f, COLOR_YELLOW );
+		notoFont->Draw( vSync, 10, 40, 14.0f, COLOR_YELLOW);
+		notoFont->Draw( vFpsLock, 10, 70, 14.0f, COLOR_CYAN );
 
 		//notoFont->Draw( L"A•BC∆DE FGHIJKL£MN—O”PRSåTUWYZØè", 10, 10, 10.0f, COLOR_CYAN );
 		//notoFont->Draw( L"A•B C∆D E F GHI JKL £MN —O” PRS åTU WYZ Øè", 10, 50, 10.0f, COLOR_CYAN );
@@ -451,22 +431,20 @@ namespace SUD {
 			delta += (now - lastTime) / ns;
 			lastTime = now;
 
-			while (delta >= 1) {
+			while (delta >= 1.0f) {
 				Input();
 
-				if (inputs->windowFocusGain) {
+				if (window->windowFocusGain) {
 					printf("Window focus gain\n");
 				}
 
-				if (inputs->windowFocusLost) {
+				if (window->windowFocusLost) {
 					printf("Window focus lost\n");
 				}
 
 				Update(delta);
 
 				// Update screen
-				
-
 				if (fpsCap) {
 					SDL_RenderPresent(renderer);
 					SDL_RenderClear(renderer);
@@ -491,7 +469,7 @@ namespace SUD {
 				ticks_count = updates;
 				frames = 0;
 				updates = 0;
-				printf("FPS: %i, TICKS: %i, delta: %f\n", fps_count, ticks_count, delta);
+				//printf("FPS: %i, TICKS: %i, delta: %f\n", fps_count, ticks_count, delta);
 			}
 
 			if (fpsCap) {

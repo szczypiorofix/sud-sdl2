@@ -192,7 +192,7 @@ int GameParser::_newindex(lua_State* L) {
     } else if (strcmp(index, "amountOfTicks") == 0) {
         if (lua_isnumber(L, -1)) {
             lua_Number amountOfTicks = lua_tonumber(L, -1);
-            game->amountOfTicks = (int)amountOfTicks;
+            game->amountOfTicks = amountOfTicks;
         }
         else {
             printf("Game: trying set 'amountOfTicks' to wrong data type! Got %s, number required.\n", lua_typename(L, lua_type(L, -1)));
@@ -295,7 +295,7 @@ int GameParser::Init(lua_State* L) {
     int windowWidth = LuaGame::DEFAULT_WINDOW_WIDTH;
     int windowHeight = LuaGame::DEFAULT_WINDOW_HEIGHT;
 
-    float amountOfTicks = 60.0f;
+    double amountOfTicks = 60.0;
     bool fullScreen = false;
     bool fpsCap = false;
     bool vsync = false;
@@ -313,7 +313,7 @@ int GameParser::Init(lua_State* L) {
 
         lua_getfield(L, -3, "amountOfTicks");
         lua_Number aot = lua_tonumber(L, -1);
-        amountOfTicks = (float)aot;
+        amountOfTicks = aot;
 
         lua_getfield(L, -4, "fullScreen");
         fullScreen = lua_toboolean(L, -1);

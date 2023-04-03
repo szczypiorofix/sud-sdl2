@@ -24,13 +24,13 @@ public:
 	int windowWidth;
 	int windowHeight;
 
-	float amountOfTicks;
+	double amountOfTicks;
 	bool fpsCap;
 	bool fullScreen;
 	bool vSync;
 
 	LuaLevel* level;
 
-	int Init( int _windowWidth, int _windowHeight, float _amoutOfTicks, bool _fullScreen, bool _fpsCap, bool _vSync );
+	int Init( int _windowWidth, int _windowHeight, double _amoutOfTicks, bool _fullScreen, bool _fpsCap, bool _vSync );
 
 };

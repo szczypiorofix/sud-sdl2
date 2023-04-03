@@ -1,11 +1,13 @@
 #include "Window.h"
-
+#include <stdio.h>
 
 
 Window::Window( bool _fullScreen ) {
 	window = nullptr;
 	width = 0;
 	height = 0;
+	windowFocusGain = false;
+	windowFocusLost = false;
 	fullScreen = _fullScreen;
 }
 
@@ -26,6 +28,30 @@ void Window::Init(int _width, int _height, const char* name) {
 		SDL_LogError(SDL_LogCategory::SDL_LOG_CATEGORY_SYSTEM, "Window could not be created! SDL Error: %s\n", SDL_GetError());
 		exit(1);
 	}
+}
+
+void Window::Input( SDL_Event* _event ) {
+	if ((*_event).type == SDL_WINDOWEVENT) {
+		switch ((*_event).window.event) {
+			case SDL_WINDOWEVENT_FOCUS_GAINED:
+				//printf("Focus gain\n");
+				windowFocusGain = true; // move it to window->update()
+				break;
+
+			case SDL_WINDOWEVENT_FOCUS_LOST:
+				//printf("Focus lost\n");
+				windowFocusLost = true;
+				break;
+
+			default:
+				break;
+		}
+	}
+}
+
+void Window::Update(double _dt) {
+	windowFocusGain = false;
+	windowFocusLost = false;
 }
 
 

@@ -31,9 +31,6 @@ namespace SUD {
 
 		SDL_Event* event;
 
-		bool windowFocusGain;
-		bool windowFocusLost;
-
 		Keys keys[4];
 
 	private:

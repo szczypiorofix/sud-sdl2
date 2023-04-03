@@ -7,7 +7,7 @@ LuaGame::LuaGame(const char* _name) {
 	this->level = nullptr;
 	this->windowWidth = DEFAULT_WINDOW_WIDTH;
 	this->windowHeight = DEFAULT_WINDOW_HEIGHT;
-	this->amountOfTicks = 60.0f;
+	this->amountOfTicks = 60.0;
 	this->fpsCap = false;
 	this->fullScreen = false;
 	this->vSync = false;
@@ -48,7 +48,7 @@ LuaGame& LuaGame::operator=(const LuaGame& _game) {
 	return *this;
 }
 
-int LuaGame::Init( int _windowWidth, int _windowHeight, float _amoutOfTicks, bool _fullScreen, bool _fpsCap, bool _vSync ) {
+int LuaGame::Init( int _windowWidth, int _windowHeight, double _amoutOfTicks, bool _fullScreen, bool _fpsCap, bool _vSync ) {
 	this->windowWidth = _windowWidth;
 	this->windowHeight = _windowHeight;
 	this->amountOfTicks = _amoutOfTicks;

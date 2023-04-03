@@ -8,9 +8,9 @@ game:init(
     {
         windowWidth = 1360,
         windowHeight = 768,
-        amountOfTicks = 30,
+        amountOfTicks = 60,
         fullScreen = false,
-        fpsCap = false,
+        fpsCap = true,
         vsync = true
     }
 )

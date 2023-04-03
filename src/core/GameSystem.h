@@ -92,13 +92,12 @@ namespace SUD {
 		int updates;
 		int frames;
 		long now;
-		float amountOfTicks;
+		double amountOfTicks;
 		int fps_count;
 		int ticks_count;
 		double ns;
 		bool fpsCap;
 
-		bool lockFPS;
 		bool vsyncOn;
 		bool fullScreen;
 

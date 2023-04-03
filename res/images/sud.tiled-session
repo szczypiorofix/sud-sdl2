@@ -16,8 +16,8 @@
             "scale": 1,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 369,
-                "y": 305
+                "x": 366,
+                "y": 302
             }
         },
         "main_spritesheet.tsx": {
@@ -25,6 +25,7 @@
             "scaleInEditor": 1
         }
     },
+    "frame.defaultDuration": 200,
     "last.exportedFilePath": "C:/workshop/cpp/sud/lua",
     "last.imagePath": "C:/workshop/cpp/sud/res/images",
     "last.objectTemplatePath": "C:/workshop/cpp/sud/res/images",

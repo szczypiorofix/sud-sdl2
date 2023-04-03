@@ -15,10 +15,6 @@ Inputs::Inputs() {
 	keys[Key_Right] = {};
 	keys[Key_Down] = {};
 	keys[Key_Left] = {};
-
-	windowFocusGain = false;
-	windowFocusLost = false;
-
 }
 
 

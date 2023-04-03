@@ -21,8 +21,8 @@ void Tile::Draw() {
 void Tile::Update(double dt) {
 	if (isAnimated) {
 		
-		animC += dt;
-		if ( animC > 3 ) {
+		animC += animation.at(animCounter).duration;
+		if ( animC > 1000.0f / dt ) {
 			animCounter++;
 			animC = 0.0f;
 		}
