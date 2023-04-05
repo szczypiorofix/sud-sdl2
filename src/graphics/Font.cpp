@@ -299,7 +299,7 @@ void Font::Draw( const std::wstring text, int x, int y, float _size, SDL_Color c
 				}
 				if ( fontTexture != nullptr ) {
 					SDL_SetTextureColorMod( fontTexture, color.r, color.g, color.b);
-					SDL_RenderCopyEx(SUD::GameSystem::GetInstance()->GetRenderer(), fontTexture, &src, &dest, 0, nullptr, SDL_FLIP_NONE);
+					SDL_RenderCopyEx(GameSystem::GetInstance()->GetRenderer(), fontTexture, &src, &dest, 0, nullptr, SDL_FLIP_NONE);
 				}
 				
 				textWidth += fontChars.at( j )->width;

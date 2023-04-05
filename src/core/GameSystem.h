@@ -14,103 +14,100 @@
 #include "../lua/LuaHandler.h"
 #include "../audio/Music.h"
 #include "../scene/Level.h"
+#include "../entities/Player.h"
 
 
 
-namespace SUD {
 
-	class GameSystem {
+class GameSystem {
 
-	public:
+public:
 
-		static GameSystem* GetInstance() {
-			static GameSystem* gameSystem = nullptr;
-			if ( gameSystem == nullptr ) {
-				gameSystem = new GameSystem();
-			}
-			return gameSystem;
+	static GameSystem* GetInstance() {
+		static GameSystem* gameSystem = nullptr;
+		if ( gameSystem == nullptr ) {
+			gameSystem = new GameSystem();
 		}
+		return gameSystem;
+	}
 
-		void Start( int argc, char* args[] );
+	void Start( int argc, char* args[] );
 
-		SDL_Renderer* GetRenderer();
+	SDL_Renderer* GetRenderer();
 
-		void LoadLuaScripts();
+	void LoadLuaScripts();
 
-	private:
+private:
 
-		GameSystem(void);
+	GameSystem(void);
 
-		SUD::Inputs* inputs;
-		Window* window;
-		SDL_Renderer* renderer;
+	SUD::Inputs* inputs;
+	Window* window;
+	SDL_Renderer* renderer;
 		
-		Scene* scene;
-		LuaHandler* luaHandler;
+	Scene* scene;
+	LuaHandler* luaHandler;
 
-		Music* music;
+	Music* music;
 
-		Texture* notoFontTexture;
-		Texture* vingueFontTexture;
-		Font* notoFont;
-		Font* vingueFont;
+	Texture* notoFontTexture;
+	Texture* vingueFontTexture;
+	Font* notoFont;
+	Font* vingueFont;
 
-		bool quitGame;
+	bool quitGame;
 		
-		void Exit( void );
-		void InitSubsystems( void );
-		void InitMainSDLModule( void );
-		void InitSDLSettings( void );
-		void InitWindow( void );
-		void InitRenderer( void );
-		void InitGraphics( void );
-		void InitLuaHandler( void );
-		void InitInputs( void );
-		void InitSFX( void );
-		void InitScenes( void );
-		void LoadAssets( void );
+	void Exit( int code = 0 );
+	void InitSubsystems( void );
+	void InitMainSDLModule( void );
+	void InitSDLSettings( void );
+	void InitWindow( void );
+	void InitRenderer( void );
+	void InitGraphics( void );
+	void InitLuaHandler( void );
+	void InitInputs( void );
+	void InitSFX( void );
+	void InitScenes( void );
+	void LoadAssets( void );
 
-		void StartGameLoop( void );
+	void StartGameLoop( void );
 
-		void Update( double dt );
-		void Input( void );
-		void Render( void );
+	void Update( double dt );
+	void Input( void );
+	void Render( void );
 
 
 
-		const short TARGET_FPS = 50;
-		const float OPTIMAL_TIME = 1000.0f / TARGET_FPS;
+	const short TARGET_FPS = 50;
+	const float OPTIMAL_TIME = 1000.0f / TARGET_FPS;
 
-		long lastTime;
-		double delta;
-		long timer;
-		int updates;
-		int frames;
-		long now;
-		double amountOfTicks;
-		int fps_count;
-		int ticks_count;
-		double ns;
-		bool fpsCap;
+	long lastTime;
+	double delta;
+	long timer;
+	int updates;
+	int frames;
+	long now;
+	double amountOfTicks;
+	int fps_count;
+	int ticks_count;
+	double ns;
+	bool fpsCap;
 
-		bool vsyncOn;
-		bool fullScreen;
+	bool vsyncOn;
+	bool fullScreen;
 
-		bool lockedRefreshSettings;
+	bool lockedRefreshSettings;
 
-		UI* mm_gui_button;
+	UI* mm_gui_button;
 
-		// Lua
-		bool reloadLuaScripts;
-		bool runLuaScriptsOnly;
-		//
+	// Lua
+	bool reloadLuaScripts;
+	bool runLuaScriptsOnly;
+	//
 
-		LuaGame* game;
+	LuaGame* game;
 
-		std::wstring levelDetails;
+	Level* level;
+	Player* player;
 
-		Level* level;
-
-	};
-
-}
+};

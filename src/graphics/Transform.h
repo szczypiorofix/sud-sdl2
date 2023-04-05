@@ -8,20 +8,16 @@ class Transform {
 
 
 public:
-	int X, Y;
+	double X, Y;
 
 
 public:
-	Transform( int x = 0, int y = 0 ) : X( x ), Y( y ) { }
-
-	void Log( std::string msg = "" ) {
-		std::cout << msg << " (X Y) * (" << X << " " << Y << ")" << std::endl;
-	}
+	Transform(double x = 0.0, double y = 0.0 ) : X( x ), Y( y ) { }
 
 private:
 
-	inline void TranslateX( int x ) { X += x; }
-	inline void TranslateY( int y ) { Y += y; }
+	inline void TranslateX( double x ) { X += x; }
+	inline void TranslateY( double y ) { Y += y; }
 	inline void Translate( Vector2D v ) { X += v.X; Y += v.Y; }
 
 

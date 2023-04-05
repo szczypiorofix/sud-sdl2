@@ -7,7 +7,7 @@
 
 
 
-LuaHandler::LuaHandler() {
+LuaHandler::LuaHandler( void ) {
     L = nullptr;
     game = nullptr;
     player = nullptr;
@@ -29,7 +29,7 @@ void LuaHandler::Open( void ) {
 }
 
 
-void LuaHandler::Close() {
+void LuaHandler::Close( void ) {
     if (!L) {
         return;
     }
@@ -54,19 +54,23 @@ void LuaHandler::Close() {
 }
 
 
-LuaGame* LuaHandler::GetGame() {
+LuaGame* LuaHandler::GetGame( void ) {
     if ( game == nullptr ) {
         printf("WARNING! Game object is null!\n");
     }
     return game;
 }
 
-TiledMap* LuaHandler::GetTiledMap() {
+TiledMap* LuaHandler::GetTiledMap( void ) {
     return tiledMap;
 }
 
+LuaPlayer* LuaHandler::GetPlayer(void) {
+    return player;
+}
 
-void LuaHandler::RegisterObjects() {
+
+void LuaHandler::RegisterObjects( void ) {
     // before proceeding Lua script
 
     PlayerParser::RegisterObject(L);
@@ -76,7 +80,7 @@ void LuaHandler::RegisterObjects() {
 }
 
 
-void LuaHandler::RetrieveObjects() {
+void LuaHandler::RetrieveObjects( void ) {
     // after proceeding Lua script
 
     LuaGame tempGame = *GameParser::GetGame(L, "game");
@@ -152,11 +156,11 @@ bool LuaHandler::RunTestScript(const std::string fileName) {
 }
 
 
-void LuaHandler::RegisterTestObjects() {
+void LuaHandler::RegisterTestObjects( void ) {
     TestParser::RegisterObject(L);
 }
 
 
-void LuaHandler::RetrieveTestObject() {
+void LuaHandler::RetrieveTestObject( void ) {
     TestParser::ResolveObjects(L);
 }

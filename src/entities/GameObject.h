@@ -5,14 +5,30 @@
 #include "../graphics/Transform.h"
 #include "../core/Defines.h"
 #include "../graphics/Font.h"
+#include "../graphics/Vector2D.h"
 
 
 struct Properties {
 public:
+
+	Properties(std::string textureID, int x, int y, int width, int height, bool isGeneric) {
+		TextureID = textureID;
+		pos.X = x;
+		pos.Y = y;
+		Width = width;
+		Height = height;
+		IsGeneric = isGeneric;
+		Title = "";
+		_font = nullptr;
+		FontColor = COLOR_WHITE;
+		BackgroundColor = COLOR_BLACK;
+		BorderColor = COLOR_BLACK;
+		Flip = SDL_FLIP_NONE;
+	}
 	Properties( std::string textureID, int x, int y, int width, int height, bool isGeneric, std::string title, Font* font, SDL_Color fontColor, SDL_Color backgroundColor, SDL_Color borderColor, SDL_RendererFlip flip = SDL_FLIP_NONE ) {
 		TextureID = textureID;
-		X = x;
-		Y = y;
+		pos.X = x;
+		pos.Y = y;
 		Width = width;
 		Height = height;
 		IsGeneric = isGeneric;
@@ -27,7 +43,7 @@ public:
 public:
 	std::string TextureID;
 	int Width, Height;
-	int X, Y;
+	Vector2D pos;
 	bool IsGeneric;
 	std::string Title;
 	Font* _font;
@@ -39,7 +55,7 @@ public:
 
 
 
-class GameObject : public IObject {
+class GameObject : public virtual IObject {
 
 
 public:
@@ -67,12 +83,16 @@ public:
 
 	bool active;
 
-	void SetX( int x ) {
-		props->X = x;
-	}
+	//void SetX( int x ) {
+	//	props->X = x;
+	//}
 
-	void SetY( int y ) {
-		props->Y = y;
+	//void SetY( int y ) {
+	//	props->Y = y;
+	//}
+
+	void SetPost(Vector2D vec) {
+		props->pos = vec;
 	}
 
 	void SetWidth( int width ) {

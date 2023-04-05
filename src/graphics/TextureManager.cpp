@@ -20,7 +20,7 @@ bool TextureManager::Load( std::string _id, std::string _fileName, int _tileWidt
 		return false;
 	}
 	SDL_Log("TextureManager: image '%s' loaded successfully.\n", _fileName.c_str());
-	SDL_Texture* texture = SDL_CreateTextureFromSurface( SUD::GameSystem::GetInstance()->GetRenderer(), surface );
+	SDL_Texture* texture = SDL_CreateTextureFromSurface( GameSystem::GetInstance()->GetRenderer(), surface );
 	if ( texture == NULL ) {
 		SDL_Log( "TextureManager: Failed to create texture from surface: %s", SDL_GetError() );
 		return false;
@@ -38,14 +38,14 @@ bool TextureManager::Load( std::string _id, std::string _fileName, int _tileWidt
 void TextureManager::Draw( std::string _id, int _x, int _y, int _width, int _height, SDL_RendererFlip _flip ) {
 	SDL_Rect srcRect = { 0, 0, _width, _height };
 	SDL_Rect dstRect = { _x, _y, _width, _height };
-	SDL_RenderCopyEx( SUD::GameSystem::GetInstance()->GetRenderer(), textureMap[ _id ]->texture, &srcRect, &dstRect, 0, nullptr, _flip );
+	SDL_RenderCopyEx( GameSystem::GetInstance()->GetRenderer(), textureMap[ _id ]->texture, &srcRect, &dstRect, 0, nullptr, _flip );
 }
 
 
 void TextureManager::DrawSprite( std::string _id, int _x, int _y, int _width, int _height, int _sx, int _sy, int _sw, int _sh, SDL_RendererFlip _flip ) {
 	SDL_Rect srcRect = { _sx, _sy, _sw, _sh };
 	SDL_Rect dstRect = { _x, _y, _width, _height };
-	SDL_RenderCopyEx( SUD::GameSystem::GetInstance()->GetRenderer(), textureMap[ _id ]->texture, &srcRect, &dstRect, 0, nullptr, _flip );
+	SDL_RenderCopyEx( GameSystem::GetInstance()->GetRenderer(), textureMap[ _id ]->texture, &srcRect, &dstRect, 0, nullptr, _flip );
 }
 
 
@@ -58,7 +58,7 @@ void TextureManager::DrawSpriteIndex( std::string _id, int _x, int _y, int _widt
 		int indY = ((_index) / columns) * tileWidth;
 		SDL_Rect srcRect = { indX, indY, tileWidth, sprite->tileHeight };
 		SDL_Rect dstRect = { _x, _y, _width, _height };
-		SDL_RenderCopyEx(SUD::GameSystem::GetInstance()->GetRenderer(), sprite->texture, &srcRect, &dstRect, 0, nullptr, _flip);
+		SDL_RenderCopyEx(GameSystem::GetInstance()->GetRenderer(), sprite->texture, &srcRect, &dstRect, 0, nullptr, _flip);
 	}
 }
 

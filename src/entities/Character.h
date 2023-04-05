@@ -11,10 +11,10 @@ class Character : public GameObject {
 public:
 	Character( Properties* props ) : GameObject( props ) { }
 
-	virtual void Draw() = 0;
-	virtual void Clean() = 0;
-	virtual void Update( double dt ) = 0;
-
+	virtual void Draw();
+	virtual void Clean();
+	virtual void Update( double dt );
+	virtual void Input(SDL_Event* event);
 
 protected:
 	std::string Name;
