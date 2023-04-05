@@ -14,6 +14,7 @@
 #include "../lua/LuaHandler.h"
 #include "../audio/Music.h"
 #include "../scene/Level.h"
+#include "../entities/Player.h"
 
 
 
@@ -57,7 +58,7 @@ namespace SUD {
 
 		bool quitGame;
 		
-		void Exit( void );
+		void Exit( int code = 0 );
 		void InitSubsystems( void );
 		void InitMainSDLModule( void );
 		void InitSDLSettings( void );
@@ -107,9 +108,8 @@ namespace SUD {
 
 		LuaGame* game;
 
-		std::wstring levelDetails;
-
 		Level* level;
+		Player* player;
 
 	};
 

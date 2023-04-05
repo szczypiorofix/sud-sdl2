@@ -9,7 +9,7 @@
 class LuaHandler {
 
 public:
-	LuaHandler();
+	LuaHandler(void);
 	~LuaHandler(void);
 
 	bool RunScript( const std::string fileName );
@@ -18,21 +18,20 @@ public:
 
 	void Close(void);
 
-	LuaGame* GetGame();
-
-	TiledMap* GetTiledMap();
+	LuaGame* GetGame(void);
+	TiledMap* GetTiledMap(void);
+	LuaPlayer* GetPlayer(void);
 
 private:
 	lua_State* L;
 
 	void Open(void);
 
-	void RegisterObjects();
-	void RetrieveObjects();
+	void RegisterObjects(void);
+	void RetrieveObjects(void);
 
-
-	void RegisterTestObjects();
-	void RetrieveTestObject();
+	void RegisterTestObjects(void);
+	void RetrieveTestObject(void);
 
 	LuaGame* game;
 	LuaPlayer* player;

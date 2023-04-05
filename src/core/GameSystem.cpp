@@ -23,6 +23,7 @@ namespace SUD {
 		game = nullptr;
 		scene = nullptr;
 		mm_gui_button = nullptr;
+		player = nullptr;
 		level = new Level();
 
 		vsyncOn = false;
@@ -30,9 +31,7 @@ namespace SUD {
 		fpsCap = false;
 
 		lockedRefreshSettings = false;
-
 		quitGame = false;
-
 
 		lastTime = 0L;
 		delta = 0.0f;
@@ -45,8 +44,6 @@ namespace SUD {
 		ticks_count = 0;
 		ns = 0.0f;
 
-		levelDetails = L"";
-
 		reloadLuaScripts = false;
 
 		// Run only Lua scripts, without SDL window
@@ -54,11 +51,15 @@ namespace SUD {
 	}
 
 
-	void GameSystem::Exit( void ) {
-		luaHandler->Close();
+	void GameSystem::Exit( int code ) {
+		if (luaHandler != nullptr) {
+			luaHandler->Close();
+		}
 		delete luaHandler;
 
-		scene->Unload();
+		if (scene != nullptr) {
+			scene->Unload();
+		}
 		delete scene;
 
 		delete notoFont;
@@ -68,22 +69,86 @@ namespace SUD {
 
 		delete mm_gui_button;
 
-		delete level;
-
 		TextureManager::GetInstance()->Clean();
 
-		SDL_DestroyRenderer( renderer );
+		if (renderer != nullptr) {
+			SDL_DestroyRenderer(renderer);
+		}
 		renderer = nullptr;
 
-		window->Destroy();
+		if (window != nullptr) {
+			window->Destroy();
+		}
 		delete window;
 
 		IMG_Quit();
 		SDL_Quit();
+
+		exit( code );
 	}
 
 
-	void GameSystem::InitSubsystems() {
+	void GameSystem::Start(int argc, char* args[]) {
+		if (argc > 1) {
+			SDL_Log("Game app arguments count: %i\n", argc);
+			SDL_Log("Args[0]: %s\n", args[0]);
+		}
+
+		InitLuaHandler();
+		LoadLuaScripts();
+
+		if (runLuaScriptsOnly) {
+			luaHandler->Close();
+			Exit(0);
+		}
+
+		InitSubsystems();
+	}
+
+	void GameSystem::LoadLuaScripts() {
+		// LUA SCRIPT
+
+		luaHandler->Close();
+
+		luaHandler->RunScript("main.lua");
+
+		game = luaHandler->GetGame();
+
+		if (game == nullptr) {
+			printf("Game object is null. Set game object to default object\n");
+			game = new LuaGame("default_game");
+		}
+
+		this->fullScreen = game->fullScreen;
+		this->fpsCap = game->fpsCap;
+		this->amountOfTicks = game->amountOfTicks;
+		this->vsyncOn = game->vSync;
+
+
+		// --- move this somewhere else
+		if (renderer != nullptr) {
+			SDL_RenderSetVSync(renderer, this->vsyncOn);
+		}
+		// ---
+
+		LuaPlayer* luaPlayer = luaHandler->GetPlayer();
+
+		if (luaPlayer == nullptr) {
+			printf("ERROR: LuaPlayer is null!\n");
+			quitGame = true;
+		}
+		else {
+			printf("LuaPlayer x=%i, y=%i, name=%s\n", luaPlayer->x, luaPlayer->y, luaPlayer->name.c_str());
+			player = new Player(new Properties("main_spritesheet", luaPlayer->x, luaPlayer->y, luaPlayer->width, luaPlayer->height, false));
+			player->SetTileIndex(3802); // hardcoded for now...
+		}
+
+		luaHandler->LoadLuaMap("main_map.lua");
+
+		luaHandler->RunTestScript("test.lua");
+	}
+
+	void GameSystem::InitSubsystems(void) {
 		// Initialize main SDL modules
 		InitMainSDLModule();
 		InitSDLSettings();
@@ -104,27 +169,6 @@ namespace SUD {
 
 		// Start game loop
 		StartGameLoop();
-	}
-
-
-	void GameSystem::Start( int argc, char* args[] ) {
-
-		if ( argc > 1 ) {
-			SDL_Log("Game app arguments count: %i\n", argc);
-			SDL_Log( "Args[0]: %s\n", args[0]);
-		}
-
-		// Initialize Lua scripts handler
-		InitLuaHandler();
-
-		LoadLuaScripts();
-
-		if ( runLuaScriptsOnly ) {
-			luaHandler->Close();
-			exit(0);
-		}
-
-		InitSubsystems();
 	}
 
 	void GameSystem::InitMainSDLModule( void ) {
@@ -187,7 +231,6 @@ namespace SUD {
 		inputs->Init( window->GetWindow(), game->windowWidth / 2, game->windowHeight / 2, "mouse_cursor.png");
 	}
 
-
 	void GameSystem::InitSFX( void ) {
 		music = new Music();
 		if ( !music->Init() ) {
@@ -195,7 +238,6 @@ namespace SUD {
 			exit( 1 );
 		}
 	}
-
 
 	void GameSystem::LoadAssets(void) {
 		SDL_Log("Loading assets");
@@ -211,7 +253,6 @@ namespace SUD {
 		SDL_Log("Loading fonts");
 		notoFont = new Font("noto", TextureManager::GetInstance()->GetSpriteSheet("noto_0")->texture);
 		vingueFont = new Font("vingue", TextureManager::GetInstance()->GetSpriteSheet("vingue_0")->texture);
-
 
 
 		// MUSIC
@@ -230,22 +271,24 @@ namespace SUD {
 
 	}
 
-
 	void GameSystem::InitScenes( void ) {
-		
 		scene = new Scene("loading_scene", renderer);
 
 		// UI ELEMENTS
 		mm_gui_button = new UI(new Properties("", 20, 720, 98, 32, true, "RELOAD", notoFont, COLOR_WHITE, COLOR_BLUE, COLOR_RED));
 
 		scene->AddUIObject("mm_gui_button", mm_gui_button);
+		
+		if (level != nullptr && player != nullptr) {
+			level->Reload(luaHandler->GetTiledMap());
+			scene->SetLevel(level);
+			scene->SetPlayer(player);
+		}
+		else {
+			printf("WARNING!: level, scene and player objects must not be NULL !\n");
+		}
+		
 		scene->Load();
-
-
-		/*std::stringstream ss;
-		ss << "Game level: " << "width=" << levelMap->width << ", height=" << levelMap->height;
-		std::string ld = ss.str();
-		levelDetails = strconverter.from_bytes(ld);*/
 
 		TiledMap* tiledMap = luaHandler->GetTiledMap();
 
@@ -253,68 +296,11 @@ namespace SUD {
 			level->Reload(tiledMap);
 			scene->SetLevel(level);
 		}
-
 	}
 
 	SDL_Renderer* GameSystem::GetRenderer() {
 		return renderer;
 	}
-
-	void GameSystem::LoadLuaScripts() {
-		// LUA SCRIPT
-
-		luaHandler->Close();
-
-		// ===============================================================================
-		// 
-		// IDEAS:
-		// - run lua scripts before initializing of SDL
-		// - create SLD window calling lua functions
-		// - initialize all game functions using Lua scripts? Look soooo coooool! iksde
-		// 
-		// ===============================================================================
-
-		luaHandler->RunScript("main.lua");
-		
-		game = luaHandler->GetGame();
-
-		if (game == nullptr) {
-			printf("Game object is null. Set game object to default object\n");
-			game = new LuaGame("default_game");
-		}
-
-		this->fullScreen = game->fullScreen;
-		this->fpsCap = game->fpsCap;
-		this->amountOfTicks = game->amountOfTicks;
-		this->vsyncOn = game->vSync;
-		
-		if (renderer != nullptr) {
-			SDL_RenderSetVSync(renderer, this->vsyncOn);
-		}
-		
-
-		//printf("GameSystem: game object, name=%s, game->level name=%s\n", game->name.c_str(), game->level->name.c_str() );
-		/*printf("GameSystem: level object, name=%s, width=%i, height=%i\n", level->name.c_str(), level->width, level->height);*/
-		//if ( game != nullptr && game->level != nullptr ) {
-		//	std::stringstream ss;
-		//	ss << "Game level: name=" << game->level->name << ", width=" << game->level->width << ", height=" << game->level->height;
-		//	std::string ld = ss.str();
-		//	levelDetails = strconverter.from_bytes(ld);
-		//	//std::cout << ld.c_str() << std::endl;
-		//	//scene->SetLevel(game->level);
-		//}
-
-
-		luaHandler->LoadLuaMap("main_map.lua");
-		
-		if (level != nullptr && scene != nullptr) {
-			level->Reload(luaHandler->GetTiledMap());
-			scene->SetLevel(level);
-		}
-
-		luaHandler->RunTestScript("test.lua");
-	}
-
 
 	void GameSystem::Input( void ) {
 
@@ -381,32 +367,28 @@ namespace SUD {
 	}
 
 	void GameSystem::Render( void ) {
-		
 		if (!reloadLuaScripts) {
 			scene->Draw();
-		}
-			
+		}	
 		
-		//std::stringstream ssFps;
-		//ssFps << "FPS: " << fps_count;
-		//std::string sFPS = ssFps.str();
-		//levelDetails = strconverter.from_bytes(sFPS);
+		std::stringstream ssFps;
+		ssFps << "FPS: " << fps_count;
+		std::string sFPS = ssFps.str();
+		std::wstring levelDetails = strconverter.from_bytes(sFPS);
 
-		//std::stringstream ssVsync;
-		//ssVsync << "VSYNC: " << (vsyncOn ? "ON" : "OFF");
-		//std::string sVsync = ssVsync.str();
-		//std::wstring vSync = strconverter.from_bytes(sVsync);
+		std::stringstream ssVsync;
+		ssVsync << "VSYNC: " << (vsyncOn ? "ON" : "OFF");
+		std::string sVsync = ssVsync.str();
+		std::wstring vSync = strconverter.from_bytes(sVsync);
 
-		//std::stringstream ssFpsCap;
-		//ssFpsCap << "FPS CAP: " << (fpsCap ? "ON" : "OFF");
-		//std::string sFpsCap = ssFpsCap.str();
-		//std::wstring vFpsLock = strconverter.from_bytes(sFpsCap);
+		std::stringstream ssFpsCap;
+		ssFpsCap << "FPS CAP: " << (fpsCap ? "ON" : "OFF");
+		std::string sFpsCap = ssFpsCap.str();
+		std::wstring vFpsLock = strconverter.from_bytes(sFpsCap);
 
-		//notoFont->Draw( levelDetails, 10, 10, 14.0f, COLOR_YELLOW );
-		//notoFont->Draw( vSync, 10, 40, 14.0f, COLOR_YELLOW);
-		//notoFont->Draw( vFpsLock, 10, 70, 14.0f, COLOR_CYAN );
-
-
+		notoFont->Draw( levelDetails, 10, 10, 14.0f, COLOR_YELLOW );
+		notoFont->Draw( vSync, 10, 40, 14.0f, COLOR_YELLOW);
+		notoFont->Draw( vFpsLock, 10, 70, 14.0f, COLOR_CYAN );
 
 		//notoFont->Draw( L"A¥BCÆDEÊFGHIJKL£MNÑOÓPRSŒTUWYZ¯", 10, 10, 10.0f, COLOR_CYAN );
 		//notoFont->Draw( L"A¥B CÆD EÊF GHI JKL £MN ÑOÓ PRS ŒTU WYZ ¯", 10, 50, 10.0f, COLOR_CYAN );
@@ -421,16 +403,13 @@ namespace SUD {
 		//notoFont->Draw( L"Pewnego razu trzy œwinki posz³y na spacer w góry.", 10, 220, 2.0f, COLOR_CYAN );
 		//notoFont->Draw( L"By³a przepiêkna pogoda.", 10, 260, 16.0f, COLOR_YELLOW );
 		//notoFont->Draw( L"Trzy œwinki zgubi³y siê w górach...", 10, 300, 16.0f, COLOR_GRAY );
-
 	}
 
 	void GameSystem::StartGameLoop( void ) {
-		
 		lastTime = SDL_GetTicks();
 		timer = SDL_GetTicks();
 
 		while ( !quitGame ) {
-
 			ns = 1000.0f / amountOfTicks;
 			now = SDL_GetTicks();
 			delta += (now - lastTime) / ns;
@@ -479,10 +458,8 @@ namespace SUD {
 
 			if (fpsCap) {
 				SDL_Delay(1);
-			}
-
+			
 		} // end while loop
-
 		Exit();
 	}
 

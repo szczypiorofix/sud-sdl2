@@ -10,10 +10,10 @@ void UI::Input( SDL_Event* event ) {
 	if ( ( *event ).type == SDL_MOUSEMOTION ) {
 		SDL_GetMouseState( &mx, &my );
 		if (
-			mx > props->X
-			&& mx < props->X + props->Width
-			&& my > props->Y
-			&& my < props->Y + props->Height
+			mx > props->pos.X
+			&& mx < props->pos.X + props->Width
+			&& my > props->pos.Y
+			&& my < props->pos.Y + props->Height
 			) {
 			isHovered = true;
 		} else {
@@ -61,7 +61,7 @@ void UI::Draw() {
 	if ( isHovered ) {
 		if ( isMouseDown ) {
 			if (props->TextureID != "") {
-				TextureManager::GetInstance()->DrawSprite(props->TextureID, props->X, props->Y, props->Width, props->Height, 0, 64, props->Width, props->Height, SDL_FLIP_NONE);
+				TextureManager::GetInstance()->DrawSprite(props->TextureID, (int)props->pos.X, (int)props->pos.Y, props->Width, props->Height, 0, 64, props->Width, props->Height, SDL_FLIP_NONE);
 			}
 			else {
 				_drawGenericButton();
@@ -69,7 +69,7 @@ void UI::Draw() {
 			
 		} else {
 			if (props->TextureID != "") {
-				TextureManager::GetInstance()->DrawSprite(props->TextureID, props->X, props->Y, props->Width, props->Height, 0, 32, props->Width, props->Height, SDL_FLIP_NONE);
+				TextureManager::GetInstance()->DrawSprite(props->TextureID, (int)props->pos.X, (int)props->pos.Y, props->Width, props->Height, 0, 32, props->Width, props->Height, SDL_FLIP_NONE);
 			}
 			else {
 				_drawGenericButton();
@@ -77,7 +77,7 @@ void UI::Draw() {
 		}
 	} else {
 		if (props->TextureID != "") {
-			TextureManager::GetInstance()->DrawSprite(props->TextureID, props->X, props->Y, props->Width, props->Height, 0, 0, props->Width, props->Height, SDL_FLIP_NONE);
+			TextureManager::GetInstance()->DrawSprite(props->TextureID, (int)props->pos.X, (int)props->pos.Y, props->Width, props->Height, 0, 0, props->Width, props->Height, SDL_FLIP_NONE);
 		}
 		else {
 			_drawGenericButton();
@@ -89,10 +89,10 @@ void UI::Draw() {
 
 void UI::_drawGenericButton() {
 	const SDL_Rect rect = {
-		props->X,
-		props->Y,
-		props->Width,
-		props->Height
+		(int)props->pos.X,
+		(int)props->pos.Y,
+		(int)props->Width,
+		(int)props->Height
 	};
 
 	SDL_Color oldColor;
@@ -101,7 +101,7 @@ void UI::_drawGenericButton() {
 
 	SDL_RenderFillRect(SUD::GameSystem::GetInstance()->GetRenderer(), &rect);
 
-	props->_font->Draw(L"Reload", props->X + 5, props->Y + 5, 1.0f, props->FontColor);
+	props->_font->Draw(L"Reload", (int)(props->pos.X + 5.0), (int)(props->pos.Y + 5.0), 1.0f, props->FontColor);
 
 	SDL_SetRenderDrawColor(SUD::GameSystem::GetInstance()->GetRenderer(), oldColor.r, oldColor.g, oldColor.b, oldColor.a);
 

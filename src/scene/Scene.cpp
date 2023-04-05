@@ -10,14 +10,22 @@ Scene::Scene( std::string _name, SDL_Renderer * _renderer) {
 	this->name = _name;
 	this->gameObjectsUI = {};
 	level = nullptr;
+	player = nullptr;
 }
 
 
-Scene::~Scene( void ) { }
+Scene::~Scene( void ) {
+	delete level;
+	delete player;
+}
 
 
 void Scene::AddUIObject( std::string _id, UI* _uiObject ) {
 	gameObjectsUI[_id] = _uiObject;
+}
+
+void Scene::SetPlayer(Player* _player) {
+	this->player = _player;
 }
 
 
@@ -39,6 +47,7 @@ void Scene::Input( SDL_Event* _event ) {
 	for ( it = gameObjectsUI.begin(); it != gameObjectsUI.end(); it++ ) {
 		it->second->Input( _event );
 	}
+	player->Input(_event);
 }
 
 
@@ -48,19 +57,18 @@ void Scene::Update( double _dt ) {
 		it->second->Update( _dt );
 	}
 
-	if (level != nullptr) {
-		level->Update(_dt);
-	}
+	level->Update(_dt);
+	player->Update(_dt);
+
 }
 
 
 void Scene::Draw( void ) {
 	std::map<std::string, UI*>::iterator it;
 
-	if (level != nullptr) {
-		level->Draw();
-	}
-
+	level->Draw();
+	player->Draw();
+	
 	// UI objects
 	for ( it = gameObjectsUI.begin(); it != gameObjectsUI.end(); it++ ) {
 		it->second->Draw();

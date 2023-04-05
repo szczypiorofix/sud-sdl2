@@ -149,6 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\entities\Player.cpp" />
     <ClCompile Include="src\input\Inputs.cpp" />
     <ClCompile Include="src\lua\LuaHelper.cpp" />
     <ClCompile Include="src\lua\parsers\LevelParser.cpp" />
@@ -179,6 +180,7 @@
     <ClCompile Include="src\graphics\TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\entities\Player.h" />
     <ClInclude Include="src\graphics\Sprites.h" />
     <ClInclude Include="src\graphics\Spritesheet.h" />
     <ClInclude Include="src\lua\LuaHelper.h" />

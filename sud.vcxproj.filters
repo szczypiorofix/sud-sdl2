@@ -156,6 +156,9 @@
     <ClCompile Include="src\scene\TileObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\entities\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\GameSystem.h">
@@ -261,6 +264,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\TileObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
