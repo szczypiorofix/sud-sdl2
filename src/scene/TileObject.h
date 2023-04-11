@@ -1,5 +1,5 @@
 #pragma once
-
+#include <string>
 
 class TileObject {
 
@@ -11,6 +11,7 @@ public:
 	int width;
 	int height;
 	bool visible;
+	std::string name;
 
 	// properties
 	bool isPortal;

@@ -130,21 +130,21 @@ void GameSystem::LoadLuaScripts() {
 	}
 	// ---
 
-	LuaPlayer* luaPlayer = luaHandler->GetPlayer();
+	//LuaPlayer* luaPlayer = luaHandler->GetPlayer();
 
-	if (luaPlayer == nullptr) {
-		printf("ERROR: LuaPlayer is null!\n");
-		quitGame = true;
-	}
-	else {
-		printf("LuaPlayer x=%i, y=%i, name=%s\n", luaPlayer->x, luaPlayer->y, luaPlayer->name.c_str());
-		player = new Player(new Properties("main_spritesheet", luaPlayer->x, luaPlayer->y, luaPlayer->width, luaPlayer->height, false));
-		player->SetTileIndex(3802); // hardcoded for now...
-	}
+	//if (luaPlayer == nullptr) {
+	//	printf("ERROR: LuaPlayer is null!\n");
+	//	quitGame = true;
+	//}
+	//else {
+	//	printf("LuaPlayer x=%i, y=%i, name=%s\n", luaPlayer->x, luaPlayer->y, luaPlayer->name.c_str());
+	//	player = new Player(new Properties("main_spritesheet", luaPlayer->x, luaPlayer->y, luaPlayer->width, luaPlayer->height, false));
+	//	player->SetTileIndex(3802); // hardcoded for now...
+	//}
 
 	luaHandler->LoadLuaMap("main_map.lua");
 
-	luaHandler->RunTestScript("test.lua");
+	//luaHandler->RunTestScript("test.lua");
 }
 
 void GameSystem::InitSubsystems(void) {
@@ -278,10 +278,12 @@ void GameSystem::InitScenes( void ) {
 
 	scene->AddUIObject("mm_gui_button", mm_gui_button);
 		
-	if (level != nullptr && player != nullptr) {
+	if (level != nullptr 
+		//&& player != nullptr
+		) {
 		level->Reload(luaHandler->GetTiledMap());
 		scene->SetLevel(level);
-		scene->SetPlayer(player);
+		//scene->SetPlayer(player);
 	}
 	else {
 		printf("WARNING!: level, scene and player objects must not be NULL !\n");
@@ -293,6 +295,7 @@ void GameSystem::InitScenes( void ) {
 
 	if (tiledMap != nullptr && scene != nullptr) {
 		level->Reload(tiledMap);
+		scene->SetPlayer(level->player); // ??
 		scene->SetLevel(level);
 	}
 }

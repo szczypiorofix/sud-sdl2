@@ -3,7 +3,7 @@
 #include "../graphics/TextureManager.h"
 
 
-Level::Level() : width(0), height(0), tileWidth(0), tileHeight(0), nextLayerId(0), nextObjectId(0), layers({}), spriteAtlas({}) {
+Level::Level() : width(0), height(0), tileWidth(0), tileHeight(0), nextLayerId(0), nextObjectId(0), layers({}), spriteAtlas({}), player(nullptr) {
 
 }
 
@@ -95,6 +95,7 @@ void Level::Create(TiledMap* _tiledMap) {
 		for (unsigned int j = 0; j < tempTileLayer.mObjects.size(); j++) {
 			TileObject* tileObject = new TileObject();
 
+			tileObject->name = tempTileLayer.mObjects.at(j).name;
 			tileObject->gid = tempTileLayer.mObjects.at(j).gId;
 			tileObject->x = tempTileLayer.mObjects.at(j).x;
 			tileObject->y = tempTileLayer.mObjects.at(j).y - 32;
@@ -102,8 +103,14 @@ void Level::Create(TiledMap* _tiledMap) {
 			tileObject->height = tempTileLayer.mObjects.at(j).height;
 			tileObject->visible = tempTileLayer.mObjects.at(j).visible;
 			tileObject->isPortal = tempTileLayer.mObjects.at(j).properties.isPortal;
+			
+			if (tileObject->name == "player") {
+				this->player = new Player(new Properties("main_spritesheet", tileObject->x, tileObject->y, tileObject->width, tileObject->height, false));
+				player->SetTileIndex(3802);
+			} else {
+				tempLayer->objects.push_back(tileObject);
+			}
 
-			tempLayer->objects.push_back(tileObject);
 		}
 
 		this->layers.push_back(tempLayer);

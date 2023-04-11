@@ -5,6 +5,7 @@
 #include "../lua/tiled/TiledMap.h"
 #include "../lua/tiled/TiledSpriteSheet.h"
 #include "SpriteAtlas.h"
+#include "../entities/Player.h"
 
 
 class Level {
@@ -30,6 +31,8 @@ public:
 
 	void Draw();
 	void Update(double dt);
+
+	Player* player;
 
 };
 
