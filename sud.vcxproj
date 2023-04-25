@@ -151,6 +151,7 @@
   <ItemGroup>
     <ClCompile Include="src\entities\Player.cpp" />
     <ClCompile Include="src\input\Inputs.cpp" />
+    <ClCompile Include="src\items\Item.cpp" />
     <ClCompile Include="src\lua\LuaHelper.cpp" />
     <ClCompile Include="src\lua\parsers\LevelParser.cpp" />
     <ClCompile Include="src\lua\objects\LuaGame.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="src\entities\Player.h" />
     <ClInclude Include="src\graphics\Sprites.h" />
     <ClInclude Include="src\graphics\Spritesheet.h" />
+    <ClInclude Include="src\items\Item.h" />
     <ClInclude Include="src\lua\LuaHelper.h" />
     <ClInclude Include="src\lua\parsers\GameParser.h" />
     <ClInclude Include="src\lua\parsers\LevelParser.h" />
