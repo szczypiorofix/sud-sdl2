@@ -275,6 +275,9 @@
     <ClInclude Include="src\items\Item.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\items\IItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="res\sud.rc">

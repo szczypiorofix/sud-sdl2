@@ -1,9 +1,11 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <string>
+#include "IItem.h"
 
 
-class Item {
+class Item : public IItem {
 
 
 public:
@@ -14,6 +16,9 @@ public:
 	virtual void Clean();
 	virtual void Update(double dt);
 	virtual void Input(SDL_Event* event);
+
+	int id;
+	std::string name;
 
 
 };

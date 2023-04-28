@@ -28,11 +28,14 @@ void Player::Clean() {
 void Player::Update(double dt) {
 	props->pos.X += movX;;
 	props->pos.Y += movY;
+
+	movX = 0;
+	movY = 0;
 }
 
 
 void Player::Input(SDL_Event* event) {
-	if ((*event).type == SDL_KEYDOWN) {
+	if ((*event).type == SDL_KEYUP) {
 		switch ((*event).key.keysym.sym) {
 			case SDLK_LEFT:
 				movX = -movingSpeed;
@@ -54,7 +57,7 @@ void Player::Input(SDL_Event* event) {
 				break;
 		}
 	}
-	if ((*event).type == SDL_KEYUP) {
+	/*if ((*event).type == SDL_KEYUP) {
 		switch ((*event).key.keysym.sym) {
 			case SDLK_LEFT:
 			case SDLK_RIGHT:
@@ -67,7 +70,7 @@ void Player::Input(SDL_Event* event) {
 			default:
 				break;
 		}
-	}
+	}*/
 }
 
 

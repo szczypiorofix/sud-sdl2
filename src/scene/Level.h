@@ -22,6 +22,11 @@ public:
 	int nextLayerId;
 	int nextObjectId;
 
+	int worldX;
+	int worldY;
+
+	inline bool TileIsVisible( int tileX, int tileY, int visibleHorizontal, int visibleVertical );
+
 	std::vector<Layer*> layers;
 	std::vector<SpriteAtlas*> spriteAtlas;
 

@@ -23,6 +23,6 @@ public:
 	double movY;
 	int tileIndex;
 
-	double movingSpeed = 2.0;
+	double movingSpeed = 32.0; // temporary?
 };
 

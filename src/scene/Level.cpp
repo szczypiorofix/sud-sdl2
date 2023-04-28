@@ -3,7 +3,7 @@
 #include "../graphics/TextureManager.h"
 
 
-Level::Level() : width(0), height(0), tileWidth(0), tileHeight(0), nextLayerId(0), nextObjectId(0), layers({}), spriteAtlas({}), player(nullptr) {
+Level::Level() : width(0), height(0), tileWidth(0), tileHeight(0), nextLayerId(0), nextObjectId(0), layers({}), spriteAtlas({}), player(nullptr), worldX(0), worldY(0) {
 
 }
 
@@ -155,6 +155,8 @@ void Level::Reload(TiledMap* _tiledMap) {
 
 
 void Level::Update(double dt) {
+	worldX = ( player->GetProps()->pos.X);
+	worldY = ( player->GetProps()->pos.Y);
 	for (unsigned int l = 0; l < layers.size(); l++) {
 		for (unsigned int t = 0; t < layers.at(l)->data.size(); t++) {
 			layers.at(l)->data.at(t)->Update(dt);
@@ -163,8 +165,18 @@ void Level::Update(double dt) {
 }
 
 
+bool Level::TileIsVisible(int tileX, int tileY, int visibleHorizontal, int visibleVertical ) {
+	return tileX - (visibleHorizontal * tileWidth) < player->GetProps()->pos.X
+		&& tileX + (visibleHorizontal * tileWidth) > player->GetProps()->pos.X
+		&& tileY - (visibleVertical * tileHeight) < player->GetProps()->pos.Y
+		&& tileY + (visibleVertical * tileHeight) > player->GetProps()->pos.Y;
+}
+
+
 void Level::Draw() {
 	//int drawCalls = 0;
+	int tilesVisibleHorizontal = 4;
+	int tilesVisibleVertical = 4;
 	for (unsigned int l = 0; l < layers.size(); l++) {
 		Layer* layer = layers.at(l);
 		if (!layer->visible) {
@@ -175,12 +187,19 @@ void Level::Draw() {
 			for (unsigned int a = 0; a < spriteAtlas.size(); a++) {
 				SpriteAtlas* atlas = spriteAtlas.at(a);
 				if ( tile->tileId > atlas->firstGid  ) {
-					//drawCalls++;
-					if (tile->isAnimated) {
+					
+					if (tile->isAnimated && TileIsVisible(tile->x, tile->y, tilesVisibleHorizontal, tilesVisibleVertical)) {
+						//drawCalls++;
 						TextureManager::GetInstance()->DrawSpriteIndex(atlas->name, tile->x, tile->y, tileWidth, tileHeight, tile->animation.at(tile->animCounter).tileId + 1 - atlas->firstGid);
 					}
 					else {
-						TextureManager::GetInstance()->DrawSpriteIndex(atlas->name, tile->x, tile->y, tileWidth, tileHeight, tile->tileId - atlas->firstGid);
+						if (
+							TileIsVisible(tile->x, tile->y, tilesVisibleHorizontal, tilesVisibleVertical)
+							) {
+							//drawCalls++;
+							TextureManager::GetInstance()->DrawSpriteIndex(atlas->name, tile->x, tile->y, tileWidth, tileHeight, tile->tileId - atlas->firstGid);
+						}
+						
 					}
 				}
 			}
@@ -194,7 +213,7 @@ void Level::Draw() {
 
 			for (unsigned int a = 0; a < spriteAtlas.size(); a++) {
 				SpriteAtlas* atlas = spriteAtlas.at(a);
-				if (tileObject->gid > atlas->firstGid) {
+				if ( tileObject->gid > atlas->firstGid && TileIsVisible(tileObject->x, tileObject->y, tilesVisibleHorizontal, tilesVisibleVertical) ) {
 					//drawCalls++;
 					TextureManager::GetInstance()->DrawSpriteIndex(atlas->name, tileObject->x, tileObject->y, tileWidth, tileHeight, tileObject->gid - atlas->firstGid);
 				}

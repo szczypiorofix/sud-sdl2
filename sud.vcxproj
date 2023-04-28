@@ -181,6 +181,7 @@
     <ClCompile Include="src\graphics\TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\items\IItem.h" />
     <ClInclude Include="src\entities\Player.h" />
     <ClInclude Include="src\graphics\Sprites.h" />
     <ClInclude Include="src\graphics\Spritesheet.h" />
