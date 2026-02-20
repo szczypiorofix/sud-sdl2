@@ -11,12 +11,16 @@ Level::Level() : width(0), height(0), tileWidth(0), tileHeight(0), nextLayerId(0
 Level::~Level(void) {
 	printf("LEVEL: Destroying...\n");
 	for (unsigned int i = 0; i < layers.size(); i++) {
-		delete layers.at(i);
+		if (layers.at(i) != nullptr) {
+			delete layers.at(i);
+		}
 	}
 
 	for (unsigned int i = 0; i < spriteAtlas.size(); i++) {
 		TextureManager::GetInstance()->Drop(spriteAtlas.at(i)->name);
-		delete spriteAtlas.at(i);
+		if (spriteAtlas.at(i) != nullptr) {
+			delete spriteAtlas.at(i);
+		}
 	}
 }
 

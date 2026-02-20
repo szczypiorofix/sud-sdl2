@@ -15,7 +15,7 @@ Scene::Scene( std::string _name, SDL_Renderer * _renderer) {
 
 
 Scene::~Scene( void ) {
-	delete level;
+	//delete level;
 	delete player;
 }
 

@@ -6,9 +6,9 @@
 std::string LuaHelper::TableGetString(lua_State* _L, const char* _fieldName, int _topStack) {
     lua_getfield(_L, _topStack, _fieldName);
     if (lua_isstring(_L, -1)) {
-        const char* s = lua_tostring(_L, -1);
-        lua_remove(_L, -1);
-        return std::string(s);
+        std::string result = lua_tostring(_L, -1);
+        lua_pop(_L, 1);
+        return result;
     }
     printf("LUA: LuaHelper:TableGetString - warning! Wrong data type for '%s'. Should be 'string', got '%s'\n", _fieldName, lua_typename(_L, lua_type(_L, -1)));
     lua_remove(_L, -1);

@@ -59,7 +59,11 @@ void GameSystem::Exit( int code ) {
 	if (scene != nullptr) {
 		scene->Unload();
 	}
+
+	delete inputs;
 	delete scene;
+
+	delete level;
 
 	delete notoFont;
 	delete vingueFont;
@@ -307,14 +311,14 @@ SDL_Renderer* GameSystem::GetRenderer() {
 void GameSystem::Input( void ) {
 
 	while ( SDL_PollEvent( inputs->event ) != 0 ) {
-		if ( ( *inputs->event).type == SDL_QUIT ) {
+		if (inputs->event->type == SDL_QUIT ) {
 			quitGame = true;
 		} else {
 
 			window->Input( inputs->event );
 
-			if ( ( *inputs->event).type == SDL_KEYDOWN ) {
-				switch ( ( *inputs->event).key.keysym.sym ) {
+			if (inputs->event->type == SDL_KEYDOWN ) {
+				switch (inputs->event->key.keysym.sym ) {
 					case SDLK_ESCAPE:
 						quitGame = true;
 						break;
@@ -324,8 +328,8 @@ void GameSystem::Input( void ) {
 				}
 			}
 
-			if ( ( *inputs->event).type == SDL_KEYUP ) {
-				switch ( ( *inputs->event).key.keysym.sym ) {
+			if ( inputs->event->type == SDL_KEYUP ) {
+				switch (inputs->event->key.keysym.sym ) {
 					case SDLK_v:
 						if ( !lockedRefreshSettings ) {
 							vsyncOn = !vsyncOn;
@@ -414,7 +418,7 @@ void GameSystem::StartGameLoop( void ) {
 				printf("Window focus lost\n");
 			}
 
-			Update(delta);
+			Update(1.0f);
 
 			// Update screen
 			if (fpsCap) {
@@ -452,4 +456,3 @@ void GameSystem::StartGameLoop( void ) {
 
 	Exit();
 }
-
