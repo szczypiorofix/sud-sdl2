@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\libs\vs_dev_lib\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\libs\vs_dev_lib\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\workshop\libs\vs_dev_lib\include;C:\workshop\libs\lua\lua-5.4.4\src;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\workshop\libs\vs_dev_lib\lib\x86;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)debug\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -92,7 +92,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2Main.lib;SDL2_image.lib;liblua54.a;libxml2.lib;libxml2_a.lib;bass.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2Main.lib;SDL2_image.lib;libxml2.lib;libxml2_a.lib;bass.lib;lua54.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>

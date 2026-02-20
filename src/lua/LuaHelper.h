@@ -2,9 +2,7 @@
 
 #include <string>
 #include <vector>
-extern "C" {
-	#include <lua542/lua.hpp>
-}
+#include <lua.hpp>
 
 
 class LuaHelper {
