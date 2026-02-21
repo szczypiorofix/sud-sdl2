@@ -259,12 +259,12 @@ void GameSystem::LoadAssets(void) {
 
 
 	// MUSIC
-	//music->LoadFile( "1fineday.xm", true ); // One fine day... https://modarchive.org/index.php?request=view_by_moduleid&query=60034
-	//music->LoadFile( "menu-music.ogg", true ); // I don't know, I don't remember
-	//music->LoadFile( "icefront.s3m", true ); // Ice Frontier https://modarchive.org/index.php?request=view_by_moduleid&query=44366
-	//music->LoadFile( "a_world_of_dreams_5.mod", true ); // A World Of Dreams 5 https://modarchive.org/index.php?request=view_by_moduleid&query=85975
-	//music->SetVolume( 0.25f );
-	//music->PlayMusic();
+	//music->LoadFile("1fineday.xm", true); // One fine day... https://modarchive.org/index.php?request=view_by_moduleid&query=60034
+	//music->LoadFile("menu-music.ogg", true); // I don't know, I don't remember
+	//music->LoadFile("icefront.s3m", true); // Ice Frontier https://modarchive.org/index.php?request=view_by_moduleid&query=44366
+	music->LoadFile("a_world_of_dreams_5.mod", true); // A World Of Dreams 5 https://modarchive.org/index.php?request=view_by_moduleid&query=85975
+	music->SetVolume(0.25f);
+	music->PlayMusic();
 
 
 	if (!lockedRefreshSettings) {
@@ -282,25 +282,23 @@ void GameSystem::InitScenes( void ) {
 
 	scene->AddUIObject("mm_gui_button", mm_gui_button);
 		
-	if (level != nullptr 
-		//&& player != nullptr
-		) {
+	if (level != nullptr) {
 		level->Reload(luaHandler->GetTiledMap());
 		scene->SetLevel(level);
-		//scene->SetPlayer(player);
 	}
 	else {
-		printf("WARNING!: level, scene and player objects must not be NULL !\n");
+		printf("WARNING!: level object must not be NULL !\n");
 	}
 		
 	scene->Load();
 
 	TiledMap* tiledMap = luaHandler->GetTiledMap();
 
-	if (tiledMap != nullptr && scene != nullptr) {
+	if (tiledMap != nullptr && scene != nullptr && level != nullptr) {
 		level->Reload(tiledMap);
-		scene->SetPlayer(level->player); // ??
-		scene->SetLevel(level);
+		scene->SetPlayer(level->player);
+	} else {
+		printf("WARNING!: tiledMap, scene and level objects must not be NULL !\n");
 	}
 }
 
@@ -350,29 +348,25 @@ void GameSystem::Input( void ) {
 
 			inputs->ResolveInputs();
 
-			/*if (inputs->keys[Key_Left].keyDown) {
-				printf("LEFT\n");
-			}*/
-
-			scene->Input( inputs->event );
+			scene->Input(inputs->event);
 		}
 	}
 }
 
-void GameSystem::Update( double dt ) {
-	window->Update( dt );
+void GameSystem::Update(double dt) {
+	window->Update(dt);
 	if (reloadLuaScripts) {
 		reloadLuaScripts = false;
 		LoadLuaScripts();
 	}
-	scene->Update( dt );
-	if ( mm_gui_button->isClicked ) {
+	scene->Update(dt);
+	if (mm_gui_button->isClicked) {
 		reloadLuaScripts = true;
 		mm_gui_button->isClicked = false;
 	}
 }
 
-void GameSystem::Render( void ) {
+void GameSystem::Render(void) {
 	if (!reloadLuaScripts) {
 		scene->Draw();
 	}	
@@ -392,12 +386,12 @@ void GameSystem::Render( void ) {
 	std::string sFpsCap = ssFpsCap.str();
 	std::wstring vFpsLock = strconverter.from_bytes(sFpsCap);
 
-	notoFont->Draw( levelDetails, 10, 10, 14.0f, COLOR_YELLOW );
-	notoFont->Draw( vSync, 10, 40, 14.0f, COLOR_YELLOW);
-	notoFont->Draw( vFpsLock, 10, 70, 14.0f, COLOR_CYAN );
+	notoFont->Draw(levelDetails, 10, 10, 14.0f, COLOR_YELLOW);
+	notoFont->Draw(vSync, 10, 40, 14.0f, COLOR_YELLOW);
+	notoFont->Draw(vFpsLock, 10, 70, 14.0f, COLOR_CYAN);
 }
 
-void GameSystem::StartGameLoop( void ) {
+void GameSystem::StartGameLoop(void) {
 	lastTime = SDL_GetTicks();
 	timer = SDL_GetTicks();
 
